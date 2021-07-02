@@ -17,7 +17,7 @@ curPath = Path(bge.logic.expandPath("//")).resolve()
 
 
 def loadFramework():
-    if DEBUG: print("\n> Initializing framework...")
+    if DEBUG: print("\n> Initializing framework")
     
     globalDict["Config"] = loadFile(curPath / "Config.ini", debugIndent=DEBUG_INDENT)
     globalDict["Database"] = loadFiles(curPath / "database", debugIndent=DEBUG_INDENT)
@@ -29,8 +29,8 @@ def loadFramework():
     }
     
     if DEBUG:
-        saveFile(curPath / "globalDictDump.json", globalDict, debugIndent=DEBUG_INDENT)
-        print("> Framework initializated!\n")
+        # saveFile(curPath / "GlobalDictDump.json", globalDict, debugIndent=DEBUG_INDENT)
+        print("> Framework initializated\n")
 
 
 def loadFile(_file, debugIndent=0):
@@ -96,7 +96,7 @@ def loadFiles(directory, debugIndent=0):
     """Get all files from given directory, load their content and return data as dict."""
     
     relativePath = directory.as_posix().replace(curPath.as_posix(), "")[1:]
-    if DEBUG: print((debugIndent * " ") + "> Loading files from", relativePath + "...")
+    if DEBUG: print((debugIndent * " ") + "> Loading files from:", relativePath)
     data = {}
 
     for _file in directory.iterdir():
@@ -149,7 +149,7 @@ def saveFile(_file, data, ext=None, debugIndent=0):
     if saved:
         if DEBUG:
             relativePath = _file.as_posix().replace(curPath.as_posix(), "")[1:]
-            print((debugIndent * " ") + "> Saved file to", relativePath)
+            print((debugIndent * " ") + "> Saved file to:", relativePath)
 
 
 def getFilePaths(directory, debugIndent=0):
@@ -157,7 +157,7 @@ def getFilePaths(directory, debugIndent=0):
     """Get all files from given directory and return dict with name : path relations."""
     
     relativePath = directory.as_posix().replace(curPath.as_posix(), "")[1:]
-    if DEBUG: print((debugIndent * " ") + "> Getting files from", relativePath + "...")
+    if DEBUG: print((debugIndent * " ") + "> Getting files from:", relativePath)
     data = {}
 
     for _file in directory.iterdir():

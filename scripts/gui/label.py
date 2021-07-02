@@ -74,11 +74,23 @@ def _updateLabel(cont):
     # Helper variables
     own = cont.owner
     group = own.groupObject
+    shadow = group.groupMembers["LabelTextShadow"]
     targetText = _getTextFromGroup(group)
     
     # Set options
-    own.localPosition = labelDb["Position"] if not "Position" in group else literal_eval(group["Position"])
+    labelOffset = list(labelDb["Offset"] if not "Offset" in group else literal_eval(group["Offset"]))
+    own.localPosition = labelOffset + [own.localPosition.z]
+    own.color = labelDb["Color"] if not "Color" in group else literal_eval(group["Color"])
     own["Transition"] = labelDb["Transition"] if not "Transition" in group else group["Transition"]
+    
+    if labelDb["ShadowEnable"]:
+        shadow.visible = True
+        shadowOffset = list(labelDb["ShadowOffset"] if not "ShadowOffset" in group else literal_eval(group["ShadowOffset"]))
+        shadow.localPosition = shadowOffset + [shadow.localPosition.z]
+        shadow.color = labelDb["ShadowColor"] if not "ShadowColor" in group else literal_eval(group["ShadowColor"])
+        
+    else:
+        shadow.visible = False
 
     if own.text != targetText:
         
@@ -102,21 +114,26 @@ def _updateLabel(cont):
             
         # Transition: None
         else:
-            own.text = _getTextFromGroup(group)
+            text = _getTextFromGroup(group)
+            own.text = shadow.text = text
 
 
 def _transitionType(cont):
     # type: (bge.types.SCA_PythonController) -> None
     
     own = cont.owner
+    group = own.groupObject
+    shadow = group.groupMembers["LabelTextShadow"]
     
     if own["TransitionState"] == "Showing":
         if own["TypeTargetText"] != own.text:
-            own.text += own["TypeTargetText"][own["TypeCurChar"]]
+            curChar = own["TypeTargetText"][own["TypeCurChar"]]
+            own.text = shadow.text = own.text + curChar
             own["TypeCurChar"] += 1
             
             if own["TypeCurChar"] < len(own["TypeTargetText"]) and own["TypeTargetText"][own["TypeCurChar"]] == " ":
-                own.text += own["TypeTargetText"][own["TypeCurChar"]]
+                curChar = own["TypeTargetText"][own["TypeCurChar"]]
+                own.text = shadow.text = own.text + curChar
                 own["TypeCurChar"] += 1
             
             if "LabelTypeSound" in own.scene:
@@ -136,10 +153,10 @@ def _transitionType(cont):
                 own.scene["LabelTypeSound"].position = 0.0
                 own.scene["LabelTypeSound"].resume()
             
-            own.text = own.text[0:-1]
+            own.text = shadow.text = own.text[0:-1]
             
             if len(own.text) > 0 and own.text[-1] == " ":
-                own.text = own.text[0:-1]
+                own.text = shadow.text = own.text[0:-1]
             
         else:
             own["TransitionState"] = "Showing"
@@ -149,6 +166,8 @@ def _transitionAnim(cont):
     # type: (bge.types.SCA_PythonController) -> None
     
     own = cont.owner
+    group = own.groupObject
+    shadow = group.groupMembers["LabelTextShadow"]
     curAnim = TRANSITION_ANIMS[own["Transition"]]
     targetText = _getTextFromGroup(own.groupObject)
     
@@ -158,7 +177,7 @@ def _transitionAnim(cont):
             own.parent.playAction("GuiTransitions", curAnim[0], curAnim[1])
             
         elif own.parent.getActionFrame() == curAnim[1]:
-            own.text = targetText
+            own.text = shadow.text = targetText
             own.parent.playAction("GuiTransitions", curAnim[1], curAnim[0])
             
         elif own.text == targetText:
