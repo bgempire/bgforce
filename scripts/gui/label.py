@@ -38,6 +38,7 @@ def label(cont):
                 own.scene["LabelTypeSound"].pause()
                 
             own.parent.setParent(group)
+            group.groupMembers["LabelTextShadow"].parent.setParent(group)
             _updateLabel(cont)
             
         if own["InTransition"]:
@@ -77,12 +78,13 @@ def _updateLabel(cont):
     shadow = group.groupMembers["LabelTextShadow"]
     targetText = _getTextFromGroup(group)
     
-    # Set options
+    # Set options to label
     labelOffset = list(labelDb["Offset"] if not "Offset" in group else literal_eval(group["Offset"]))
     own.localPosition = labelOffset + [own.localPosition.z]
     own.color = labelDb["Color"] if not "Color" in group else literal_eval(group["Color"])
     own["Transition"] = labelDb["Transition"] if not "Transition" in group else group["Transition"]
     
+    # Set options to shadow
     if labelDb["ShadowEnable"]:
         shadow.visible = True
         shadowOffset = list(labelDb["ShadowOffset"] if not "ShadowOffset" in group else literal_eval(group["ShadowOffset"]))
