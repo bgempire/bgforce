@@ -3,16 +3,13 @@ import aud
 
 from bge.logic import globalDict
 from ast import literal_eval
+from textwrap import wrap
+
+from .common import *
 
 __all__ = ['label']
 
 labelDb = globalDict["Database"]["Gui"]["Label"]
-
-TRANSITION_ANIMS = {
-    "SlideLeft" : [0, 20],
-    "SlideRight" : [30, 50],
-    "FallBack" : [60, 80],
-}
 
 
 def label(cont):
@@ -31,6 +28,8 @@ def label(cont):
         return
         
     if always.positive:
+        
+        # Run once at start
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
             if labelDb["TypeSoundEnable"] and not "LabelTypeSound" in own.scene:
                 factory = aud.Factory.file(globalDict["Sounds"]["Sfx"]["GuiLabelType"])
@@ -38,51 +37,38 @@ def label(cont):
                 own.scene["LabelTypeSound"].pause()
                 
             own.parent.setParent(group)
-            group.groupMembers["LabelTextShadow"].parent.setParent(group)
-            _updateLabel(cont)
+            updateLabel(cont)
             
+        # Update transition
         if own["InTransition"]:
             if own["Transition"] == "Type":
-                _transitionType(cont)
+                transitionType(cont)
                 
             elif own["Transition"] in TRANSITION_ANIMS.keys():
-                _transitionAnim(cont)
+                transitionAnim(cont)
         
+        # Update label when asked
         else:
             if message.positive:
-                _updateLabel(cont)
+                updateLabel(cont)
 
 
-def _getTextFromGroup(obj):
-    # type: (bge.types.KX_GameObject) -> str
-    
-    if "Label" in obj:
-        if str(obj["Label"]).startswith(">"):
-            try:
-                return str(literal_eval(obj["Label"][1:]))
-            except:
-                return str(obj["Label"])
-        else:
-            return str(obj["Label"])
-        
-    else:
-        return ""
-
-
-def _updateLabel(cont):
+def updateLabel(cont):
     # type: (bge.types.SCA_PythonController) -> None
     
     # Helper variables
     own = cont.owner
     group = own.groupObject
     shadow = group.groupMembers["LabelTextShadow"]
-    targetText = _getTextFromGroup(group)
+    targetText = getLabelFromGroup(group)
     
     # Set options to label
     labelOffset = list(labelDb["Offset"] if not "Offset" in group else literal_eval(group["Offset"]))
     own.localPosition = labelOffset + [own.localPosition.z]
     own.color = labelDb["Color"] if not "Color" in group else literal_eval(group["Color"])
     own["Transition"] = labelDb["Transition"] if not "Transition" in group else group["Transition"]
+    own["LineSize"] = group["LineSize"] if "LineSize" in group else 0
+    own["Justify"] = group["Justify"] if "Justify" in group else "Left"
     
     # Set options to shadow
     if labelDb["ShadowEnable"]:
@@ -95,20 +81,26 @@ def _updateLabel(cont):
         shadow.visible = False
 
     if own.text != targetText:
+        if own["LineSize"]:
+            targetText = wrap(targetText, own["LineSize"])
+            if own["Justify"].lower() == "center":
+                targetText = [i.center(own["LineSize"]) for i in targetText]
+            elif own["Justify"].lower() == "right":
+                targetText = [i.rjust(own["LineSize"]) for i in targetText]
+            targetText = "\n".join(targetText)
+        own["TargetText"] = targetText
         
         # Transition: Typewriter
         if own["Transition"] == "Type":
             own["TransitionState"] = "Showing" if own.text == "" else "Hiding"
             own["InTransition"] = True
             own["TypeCurChar"] = 0
-            own["TypeTargetText"] = _getTextFromGroup(group)
             always = cont.sensors["Always"] # type: bge.types.SCA_AlwaysSensor
             always.usePosPulseMode = True
             always.skippedTicks = labelDb["TypeDelay"]
             
         # Transition: Animation
         elif own["Transition"] in TRANSITION_ANIMS.keys():
-            own["TransitionState"] = "Showing" if own.text == "" else "Hiding"
             own["InTransition"] = True
             always = cont.sensors["Always"] # type: bge.types.SCA_AlwaysSensor
             always.usePosPulseMode = True
@@ -116,32 +108,36 @@ def _updateLabel(cont):
             
         # Transition: None
         else:
-            text = _getTextFromGroup(group)
-            own.text = shadow.text = text
+            own.text = shadow.text = targetText
 
 
-def _transitionType(cont):
+def transitionType(cont):
     # type: (bge.types.SCA_PythonController) -> None
+    
+    def playTypeSound(obj):
+        # type: (bge.types.KX_GameObject) -> None
+        
+        obj.scene["LabelTypeSound"].volume = globalDict["Config"]["VolSfx"] * labelDb["TypeSoundVol"]
+        obj.scene["LabelTypeSound"].position = 0.0
+        obj.scene["LabelTypeSound"].resume()
     
     own = cont.owner
     group = own.groupObject
     shadow = group.groupMembers["LabelTextShadow"]
     
     if own["TransitionState"] == "Showing":
-        if own["TypeTargetText"] != own.text:
-            curChar = own["TypeTargetText"][own["TypeCurChar"]]
+        if own["TargetText"] != own.text:
+            curChar = own["TargetText"][own["TypeCurChar"]]
             own.text = shadow.text = own.text + curChar
             own["TypeCurChar"] += 1
             
-            if own["TypeCurChar"] < len(own["TypeTargetText"]) and own["TypeTargetText"][own["TypeCurChar"]] == " ":
-                curChar = own["TypeTargetText"][own["TypeCurChar"]]
+            if own["TypeCurChar"] < len(own["TargetText"]) and own["TargetText"][own["TypeCurChar"]] == " ":
+                curChar = own["TargetText"][own["TypeCurChar"]]
                 own.text = shadow.text = own.text + curChar
                 own["TypeCurChar"] += 1
             
             if "LabelTypeSound" in own.scene:
-                own.scene["LabelTypeSound"].volume = globalDict["Config"]["VolSfx"] * labelDb["TypeSoundVol"]
-                own.scene["LabelTypeSound"].position = 0.0
-                own.scene["LabelTypeSound"].resume()
+                playTypeSound(own)
             
         else:
             own["InTransition"] = False
@@ -151,9 +147,7 @@ def _transitionType(cont):
     elif own["TransitionState"] == "Hiding":
         if own.text != "":
             if "LabelTypeSound" in own.scene:
-                own.scene["LabelTypeSound"].volume = globalDict["Config"]["VolSfx"] * labelDb["TypeSoundVol"]
-                own.scene["LabelTypeSound"].position = 0.0
-                own.scene["LabelTypeSound"].resume()
+                playTypeSound(own)
             
             own.text = shadow.text = own.text[0:-1]
             
@@ -164,24 +158,27 @@ def _transitionType(cont):
             own["TransitionState"] = "Showing"
 
 
-def _transitionAnim(cont):
+def transitionAnim(cont):
     # type: (bge.types.SCA_PythonController) -> None
     
     own = cont.owner
     group = own.groupObject
-    shadow = group.groupMembers["LabelTextShadow"]
     curAnim = TRANSITION_ANIMS[own["Transition"]]
-    targetText = _getTextFromGroup(own.groupObject)
+    curFrame = round(own.parent.getActionFrame(), 1)
     
     if not own.parent.isPlayingAction():
         
-        if own.text != targetText:
-            own.parent.playAction("GuiTransitions", curAnim[0], curAnim[1])
+        if own.text == "":
+            curFrame = curAnim[1]
+        
+        if own.text != own["TargetText"] and curFrame != curAnim[1]:
+            own.parent.playAction("GuiTransitions", curAnim[0], curAnim[1], speed=labelDb["TransitionSpeed"])
             
-        elif own.parent.getActionFrame() == curAnim[1]:
-            own.text = shadow.text = targetText
-            own.parent.playAction("GuiTransitions", curAnim[1], curAnim[0])
+        elif curFrame == curAnim[1]:
+            own.text = group.groupMembers["LabelTextShadow"].text = own["TargetText"]
+            own.parent.playAction("GuiTransitions", curAnim[1], curAnim[0], speed=labelDb["TransitionSpeed"])
             
-        elif own.text == targetText:
+        elif own.text == own["TargetText"]:
             own["InTransition"] = False
             cont.sensors["Always"].usePosPulseMode = False
+            
