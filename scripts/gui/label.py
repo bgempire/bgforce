@@ -5,7 +5,7 @@ from bge.logic import globalDict
 from ast import literal_eval
 from textwrap import wrap
 
-from .common import *
+from .widget import TRANSITION_ANIMS, getLabelFromGroup
 
 __all__ = ['label']
 
@@ -53,6 +53,7 @@ def label(cont):
                 updateLabel(cont)
 
 
+# Helper functions
 def updateLabel(cont):
     # type: (bge.types.SCA_PythonController) -> None
     
