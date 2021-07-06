@@ -99,7 +99,7 @@ def getCommandsFromGroup(group):
         if command.startswith(EXEC_PREFIX):
             return command[1:].strip()
         elif command[0] in ("(", "["):
-            return "camera.worldPosition = list(" + command.strip() + ") + [camPos.z]"
+            return "camera.worldPosition = list(" + command.strip() + ") + [camera.worldPosition.z]"
         else:
             return "bge.logic.sendMessage('" + command.strip() + "')"
             

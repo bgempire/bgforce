@@ -14,12 +14,13 @@ def button(cont):
     group = own.groupObject
     commands = own["Commands"]
     camera = own.scene.active_camera
-    camPos = camera.worldPosition
     config = globalDict["Config"]
+    
+    if DEBUG and commands: print("> Executing list of commands")
     
     for command in commands:
         try:
             exec(command)
-            if DEBUG: print("> Executed:", repr(command))
+            if DEBUG: print("  > Executed:", repr(command))
         except:
-            if DEBUG: print("X Could not exec:", repr(command))
+            if DEBUG: print("  X Could not exec:", repr(command))
