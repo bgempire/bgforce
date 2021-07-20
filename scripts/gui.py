@@ -43,7 +43,12 @@ def widget(cont):
         # Initialize widget at start
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
             initWidget(cont)
-            
+        
+        # Update label if property Update is provided
+        if "Update" in group and group["Update"] >= 0:
+            always.skippedTicks = group["Update"]
+            updateLabelObj(cont)
+        
         # Start transition when GUI update is requested
         if message.positive and not own.isPlayingAction():
             own["TransitionState"] = "Hiding"
@@ -145,11 +150,6 @@ def initWidget(cont):
                 own["IconObj"].replaceMesh(meshName)
             except:
                 if DEBUG: print("X Icon mesh of", group, "not found:", meshName)
-    
-    # Disable transition if prop Update is provided
-    if "Update" in group:
-        own["Transition"] = "None"
-        cont.sensors["Always"].skippedTicks = group["Update"]
     
     # Show transition at start
     if own["Transition"] in TRANSITION_ANIMS.keys():
