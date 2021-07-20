@@ -61,6 +61,7 @@ def loadFile(_file, debugIndent=0):
                     fileData.append(line.strip())
                 
             curSection = None
+            variables = {}
             
             for item in fileData:
                 
@@ -70,18 +71,23 @@ def loadFile(_file, debugIndent=0):
                     data[item] = {}
                     
                 else:
-                    item = item.split("=", 1)
+                    item = [i.strip() for i in item.split("=", 1)] # type: list[str]
                     
                     if len(item) == 2:
+                        itemKey = item[0]
+                        itemVal = variables[item[1]] if item[1] in variables.keys() else item[1]
+                        
                         try:
-                            item[1] = literal_eval(item[1])
+                            itemVal = literal_eval(itemVal)
                         except:
-                            item[1] = item[1]
+                            pass
                             
-                        if curSection is not None:
-                            data[curSection][item[0].strip()] = item[1]
+                        if itemKey.startswith("$"):
+                            variables[itemKey] = itemVal
+                        elif curSection is not None:
+                            data[curSection][itemKey] = itemVal
                         else:
-                            data[item[0].strip()] = item[1]
+                            data[itemKey] = itemVal
                         
             loaded = True
             
