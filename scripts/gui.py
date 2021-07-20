@@ -73,9 +73,14 @@ def initWidget(cont):
     
     # Create widget properties based on its database config
     widgetDb = globalDict["Database"]["Gui"][own["WidgetType"]] # type: dict
+    own["InlineProps"] = []
     
     for prop in widgetDb.keys():
-        propValue = group[prop] if prop in group else widgetDb[prop]
+        propValue = widgetDb[prop]
+        
+        if prop in group:
+            propValue = group[prop]
+            own["InlineProps"].append(prop)
         
         if type(propValue) == str:
             try:
@@ -85,6 +90,21 @@ def initWidget(cont):
                 
         own[prop] = propValue
         if debugProps: own.addDebugProperty(prop)
+        
+    # Apply style to current widget
+    if "Style" in group:
+        styleName = own["WidgetType"] + ":" + str(group["Style"])
+        styleDb = {}
+        
+        if styleName in globalDict["Database"]["Styles"].keys():
+            styleDb = globalDict["Database"]["Styles"][styleName]
+        
+        elif styleName in globalDict["Database"]["Gui"].keys():
+            styleDb = globalDict["Database"]["Gui"][styleName]
+            
+        for prop in styleDb.keys():
+            if not prop in own["InlineProps"]:
+                own[prop] = styleDb[prop]
     
     # Create additional props in widget
     additionalProps = {
