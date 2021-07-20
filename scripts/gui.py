@@ -14,11 +14,11 @@ INSTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
 LOCALE_PREFIX = "#"
 TRANSITION_ANIMS = {
-    "SlideLeft": {"Shown" : 0, "Hidden" : 20},
-    "SlideRight": {"Shown" : 30, "Hidden" : 50},
-    "FallBack": {"Shown" : 60, "Hidden" : 80},
-    "BendBack": {"Shown" : 90, "Hidden" : 110},
-    "BendArc": {"Shown" : 120, "Hidden" : 140},
+    "SlideL": {"Shown" : 0, "Hidden" : 20},
+    "SlideR": {"Shown" : 30, "Hidden" : 50},
+    "ScaleV": {"Shown" : 60, "Hidden" : 80},
+    "ScaleH": {"Shown" : 90, "Hidden" : 110},
+    "Arc": {"Shown" : 120, "Hidden" : 140},
 }
 
 # Controller endpoint
@@ -188,10 +188,10 @@ def processTransition(cont):
     own = cont.owner
     group = own.groupObject
     camera = own.scene.active_camera
-    curAnim = TRANSITION_ANIMS[own["Transition"]]
+    curAnim = TRANSITION_ANIMS.get(own["Transition"])
     config = globalDict["Config"]
     
-    if not own.isPlayingAction():
+    if not own.isPlayingAction() and curAnim:
         
         # Play hide animation
         if own["TransitionState"] == "Hiding":
@@ -237,7 +237,6 @@ def processClickable(cont):
     own = cont.owner
     group = own.groupObject
     camera = own.scene.active_camera
-    curAnim = TRANSITION_ANIMS[own["Transition"]]
     clickableObj = own["ClickableObj"] # type: bge.types.KX_GameObject
     
     mouseOver = cont.sensors.get("MouseOver", None) # type: bge.types.KX_MouseFocusSensor
