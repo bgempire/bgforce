@@ -61,7 +61,7 @@ def widget(cont):
             processClickable(cont)
     
 
-# Generic functions
+# Abstraction functions
 def initWidget(cont):
     # type: (bge.types.SCA_PythonController) -> None
 
@@ -154,6 +154,9 @@ def initWidget(cont):
     # Show transition at start
     if own["Transition"] in TRANSITION_ANIMS.keys():
         own["TransitionState"] = "Showing"
+        
+    if own["WidgetType"] == "Checkbox":
+        checkboxAction(cont, True)
 
 
 def updateLabelObj(cont):
@@ -231,31 +234,41 @@ def processEnabled(cont):
         own["Enabled"] = True
 
 
+def setClickableVisual(cont, state):
+    # type: (bge.types.SCA_PythonController, str) -> None
+    
+    own = cont.owner
+    clickableObj = own["ClickableObj"]
+    other = ""
+    
+    if own["WidgetType"] == "Checkbox":
+        other = str(own["Checked"])
+    
+    clickableObj.replaceMesh(own["WidgetType"] + other + state)
+    clickableObj.color = own["Color" + state]
+
+
 def processClickable(cont):
     # type: (bge.types.SCA_PythonController) -> None
 
     own = cont.owner
-    group = own.groupObject
-    camera = own.scene.active_camera
-    clickableObj = own["ClickableObj"] # type: bge.types.KX_GameObject
-    
     mouseOver = cont.sensors.get("MouseOver", None) # type: bge.types.KX_MouseFocusSensor
     lmb = cont.sensors.get("LMB", None) # type: bge.types.SCA_MouseSensor
     rmb = cont.sensors.get("RMB", None) # type: bge.types.SCA_MouseSensor
     
+    if own["WidgetType"] == "Checkbox":
+        checkboxAction(cont, True)
+    
     if not own["Enabled"]:
-        clickableObj.replaceMesh(own["WidgetType"] + "Disabled")
-        clickableObj.color = own.get("ColorDisabled", clickableObj.color)
+        setClickableVisual(cont, "Disabled")
         
     elif mouseOver.positive and not own.isPlayingAction():
         
         if lmb is not None and lmb.positive:
-            clickableObj.replaceMesh(own["WidgetType"] + "Click")
-            clickableObj.color = own.get("ColorClick", clickableObj.color)
+            setClickableVisual(cont, "Click")
             
         else:
-            clickableObj.replaceMesh(own["WidgetType"] + "Hover")
-            clickableObj.color = own.get("ColorHover", clickableObj.color)
+            setClickableVisual(cont, "Hover")
             
         if lmb is not None and lmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
             execCommands(cont, True)
@@ -266,8 +279,11 @@ def processClickable(cont):
                 own["Clicked"] = True
                 bge.logic.sendMessage("UpdateGui")
                 
-            if own["WidgetType"] == "List":
-                print("List increased")
+            if own["WidgetType"] == "Checkbox":
+                checkboxAction(cont)
+                
+            elif own["WidgetType"] == "List":
+                listAction(cont, "Increase")
             
         elif rmb is not None and rmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
             execCommands(cont, True)
@@ -279,12 +295,62 @@ def processClickable(cont):
                 bge.logic.sendMessage("UpdateGui")
             
             if own["WidgetType"] == "List":
-                print("List decreased")
+                listAction(cont, "Decrease")
                 
     else:
-        clickableObj.replaceMesh(own["WidgetType"] + "Normal")
-        clickableObj.color = own.get("ColorNormal", clickableObj.color)
+        setClickableVisual(cont, "Normal")
     
+
+# Widget actions
+def checkboxAction(cont, visualOnly=False):
+    # type: (bge.types.SCA_PythonController, bool) -> None
+    
+    own = cont.owner
+    group = own.groupObject
+    config = globalDict["Config"]
+    result = None
+    
+    if "Target" in group:
+        
+        if "Value" in group:
+            value = group["Value"]
+            
+            if type(value) == str:
+                try:
+                    value = eval(value)
+                except:
+                    pass
+            
+            command = group["Target"] + " = " + repr(value)
+            try:
+                if not visualOnly: exec(command)
+                own["Checked"] = result = eval(group["Target"]) == value
+            except:
+                if DEBUG: print("X Could not set value to target:", repr(command))
+            
+        else:
+            command = group["Target"] + " = not bool(" + str(group["Target"]) + ")"
+            try:
+                if not visualOnly: exec(command)
+                own["Checked"] = result = eval(group["Target"])
+            except:
+                if DEBUG: print("X Could not invert target:", repr(command))
+        
+    else:
+        if not visualOnly: own["Checked"] = result = not own["Checked"]
+        
+    if DEBUG and not visualOnly: print(">", group, "set to:", result)
+    setClickableVisual(cont, "Hover")
+    
+
+def listAction(cont, event):
+    # type: (bge.types.SCA_PythonController, str) -> None
+    
+    own = cont.owner
+    group = own.groupObject
+    
+    if DEBUG: print("> List", group, "event:", event)
+
 
 # Helper functions
 def getLabelFromGroup(cont):
