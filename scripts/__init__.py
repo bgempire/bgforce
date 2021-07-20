@@ -54,7 +54,12 @@ def loadFile(_file, debugIndent=0):
     elif _file.suffix in [".cfg", ".ini"]:
         
         with open(_file.as_posix(), "r") as openedFile:
-            fileData = [i.strip() for i in openedFile.read().split("\n") if i != ""]
+            fileData = []
+                        
+            for line in openedFile.read().split("\n"):
+                if line != "" and not line.startswith("#") and not line.isspace():
+                    fileData.append(line.strip())
+                
             curSection = None
             
             for item in fileData:
