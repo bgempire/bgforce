@@ -10,6 +10,7 @@ __all__ = ["widget"]
 
 
 COMMAND_SEPARATOR = " | "
+INSTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
 LOCALE_PREFIX = "#"
 TRANSITION_ANIMS = {
@@ -70,6 +71,7 @@ def initWidget(cont):
     own["LabelObj"] = ([obj for obj in group.groupMembers if "LABEL" in obj] + [None])[0]
     own["LabelShadowObj"] = ([obj for obj in group.groupMembers if "LABEL_SHADOW" in obj] + [None])[0]
     own["ClickableObj"] = ([obj for obj in group.groupMembers if "CLICKABLE" in obj] + [None])[0]
+    own["IconObj"] = ([obj for obj in group.groupMembers if "ICON" in obj] + [None])[0]
     
     # Create widget properties based on its database config
     widgetDb = globalDict["Database"]["Gui"][own["WidgetType"]] # type: dict
@@ -119,12 +121,30 @@ def initWidget(cont):
     # Set label and shadow properties if they exist
     updateLabelObj(cont)
     
-    # Get commands of clickable widget
+    # Set clickable widget properties
     if own["ClickableObj"] is not None:
         own["Commands"] = getCommandsFromGroup(cont)
         own["Clicked"] = False
         own["ClickableObj"].localScale = list(own["Size"]) + [1.0]
         own["ClickableObj"].localPosition = list(own["Offset"]) + [own["ClickableObj"].localPosition.z]
+        
+    # Set icon widget properties
+    if own["IconObj"] is not None:
+        own["IconObj"].localScale = list(own["IconSize"]) + [1.0]
+        
+        if own["ClickableObj"] is not None:
+            clickablePos = list(own["ClickableObj"].localPosition)[0:2] + [own["IconObj"].localPosition.z]
+            own["IconObj"].localPosition = clickablePos
+            
+        own["IconObj"].localPosition.x += own["IconOffset"][0]
+        own["IconObj"].localPosition.y += own["IconOffset"][1]
+        
+        if "Icon" in group:
+            meshName = "IconButtonIcon" + str(group["Icon"])
+            try:
+                own["IconObj"].replaceMesh(meshName)
+            except:
+                if DEBUG: print("X Icon mesh of", group, "not found:", meshName)
     
     # Disable transition if prop Update is provided
     if "Update" in group:
@@ -185,7 +205,7 @@ def processTransition(cont):
             
             if own["ClickableObj"] is not None and own["TransitionOnClick"] and own["Clicked"]:
                 own["Clicked"] = False
-                execCommands(cont)
+                execCommands(cont, False)
             
             # Update label while it's still hidden
             updateLabelObj(cont)
@@ -218,7 +238,7 @@ def processClickable(cont):
     group = own.groupObject
     camera = own.scene.active_camera
     curAnim = TRANSITION_ANIMS[own["Transition"]]
-    clickableObj = own["ClickableObj"]
+    clickableObj = own["ClickableObj"] # type: bge.types.KX_GameObject
     
     mouseOver = cont.sensors.get("MouseOver", None) # type: bge.types.KX_MouseFocusSensor
     lmb = cont.sensors.get("LMB", None) # type: bge.types.SCA_MouseSensor
@@ -226,19 +246,23 @@ def processClickable(cont):
     
     if not own["Enabled"]:
         clickableObj.replaceMesh(own["WidgetType"] + "Disabled")
+        clickableObj.color = own.get("ColorDisabled", clickableObj.color)
         
     elif mouseOver.positive and not own.isPlayingAction():
         
         if lmb is not None and lmb.positive:
             clickableObj.replaceMesh(own["WidgetType"] + "Click")
+            clickableObj.color = own.get("ColorClick", clickableObj.color)
             
         else:
             clickableObj.replaceMesh(own["WidgetType"] + "Hover")
+            clickableObj.color = own.get("ColorHover", clickableObj.color)
             
         if lmb is not None and lmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
+            execCommands(cont, True)
             
             if not own["TransitionOnClick"]:
-                execCommands(cont)
+                execCommands(cont, False)
             else:
                 own["Clicked"] = True
                 bge.logic.sendMessage("UpdateGui")
@@ -247,9 +271,10 @@ def processClickable(cont):
                 print("List increased")
             
         elif rmb is not None and rmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
+            execCommands(cont, True)
             
             if not own["TransitionOnClick"]:
-                execCommands(cont)
+                execCommands(cont, False)
             else:
                 own["Clicked"] = True
                 bge.logic.sendMessage("UpdateGui")
@@ -259,6 +284,7 @@ def processClickable(cont):
                 
     else:
         clickableObj.replaceMesh(own["WidgetType"] + "Normal")
+        clickableObj.color = own.get("ColorNormal", clickableObj.color)
     
 
 # Helper functions
@@ -303,16 +329,17 @@ def getLabelFromGroup(cont):
     return label
 
 
-def execCommands(cont):
-    # type: (bge.types.SCA_PythonController) -> None
+def execCommands(cont, instant):
+    # type: (bge.types.SCA_PythonController, bool) -> None
     
     own = cont.owner
     group = own.groupObject
     config = globalDict["Config"]
+    index = 0 if instant else 1
     
-    if DEBUG: print(">", own["WidgetType"], "clicked:", group)
+    if DEBUG and len(own["Commands"][index]) > 0: print("> Exec commands of", group)
     
-    for command in own["Commands"]:
+    for command in own["Commands"][index]:
         try:
             exec(command)
             if DEBUG: print("  > Command:", repr(command))
@@ -326,6 +353,7 @@ def getCommandsFromGroup(cont):
     def processCommand(command):
         # type: (str) -> str
         
+        command = command.strip()
         if command.startswith(EXEC_PREFIX):
             return command[1:].strip()
         elif command[0] in ("(", "["):
@@ -336,21 +364,31 @@ def getCommandsFromGroup(cont):
     own = cont.owner
     group = own.groupObject
             
-    commands = []
+    commands = [[], []] # Instant commands, wait commands
     
     if "Commands" in group:
-        commands = group["Commands"].split(COMMAND_SEPARATOR) # type: list[str]
+        commandsTemp = group["Commands"].split(COMMAND_SEPARATOR) # type: list[str]
         
         for i in range(len(commands)):
-            commands[i] = processCommand(commands[i])
-                
+            commandsTemp[i] = processCommand(commandsTemp[i])
+            commands = commandsTemp
+            
+        for command in commandsTemp:
+            if str(command).strip().startswith(INSTANT_PREFIX):
+                commands[0].append(processCommand(command[1:]))
+            else:
+                commands[1].append(processCommand(command))
+            
     else:
         props = group.getPropertyNames() # type: list[str]
         props.sort()
         
         for prop in props:
             if prop.startswith("Command"):
-                commands.append(processCommand(group[prop]))
-                
+                if str(group[prop]).strip().startswith(INSTANT_PREFIX):
+                    commands[0].append(processCommand(group[prop][1:]))
+                else:
+                    commands[1].append(processCommand(group[prop]))
+                    
     return commands
 
