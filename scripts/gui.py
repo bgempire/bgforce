@@ -243,6 +243,7 @@ def setClickableVisual(cont, state):
     
     if own["WidgetType"] == "Checkbox":
         other = str(own["Checked"])
+        other = "Radio" + other if "Value" in own.groupObject else other
     
     clickableObj.replaceMesh(own["WidgetType"] + other + state)
     clickableObj.color = own["Color" + state]
