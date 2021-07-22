@@ -9,6 +9,7 @@ from math import radians
 from collections import OrderedDict
 
 from . import DEBUG
+from .thirdparty.pyp3rclip import copy, paste
 
 __all__ = ["widget"]
 
@@ -507,7 +508,7 @@ def inputAction(cont, event):
         
         own = cont.owner
         charsAllowed = own["CharsAllowed"]
-        validText = ""
+        validText = []
         
         # Get valid chars from constant
         if charsAllowed and charsAllowed.upper() in INPUT_VALID_CHARS.keys():
@@ -517,15 +518,16 @@ def inputAction(cont, event):
         for char in own["InputText"]:
             if charsAllowed is not None:
                 if char in charsAllowed:
-                    validText += char
+                    validText.append(char)
             else:
-                validText += char
+                validText.append(char)
                 
         lineBreak = "\n" if own["LineBreak"] else ""
+        validText = "".join(validText)
         validText = validText.replace("\r", lineBreak)
                 
         if own["CharsLimit"] and len(validText) > own["CharsLimit"]:
-            validText = validText[:-1]
+            validText = validText[:own["CharsLimit"]-1]
             
         own["InputText"] = validText
     
@@ -589,18 +591,21 @@ def inputAction(cont, event):
                         if DEBUG: print("> Input", group, "cleared")
                     
                     elif kbEvents[bge.events.CKEY] == 1:
-                        clipboard(own["InputText"])
+                        copy(str(own["InputText"]))
                         if DEBUG: print("> Input", group, "copied to clipboard:", repr(own["InputText"]))
                     
                     elif kbEvents[bge.events.VKEY] == 1:
-                        value = clipboard()
-                        own["InputText"] = value
-                        validateText(cont)
-                        if DEBUG: print("> Input", group, "pasted from clipboard:", value)
+                        value = paste()
+                        if value:
+                            own["InputText"] = value
+                            validateText(cont)
+                            if DEBUG: print("> Input", group, "pasted from clipboard:", value)
+                        else:
+                            if DEBUG: print("X Input", group, ", no value in clipboard")
             
             updateLabelObj(cont)
         
-        if target and own["InputEnable"]:
+        if target and keyboard.positive and own["InputEnable"]:
             try:
                 exec(target + " = " + repr(own["InputText"]))
                 if DEBUG and keyboard.positive: print("> Input", group, "set target to:", repr(eval(target)))
@@ -731,12 +736,3 @@ def getCommandsFromGroup(cont):
                     
     return commands
 
-
-def clipboard(value=None):
-    # type: (str) -> str
-    
-    if value is None:
-        return "Get clipboard"
-        
-    else:
-        return value
