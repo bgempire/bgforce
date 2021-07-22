@@ -1,4 +1,5 @@
 import bge
+import string
 
 from bge.logic import globalDict
 from bge.types import *
@@ -12,8 +13,9 @@ from . import DEBUG
 __all__ = ["widget"]
 
 
+ALWAYS_SKIPPED_TICKS = 10
 COMMAND_SEPARATOR = " | "
-INSTANT_PREFIX = "!"
+IMPORTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
 LOCALE_PREFIX = "#"
 TRANSITION_ANIMS = {
@@ -30,6 +32,13 @@ OBJ_REF_PROPS = {
     "IconObj" : "ICON",
     "ArrowLeftObj" : "ARROW_LEFT",
     "ArrowRightObj" : "ARROW_RIGHT"
+}
+INPUT_VALID_CHARS = {
+    "ALL" : None,
+    "ALPHA" : string.ascii_letters,
+    "ALNUM" : string.ascii_letters + string.digits,
+    "NUMERIC" : string.digits,
+    "PRINTABLE" : string.printable,
 }
 
 config = globalDict["Config"]
@@ -60,6 +69,9 @@ def widget(cont):
         if "Update" in group and group["Update"] >= 0:
             always.skippedTicks = group["Update"]
             updateLabelObj(cont)
+            
+        else:
+            always.skippedTicks = ALWAYS_SKIPPED_TICKS
         
         # Start transition when GUI update is requested
         if message.positive and not own.isPlayingAction():
@@ -156,6 +168,9 @@ def initWidget(cont):
         
     elif own["WidgetType"] == "IconButton":
         iconButtonAction(cont, "Init")
+        
+    elif own["WidgetType"] == "Input":
+        inputAction(cont, "Init")
 
 
 def updateLabelObj(cont):
@@ -249,7 +264,7 @@ def setClickableVisual(cont, state, button=""):
         other = str(own["Checked"])
         other = "Radio" + other if "Value" in own.groupObject else other
     
-    if own["WidgetType"] == "List":
+    elif own["WidgetType"] == "List":
         arrowLeftObj = own["ArrowLeftObj"] # type: KX_GameObject
         arrowRighttObj = own["ArrowRightObj"] # type: KX_GameObject
         meshName = "ListArrowClick" if state == "Click" else "ListArrow"
@@ -258,6 +273,10 @@ def setClickableVisual(cont, state, button=""):
         arrowLeftObj.color = own["ArrowColorClick"] if button == "Right" else own["ArrowColorNormal"]
         arrowRighttObj.replaceMesh(meshName + "Right")
         arrowRighttObj.color = own["ArrowColorClick"] if button == "Left" else own["ArrowColorNormal"]
+        
+    elif own["WidgetType"] == "Input":
+        if own["InputEnable"]:
+            state = "Click"
     
     clickableObj.replaceMesh(own["WidgetType"] + other + state)
     clickableObj.color = own["Color" + state]
@@ -280,7 +299,12 @@ def processClickable(cont):
     elif mouseOver.positive and not own.isPlayingAction():
         
         if lmb is not None and lmb.positive:
+            
+            if own["WidgetType"] == "Input":
+                own["InputEnable"] = True
+                
             setClickableVisual(cont, "Click", button="Left")
+                
         elif rmb is not None and rmb.positive:
             setClickableVisual(cont, "Click", button="Right")
         else:
@@ -314,7 +338,14 @@ def processClickable(cont):
                 listAction(cont, "Decrease")
                 
     else:
+        if own["WidgetType"] == "Input":
+            own["InputEnable"] = False
+            
         setClickableVisual(cont, "Normal")
+                
+            
+    if own["WidgetType"] == "Input":
+        inputAction(cont, "Update")
 
 
 def updateList(cont):
@@ -463,6 +494,95 @@ def iconButtonAction(cont, event):
                 if DEBUG: print("X Icon mesh of", group, "not found:", meshName)
 
 
+def inputAction(cont, event):
+    # type: (SCA_PythonController, str) -> str
+    
+    def validateText(cont):
+        # type: (SCA_PythonController) -> str
+        
+        own = cont.owner
+        charsAllowed = own["CharsAllowed"]
+        validText = ""
+        
+        # Get valid chars from constant
+        if charsAllowed is not None and charsAllowed.upper() in INPUT_VALID_CHARS.keys():
+            charsAllowed = INPUT_VALID_CHARS[charsAllowed.upper()]
+            
+        # Remove invalid chars from text
+        for char in own["InputText"]:
+            if charsAllowed is not None and char in charsAllowed:
+                validText += char
+            else:
+                validText += char
+                
+        lineBreak = "\n" if own["LineBreak"] else ""
+        validText = validText.replace("\r", lineBreak)
+                
+        if own["CharsLimit"] and len(validText) > own["CharsLimit"]:
+            validText = validText[:-1]
+            
+        return validText
+    
+    own = cont.owner
+    group = own.groupObject
+    keyboard = cont.sensors.get("Keyboard", None) # type: SCA_KeyboardSensor
+    target = ""
+    targetValue = ""
+    ensureTarget = False
+    
+    if "Target" in group:
+            
+        try:
+            if str(group["Target"]).startswith(IMPORTANT_PREFIX):
+                ensureTarget = True
+                target = str(group["Target"])[1:]
+                
+            else:
+                target = group["Target"]
+                targetValue = eval(target)
+            
+        except:
+            if DEBUG: print("> Input", group, "invalid target:", group["Target"])
+    
+    if event == "Init":
+        if ensureTarget and target:
+            try:
+                exec(target + " = ''")
+                if DEBUG: print("> Input", group, "target was created:", target)
+                
+            except:
+                if DEBUG: print("X Input", group, "target couldn't be created:", target)
+            
+        own["InputText"] = str(targetValue)
+        updateLabelObj(cont)
+        
+    elif event == "Update":
+        
+        if not own["InputEnable"] and own["Cursor"]:
+            own["Cursor"] = False
+            updateLabelObj(cont)
+        
+        elif own["InputEnable"]:
+            
+            if own["CursorSpeed"] > 0 and own["Timer"] > 0:
+                own["Cursor"] = not own["Cursor"]
+                own["Timer"] = -own["CursorSpeed"]
+        
+            elif own["CursorSpeed"] == 0:
+                own["Cursor"] = True
+        
+        own["InputText"] = validateText(cont)
+        if keyboard.positive or own["InputEnable"]:
+            updateLabelObj(cont)
+        
+        if target and own["InputEnable"]:
+            try:
+                exec(target + " = " + repr(own["InputText"]))
+                if DEBUG and keyboard.positive: print("> Input", group, "set target to:", repr(eval(target)))
+            except:
+                if DEBUG: print("X Input", group, "couldn't set to target:", target)
+
+
 # Helper functions
 def getLabelFromGroup(cont):
     # type: (SCA_PythonController) -> str
@@ -494,8 +614,21 @@ def getLabelFromGroup(cont):
                 
         other = " " + other if label else other
         
+    elif own["WidgetType"] == "Input":
+        other = own["InputText"]
+        if own["Cursor"]: other += str(own["CursorCharacter"])
+        other = " " + other if label else other
+        
     # Process label line breaks
-    label = wrap(str(label) + other, own["LineSize"])
+    lineBreaks = not own["LineBreak"] if "LineBreak" in own else True
+    label = wrap(str(label) + other, own["LineSize"], replace_whitespace=lineBreaks)
+    labelTemp = [i.split("\n") for i in label]
+    label.clear()
+    
+    for l in labelTemp:
+        for s in l:
+            label.append(s)
+    del labelTemp
     
     # Process label text align
     if own["Justify"].lower() == "center":
@@ -554,7 +687,7 @@ def getCommandsFromGroup(cont):
             commands = commandsTemp
             
         for command in commandsTemp:
-            if str(command).strip().startswith(INSTANT_PREFIX):
+            if str(command).strip().startswith(IMPORTANT_PREFIX):
                 commands[0].append(processCommand(command[1:]))
             else:
                 commands[1].append(processCommand(command))
@@ -565,7 +698,7 @@ def getCommandsFromGroup(cont):
         
         for prop in props:
             if prop.startswith("Command"):
-                if str(group[prop]).strip().startswith(INSTANT_PREFIX):
+                if str(group[prop]).strip().startswith(IMPORTANT_PREFIX):
                     commands[0].append(processCommand(group[prop][1:]))
                 else:
                     commands[1].append(processCommand(group[prop]))
