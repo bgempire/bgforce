@@ -35,8 +35,9 @@ OBJ_REF_PROPS = {
 }
 INPUT_VALID_CHARS = {
     "ALL" : None,
-    "ALPHA" : string.ascii_letters,
-    "ALNUM" : string.ascii_letters + string.digits,
+    "ALPHABETIC" : string.ascii_letters,
+    "ALPHANUMERICNOSPACE" : string.ascii_letters + string.digits,
+    "ALPHANUMERIC" : string.ascii_letters + string.digits + " ",
     "NUMERIC" : string.digits,
     "PRINTABLE" : string.printable,
 }
@@ -502,20 +503,21 @@ def inputAction(cont, event):
     # type: (SCA_PythonController, str) -> str
     
     def validateText(cont):
-        # type: (SCA_PythonController) -> str
+        # type: (SCA_PythonController) -> None
         
         own = cont.owner
         charsAllowed = own["CharsAllowed"]
         validText = ""
         
         # Get valid chars from constant
-        if charsAllowed is not None and charsAllowed.upper() in INPUT_VALID_CHARS.keys():
+        if charsAllowed and charsAllowed.upper() in INPUT_VALID_CHARS.keys():
             charsAllowed = INPUT_VALID_CHARS[charsAllowed.upper()]
             
         # Remove invalid chars from text
         for char in own["InputText"]:
-            if charsAllowed is not None and char in charsAllowed:
-                validText += char
+            if charsAllowed is not None:
+                if char in charsAllowed:
+                    validText += char
             else:
                 validText += char
                 
@@ -525,7 +527,7 @@ def inputAction(cont, event):
         if own["CharsLimit"] and len(validText) > own["CharsLimit"]:
             validText = validText[:-1]
             
-        return validText
+        own["InputText"] = validText
     
     own = cont.owner
     group = own.groupObject
@@ -574,9 +576,28 @@ def inputAction(cont, event):
         
             elif own["CursorSpeed"] == 0:
                 own["Cursor"] = True
+                
+            validateText(cont)
         
-        own["InputText"] = validateText(cont)
-        if keyboard.positive or own["InputEnable"]:
+            if keyboard.positive:
+                kbEvents = bge.logic.keyboard.events
+                
+                if kbEvents[bge.events.LEFTCTRLKEY] == 2 or kbEvents[bge.events.RIGHTCTRLKEY] == 2:
+                    
+                    if kbEvents[bge.events.BACKSPACEKEY] == 1:
+                        own["InputText"] = ""
+                        if DEBUG: print("> Input", group, "cleared")
+                    
+                    elif kbEvents[bge.events.CKEY] == 1:
+                        clipboard(own["InputText"])
+                        if DEBUG: print("> Input", group, "copied to clipboard:", repr(own["InputText"]))
+                    
+                    elif kbEvents[bge.events.VKEY] == 1:
+                        value = clipboard()
+                        own["InputText"] = value
+                        validateText(cont)
+                        if DEBUG: print("> Input", group, "pasted from clipboard:", value)
+            
             updateLabelObj(cont)
         
         if target and own["InputEnable"]:
@@ -710,3 +731,12 @@ def getCommandsFromGroup(cont):
                     
     return commands
 
+
+def clipboard(value=None):
+    # type: (str) -> str
+    
+    if value is None:
+        return "Get clipboard"
+        
+    else:
+        return value
