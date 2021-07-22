@@ -198,6 +198,10 @@ def updateLabelObj(cont):
         shadowObj.localPosition.y += own["ShadowOffset"][1]
         shadowObj.localScale = [own["LabelSize"], own["LabelSize"], 1.0]
 
+        if own["WidgetType"] == "Input" and not own["InputText"]:
+            labelObj.color = own["PlaceholderColor"]
+            shadowObj.color = own["PlaceholderShadowColor"]
+        
 
 def processTransition(cont):
     # type: (SCA_PythonController) -> None
@@ -615,9 +619,10 @@ def getLabelFromGroup(cont):
         other = " " + other if label else other
         
     elif own["WidgetType"] == "Input":
-        other = own["InputText"]
-        if own["Cursor"]: other += str(own["CursorCharacter"])
-        other = " " + other if label else other
+        label = own["InputText"] if own["InputText"] else label
+            
+        if own["Cursor"]:
+            other += str(own["CursorCharacter"])
         
     # Process label line breaks
     lineBreaks = not own["LineBreak"] if "LineBreak" in own else True
