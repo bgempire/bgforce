@@ -1,8 +1,11 @@
 import bge
 
 from bge.logic import globalDict
+from bge.types import *
 from ast import literal_eval
 from textwrap import wrap
+from math import radians
+from collections import OrderedDict
 
 from . import DEBUG
 
@@ -20,19 +23,28 @@ TRANSITION_ANIMS = {
     "ScaleH": {"Shown" : 90, "Hidden" : 110},
     "Arc": {"Shown" : 120, "Hidden" : 140},
 }
+OBJ_REF_PROPS = {
+    "LabelObj" : "LABEL",
+    "LabelShadowObj" : "LABEL_SHADOW",
+    "ClickableObj" : "CLICKABLE",
+    "IconObj" : "ICON",
+    "ArrowLeftObj" : "ARROW_LEFT",
+    "ArrowRightObj" : "ARROW_RIGHT"
+}
+
+config = globalDict["Config"]
 
 # Controller endpoint
 def widget(cont):
-    # type: (bge.types.SCA_PythonController) -> None
+    # type: (SCA_PythonController) -> None
 
     own = cont.owner
     group = own.groupObject
     camera = own.scene.active_camera
-    config = globalDict["Config"]
     
     # Sensors
-    always = cont.sensors["Always"]  # type: bge.types.SCA_AlwaysSensor
-    message = cont.sensors["Message"] # type: bge.types.KX_NetworkMessageSensor
+    always = cont.sensors["Always"]  # type: SCA_AlwaysSensor
+    message = cont.sensors["Message"] # type: KX_NetworkMessageSensor
 
     if group is None:
         own.endObject()
@@ -63,7 +75,7 @@ def widget(cont):
 
 # Abstraction functions
 def initWidget(cont):
-    # type: (bge.types.SCA_PythonController) -> None
+    # type: (SCA_PythonController) -> None
 
     own = cont.owner
     group = own.groupObject
@@ -73,10 +85,8 @@ def initWidget(cont):
     own.setParent(group)
     
     # Store references to individual objects in widget's parent
-    own["LabelObj"] = ([obj for obj in group.groupMembers if "LABEL" in obj] + [None])[0]
-    own["LabelShadowObj"] = ([obj for obj in group.groupMembers if "LABEL_SHADOW" in obj] + [None])[0]
-    own["ClickableObj"] = ([obj for obj in group.groupMembers if "CLICKABLE" in obj] + [None])[0]
-    own["IconObj"] = ([obj for obj in group.groupMembers if "ICON" in obj] + [None])[0]
+    for prop in OBJ_REF_PROPS.keys():
+        own[prop] = ([obj for obj in group.groupMembers if OBJ_REF_PROPS[prop] in obj] + [None])[0]
     
     # Create widget properties based on its database config
     widgetDb = globalDict["Database"]["Gui"][own["WidgetType"]] # type: dict
@@ -132,35 +142,24 @@ def initWidget(cont):
         own["Clicked"] = False
         own["ClickableObj"].localScale = list(own["Size"]) + [1.0]
         own["ClickableObj"].localPosition = list(own["Offset"]) + [own["ClickableObj"].localPosition.z]
-        
-    # Set icon widget properties
-    if own["IconObj"] is not None:
-        own["IconObj"].localScale = list(own["IconSize"]) + [1.0]
-        
-        if own["ClickableObj"] is not None:
-            clickablePos = list(own["ClickableObj"].localPosition)[0:2] + [own["IconObj"].localPosition.z]
-            own["IconObj"].localPosition = clickablePos
-            
-        own["IconObj"].localPosition.x += own["IconOffset"][0]
-        own["IconObj"].localPosition.y += own["IconOffset"][1]
-        
-        if "Icon" in group:
-            meshName = "IconButtonIcon" + str(group["Icon"])
-            try:
-                own["IconObj"].replaceMesh(meshName)
-            except:
-                if DEBUG: print("X Icon mesh of", group, "not found:", meshName)
     
     # Show transition at start
     if own["Transition"] in TRANSITION_ANIMS.keys():
         own["TransitionState"] = "Showing"
+        own["InitTransition"] = False
         
     if own["WidgetType"] == "Checkbox":
         checkboxAction(cont, True)
+        
+    elif own["WidgetType"] == "List":
+        listAction(cont, "Init")
+        
+    elif own["WidgetType"] == "IconButton":
+        iconButtonAction(cont, "Init")
 
 
 def updateLabelObj(cont):
-    # type: (bge.types.SCA_PythonController) -> None
+    # type: (SCA_PythonController) -> None
 
     own = cont.owner
     
@@ -186,13 +185,19 @@ def updateLabelObj(cont):
 
 
 def processTransition(cont):
-    # type: (bge.types.SCA_PythonController) -> None
+    # type: (SCA_PythonController) -> None
 
     own = cont.owner
     group = own.groupObject
     camera = own.scene.active_camera
     curAnim = TRANSITION_ANIMS.get(own["Transition"])
-    config = globalDict["Config"]
+    
+    if own["TransitionState"] == "Shown" and not own["InitTransition"]:
+        for objRef in OBJ_REF_PROPS.keys():
+            if objRef != "LabelShadowObj" and own[objRef] is not None:
+                own[objRef].visible = True
+                
+        own["InitTransition"] = True
     
     if not own.isPlayingAction() and curAnim:
         
@@ -215,12 +220,11 @@ def processTransition(cont):
 
 
 def processEnabled(cont):
-    # type: (bge.types.SCA_PythonController) -> None
+    # type: (SCA_PythonController) -> None
 
     own = cont.owner
     group = own.groupObject
     camera = own.scene.active_camera
-    config = globalDict["Config"]
     
     if "Enabled" in group:
         if type(group["Enabled"]) == str:
@@ -234,8 +238,8 @@ def processEnabled(cont):
         own["Enabled"] = True
 
 
-def setClickableVisual(cont, state):
-    # type: (bge.types.SCA_PythonController, str) -> None
+def setClickableVisual(cont, state, button=""):
+    # type: (SCA_PythonController, str, str) -> None
     
     own = cont.owner
     clickableObj = own["ClickableObj"]
@@ -245,17 +249,27 @@ def setClickableVisual(cont, state):
         other = str(own["Checked"])
         other = "Radio" + other if "Value" in own.groupObject else other
     
+    if own["WidgetType"] == "List":
+        arrowLeftObj = own["ArrowLeftObj"] # type: KX_GameObject
+        arrowRighttObj = own["ArrowRightObj"] # type: KX_GameObject
+        meshName = "ListArrowClick" if state == "Click" else "ListArrow"
+            
+        arrowLeftObj.replaceMesh(meshName + "Left")
+        arrowLeftObj.color = own["ArrowColorClick"] if button == "Right" else own["ArrowColorNormal"]
+        arrowRighttObj.replaceMesh(meshName + "Right")
+        arrowRighttObj.color = own["ArrowColorClick"] if button == "Left" else own["ArrowColorNormal"]
+    
     clickableObj.replaceMesh(own["WidgetType"] + other + state)
     clickableObj.color = own["Color" + state]
 
 
 def processClickable(cont):
-    # type: (bge.types.SCA_PythonController) -> None
+    # type: (SCA_PythonController) -> None
 
     own = cont.owner
-    mouseOver = cont.sensors.get("MouseOver", None) # type: bge.types.KX_MouseFocusSensor
-    lmb = cont.sensors.get("LMB", None) # type: bge.types.SCA_MouseSensor
-    rmb = cont.sensors.get("RMB", None) # type: bge.types.SCA_MouseSensor
+    mouseOver = cont.sensors.get("MouseOver", None) # type: KX_MouseFocusSensor
+    lmb = cont.sensors.get("LMB", None) # type: SCA_MouseSensor
+    rmb = cont.sensors.get("RMB", None) # type: SCA_MouseSensor
     
     if own["WidgetType"] == "Checkbox":
         checkboxAction(cont, True)
@@ -266,8 +280,9 @@ def processClickable(cont):
     elif mouseOver.positive and not own.isPlayingAction():
         
         if lmb is not None and lmb.positive:
-            setClickableVisual(cont, "Click")
-            
+            setClickableVisual(cont, "Click", button="Left")
+        elif rmb is not None and rmb.positive:
+            setClickableVisual(cont, "Click", button="Right")
         else:
             setClickableVisual(cont, "Hover")
             
@@ -300,15 +315,56 @@ def processClickable(cont):
                 
     else:
         setClickableVisual(cont, "Normal")
-    
 
-# Widget actions
-def checkboxAction(cont, visualOnly=False):
-    # type: (bge.types.SCA_PythonController, bool) -> None
+
+def updateList(cont):
+    # type: (SCA_PythonController) -> None
     
     own = cont.owner
     group = own.groupObject
-    config = globalDict["Config"]
+    tempList = []
+    tempIndex = -1
+    
+    if "List" in group:
+        try:
+            sourceList = eval(group["List"])
+            
+            if type(sourceList) == dict:
+                tempList = [key for key in sourceList.keys()]
+                tempList.sort()
+                
+            elif hasattr(sourceList, "__iter__"):
+                tempList = list(sourceList)
+                tempList.sort()
+            
+            else:
+                if DEBUG: print("X List", group, "source must be iterable:", group["List"])
+            
+            tempIndex = 0 if len(tempList) > 0 else -1
+            
+        except:
+            if DEBUG: print("X List", group, "invalid source:", group["List"])
+            
+    if "Target" in group:
+        try:
+            tempTarget = eval(group["Target"])
+            own["Target"] = group["Target"]
+            tempIndex = tempList.index(tempTarget) if tempTarget in tempList else tempIndex
+            
+        except:
+            if DEBUG: print("X List", group, "invalid target:", group["Target"])
+            
+    own["List"] = tempList
+    own["Index"] = tempIndex
+    if DEBUG: print("> List", group, "updated:", own["List"])
+
+
+# Widget actions
+def checkboxAction(cont, visualOnly=False):
+    # type: (SCA_PythonController, bool) -> None
+    
+    own = cont.owner
+    group = own.groupObject
     result = None
     
     if "Target" in group:
@@ -340,63 +396,120 @@ def checkboxAction(cont, visualOnly=False):
     else:
         if not visualOnly: own["Checked"] = result = not own["Checked"]
         
-    if DEBUG and not visualOnly: print(">", group, "set to:", result)
+    if DEBUG and not visualOnly: print("> Checkbox", group, "set to:", result)
     setClickableVisual(cont, "Hover")
     
 
 def listAction(cont, event):
-    # type: (bge.types.SCA_PythonController, str) -> None
+    # type: (SCA_PythonController, str) -> None
     
     own = cont.owner
     group = own.groupObject
     
-    if DEBUG: print("> List", group, "event:", event)
+    if event == "Init":
+        updateList(cont)
+        
+    listLen = len(own["List"])
+    
+    if listLen > 0:
+        command = own["Target"] + " = " if "Target" in own else ""
+        
+        if event == "Increase":
+            if own["Index"] < listLen - 1:
+                own["Index"] += 1
+            elif own["Index"] == listLen - 1 and own["Wrap"]:
+                own["Index"] = 0
+            if "Target" in own: exec(command + repr(own["List"][own["Index"]]))
+                
+        elif event == "Decrease":
+            if own["Index"] > 0:
+                own["Index"] -= 1
+            elif own["Index"] == 0 and own["Wrap"]:
+                own["Index"] = listLen - 1
+                
+        if event in ("Increase", "Decrease") and "Target" in own:
+            exec(command + repr(own["List"][own["Index"]]))
+            
+        if DEBUG: print("> List", group, "set to", own["List"][own["Index"]])
+        updateLabelObj(cont)
+
+
+def iconButtonAction(cont, event):
+    # type: (SCA_PythonController, str) -> None
+    
+    own = cont.owner
+    group = own.groupObject
+    
+    # Set icon widget properties
+    if event == "Init":
+        iconObj = own["IconObj"] # type: KX_GameObject
+        
+        iconObj.localScale = list(own["IconSize"]) + [1.0]
+        
+        if own["ClickableObj"] is not None:
+            clickablePos = list(own["ClickableObj"].localPosition)[0:2] + [iconObj.localPosition.z]
+            iconObj.localPosition = clickablePos
+            
+        iconObj.localPosition.x += own["IconOffset"][0]
+        iconObj.localPosition.y += own["IconOffset"][1]
+        iconObj.localOrientation = list(iconObj.localOrientation.to_euler())[0:2] + [radians(own["IconRotation"])]
+        iconObj.color = own["IconColor"]
+        
+        if "Icon" in group:
+            meshName = "IconButtonIcon" + str(group["Icon"])
+            try:
+                iconObj.replaceMesh(meshName)
+            except:
+                if DEBUG: print("X Icon mesh of", group, "not found:", meshName)
 
 
 # Helper functions
 def getLabelFromGroup(cont):
-    # type: (bge.types.SCA_PythonController) -> str
+    # type: (SCA_PythonController) -> str
     
     own = cont.owner
     group = own.groupObject
+    curLang = globalDict["Locale"][config["Lang"]]
     
-    label = ""
-
-    if "Label" in group:
-        
-        try:
-            # Get label from code execution
-            if str(group["Label"]).startswith(EXEC_PREFIX):
-                label = str(eval(group["Label"][1:]))
-                
-            # Get label from current locale strings
-            elif str(group["Label"]).startswith(LOCALE_PREFIX):
-                curLang = globalDict["Config"]["Lang"]
-                label = globalDict["Locale"][curLang][group["Label"][1:]]
-                
-            # Assume label as literal text
-            else:
-                label = str(group["Label"])
-                
-        except:
-            label = str(group["Label"])
+    label = str(group["Label"]) if "Label" in group else ""
+    other = ""
+    
+    try:
+        # Get label from code execution
+        if label.startswith(EXEC_PREFIX):
+            label = eval(label[1:])
             
-        # Process label line breaks
-        label = wrap(label, own["LineSize"])
-        
-        # Process label text align
-        if own["Justify"].lower() == "center":
-            label = [i.center(own["LineSize"]) for i in label]
-        elif own["Justify"].lower() == "right":
-            label = [i.rjust(own["LineSize"]) for i in label]
+        # Get label from current locale strings
+        elif label.startswith(LOCALE_PREFIX):
+            label = curLang[label[1:]]
             
-        label = "\n".join(label)
+    except:
+        pass
+        
+    if own["WidgetType"] == "List" and "List" in own and len(own["List"]) > 0:
+        other = str(own["List"][own["Index"]])
+        
+        if own["Translate"]:
+            other = curLang.get(other, other)
+                
+        other = " " + other if label else other
+        
+    # Process label line breaks
+    label = wrap(str(label) + other, own["LineSize"])
+    
+    # Process label text align
+    if own["Justify"].lower() == "center":
+        label = [i.center(own["LineSize"]) for i in label]
+    elif own["Justify"].lower() == "right":
+        label = [i.rjust(own["LineSize"]) for i in label]
+        
+    label = "\n".join(label)
 
     return label
 
 
 def execCommands(cont, instant):
-    # type: (bge.types.SCA_PythonController, bool) -> None
+    # type: (SCA_PythonController, bool) -> None
     
     own = cont.owner
     group = own.groupObject
@@ -408,13 +521,13 @@ def execCommands(cont, instant):
     for command in own["Commands"][index]:
         try:
             exec(command)
-            if DEBUG: print("  > Command:", repr(command))
+            if DEBUG: print("  >", command)
         except:
-            if DEBUG: print("  X Command error:", repr(command))
+            if DEBUG: print("  X", command)
 
 
 def getCommandsFromGroup(cont):
-    # type: (bge.types.SCA_PythonController) -> list[str]
+    # type: (SCA_PythonController) -> list[str]
     
     def processCommand(command):
         # type: (str) -> str
