@@ -35,7 +35,7 @@ OBJ_REF_PROPS = {
     "ArrowRightObj" : "ARROW_RIGHT"
 }
 INPUT_VALID_CHARS = {
-    "ALL" : None,
+    "ALL" : "",
     "ALPHABETIC" : string.ascii_letters,
     "ALPHANUMERICNOSPACE" : string.ascii_letters + string.digits,
     "ALPHANUMERIC" : string.ascii_letters + string.digits + " ",
@@ -65,12 +65,12 @@ def widget(cont):
         
         # Initialize widget at start
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
-            initWidget(cont)
+            widgetInit(cont)
         
         # Update label if property Update is provided
         if "Update" in group and group["Update"] >= 0:
             always.skippedTicks = group["Update"]
-            updateLabelObj(cont)
+            labelUpdateTextObj(cont)
             
         else:
             always.skippedTicks = ALWAYS_SKIPPED_TICKS
@@ -79,16 +79,16 @@ def widget(cont):
         if message.positive and not own.isPlayingAction():
             own["TransitionState"] = "Hiding"
             
-        processEnabled(cont)
+        widgetProcessEnabled(cont)
         processTransition(cont)
         
         # Process clickable widget if applicable
         if own["ClickableObj"] is not None:
-            processClickable(cont)
+            clickableProcess(cont)
     
 
 # Abstraction functions
-def initWidget(cont):
+def widgetInit(cont):
     # type: (SCA_PythonController) -> None
 
     own = cont.owner
@@ -148,11 +148,11 @@ def initWidget(cont):
         if debugProps: own.addDebugProperty(prop)
     
     # Set label and shadow properties if they exist
-    updateLabelObj(cont)
+    labelUpdateTextObj(cont)
     
     # Set clickable widget properties
     if own["ClickableObj"] is not None:
-        own["Commands"] = getCommandsFromGroup(cont)
+        own["Commands"] = _getCommandsFromGroup(cont)
         own["Clicked"] = False
         own["ClickableObj"].localScale = list(own["Size"]) + [1.0]
         own["ClickableObj"].localPosition = list(own["Offset"]) + [own["ClickableObj"].localPosition.z]
@@ -175,7 +175,26 @@ def initWidget(cont):
         inputAction(cont, "Init")
 
 
-def updateLabelObj(cont):
+def widgetProcessEnabled(cont):
+    # type: (SCA_PythonController) -> None
+
+    own = cont.owner
+    group = own.groupObject
+    camera = own.scene.active_camera
+    
+    if "Enabled" in group:
+        if type(group["Enabled"]) == str:
+            try:
+                own["Enabled"] = bool(eval(group["Enabled"]))
+            except:
+                own["Enabled"] = True
+        else:
+            own["Enabled"] = bool(group["Enabled"])
+    else:
+        own["Enabled"] = True
+
+
+def labelUpdateTextObj(cont):
     # type: (SCA_PythonController) -> None
 
     own = cont.owner
@@ -185,7 +204,7 @@ def updateLabelObj(cont):
         shadowObj = own["LabelShadowObj"]
         
         # Set text to label and shadow
-        own["TargetLabel"] = labelObj.text = shadowObj.text = getLabelFromGroup(cont)
+        own["TargetLabel"] = labelObj.text = shadowObj.text = _getLabelFromGroup(cont)
         
         # Set color and offset of label
         labelObj.color = own["LabelColor"]
@@ -203,7 +222,7 @@ def updateLabelObj(cont):
         if own["WidgetType"] == "Input" and not own["InputText"]:
             labelObj.color = own["PlaceholderColor"]
             shadowObj.color = own["PlaceholderShadowColor"]
-        
+
 
 def processTransition(cont):
     # type: (SCA_PythonController) -> None
@@ -234,32 +253,13 @@ def processTransition(cont):
             
             if own["ClickableObj"] is not None and own["TransitionOnClick"] and own["Clicked"]:
                 own["Clicked"] = False
-                execCommands(cont, False)
+                _execCommands(cont, False)
             
             # Update label while it's still hidden
-            updateLabelObj(cont)
+            labelUpdateTextObj(cont)
 
 
-def processEnabled(cont):
-    # type: (SCA_PythonController) -> None
-
-    own = cont.owner
-    group = own.groupObject
-    camera = own.scene.active_camera
-    
-    if "Enabled" in group:
-        if type(group["Enabled"]) == str:
-            try:
-                own["Enabled"] = bool(eval(group["Enabled"]))
-            except:
-                own["Enabled"] = True
-        else:
-            own["Enabled"] = bool(group["Enabled"])
-    else:
-        own["Enabled"] = True
-
-
-def setClickableVisual(cont, state, button=""):
+def clickableSetVisual(cont, state, button=""):
     # type: (SCA_PythonController, str, str) -> None
     
     own = cont.owner
@@ -288,7 +288,7 @@ def setClickableVisual(cont, state, button=""):
     clickableObj.color = own["Color" + state]
 
 
-def processClickable(cont):
+def clickableProcess(cont):
     # type: (SCA_PythonController) -> None
 
     own = cont.owner
@@ -300,7 +300,7 @@ def processClickable(cont):
         checkboxAction(cont, True)
     
     if not own["Enabled"]:
-        setClickableVisual(cont, "Disabled")
+        clickableSetVisual(cont, "Disabled")
         
     elif mouseOver.positive and not own.isPlayingAction():
         
@@ -309,18 +309,18 @@ def processClickable(cont):
             if own["WidgetType"] == "Input":
                 own["InputEnable"] = True
                 
-            setClickableVisual(cont, "Click", button="Left")
+            clickableSetVisual(cont, "Click", button="Left")
                 
         elif rmb is not None and rmb.positive:
-            setClickableVisual(cont, "Click", button="Right")
+            clickableSetVisual(cont, "Click", button="Right")
         else:
-            setClickableVisual(cont, "Hover")
+            clickableSetVisual(cont, "Hover")
             
         if lmb is not None and lmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
-            execCommands(cont, True)
+            _execCommands(cont, True)
             
             if not own["TransitionOnClick"]:
-                execCommands(cont, False)
+                _execCommands(cont, False)
             else:
                 own["Clicked"] = True
                 bge.logic.sendMessage("UpdateGui")
@@ -332,10 +332,10 @@ def processClickable(cont):
                 listAction(cont, "Increase")
             
         elif rmb is not None and rmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
-            execCommands(cont, True)
+            _execCommands(cont, True)
             
             if not own["TransitionOnClick"]:
-                execCommands(cont, False)
+                _execCommands(cont, False)
             else:
                 own["Clicked"] = True
                 bge.logic.sendMessage("UpdateGui")
@@ -347,14 +347,14 @@ def processClickable(cont):
         if own["WidgetType"] == "Input":
             own["InputEnable"] = False
             
-        setClickableVisual(cont, "Normal")
+        clickableSetVisual(cont, "Normal")
                 
             
     if own["WidgetType"] == "Input":
         inputAction(cont, "Update")
 
 
-def updateList(cont):
+def listUpdate(cont):
     # type: (SCA_PythonController) -> None
     
     own = cont.owner
@@ -434,7 +434,7 @@ def checkboxAction(cont, visualOnly=False):
         if not visualOnly: own["Checked"] = result = not own["Checked"]
         
     if DEBUG and not visualOnly: print("> Checkbox", group, "set to:", result)
-    setClickableVisual(cont, "Hover")
+    clickableSetVisual(cont, "Hover")
     
 
 def listAction(cont, event):
@@ -444,7 +444,7 @@ def listAction(cont, event):
     group = own.groupObject
     
     if event == "Init":
-        updateList(cont)
+        listUpdate(cont)
         
     listLen = len(own["List"])
     
@@ -468,7 +468,7 @@ def listAction(cont, event):
             exec(command + repr(own["List"][own["Index"]]))
             
         if DEBUG: print("> List", group, "set to", own["List"][own["Index"]])
-        updateLabelObj(cont)
+        labelUpdateTextObj(cont)
 
 
 def iconButtonAction(cont, event):
@@ -503,20 +503,27 @@ def iconButtonAction(cont, event):
 def inputAction(cont, event):
     # type: (SCA_PythonController, str) -> str
     
-    def validateText(cont):
+    def _validateText(cont):
         # type: (SCA_PythonController) -> None
         
         own = cont.owner
-        charsAllowed = own["CharsAllowed"]
+        charsAllowed = str(own["CharsAllowed"])
+        curText = own["InputText"]
         validText = []
         
         # Get valid chars from constant
         if charsAllowed and charsAllowed.upper() in INPUT_VALID_CHARS.keys():
             charsAllowed = INPUT_VALID_CHARS[charsAllowed.upper()]
+        
+        if own["LineBreak"]:
+            curText = curText.replace("\r", "\n")
+            
+            if charsAllowed:
+                charsAllowed += "\n"
             
         # Remove invalid chars from text
-        for char in own["InputText"]:
-            if charsAllowed is not None:
+        for char in curText:
+            if charsAllowed:
                 if char in charsAllowed:
                     validText.append(char)
             else:
@@ -527,7 +534,7 @@ def inputAction(cont, event):
         validText = validText.replace("\r", lineBreak)
                 
         if own["CharsLimit"] and len(validText) > own["CharsLimit"]:
-            validText = validText[:own["CharsLimit"]-1]
+            validText = validText[:own["CharsLimit"]]
             
         own["InputText"] = validText
     
@@ -562,13 +569,13 @@ def inputAction(cont, event):
                 if DEBUG: print("X Input", group, "target couldn't be created:", target)
             
         own["InputText"] = str(targetValue)
-        updateLabelObj(cont)
+        labelUpdateTextObj(cont)
         
     elif event == "Update":
         
         if not own["InputEnable"] and own["Cursor"]:
             own["Cursor"] = False
-            updateLabelObj(cont)
+            labelUpdateTextObj(cont)
         
         elif own["InputEnable"]:
             
@@ -579,7 +586,7 @@ def inputAction(cont, event):
             elif own["CursorSpeed"] == 0:
                 own["Cursor"] = True
                 
-            validateText(cont)
+            _validateText(cont)
         
             if keyboard.positive:
                 kbEvents = bge.logic.keyboard.events
@@ -598,12 +605,12 @@ def inputAction(cont, event):
                         value = paste()
                         if value:
                             own["InputText"] = value
-                            validateText(cont)
+                            _validateText(cont)
                             if DEBUG: print("> Input", group, "pasted from clipboard:", value)
                         else:
                             if DEBUG: print("X Input", group, ", no value in clipboard")
             
-            updateLabelObj(cont)
+            labelUpdateTextObj(cont)
         
         if target and keyboard.positive and own["InputEnable"]:
             try:
@@ -614,7 +621,7 @@ def inputAction(cont, event):
 
 
 # Helper functions
-def getLabelFromGroup(cont):
+def _getLabelFromGroup(cont):
     # type: (SCA_PythonController) -> str
     
     own = cont.owner
@@ -672,25 +679,7 @@ def getLabelFromGroup(cont):
     return label
 
 
-def execCommands(cont, instant):
-    # type: (SCA_PythonController, bool) -> None
-    
-    own = cont.owner
-    group = own.groupObject
-    config = globalDict["Config"]
-    index = 0 if instant else 1
-    
-    if DEBUG and len(own["Commands"][index]) > 0: print("> Exec commands of", group)
-    
-    for command in own["Commands"][index]:
-        try:
-            exec(command)
-            if DEBUG: print("  >", command)
-        except:
-            if DEBUG: print("  X", command)
-
-
-def getCommandsFromGroup(cont):
+def _getCommandsFromGroup(cont):
     # type: (SCA_PythonController) -> list[str]
     
     def processCommand(command):
@@ -736,3 +725,20 @@ def getCommandsFromGroup(cont):
                     
     return commands
 
+
+def _execCommands(cont, instant):
+    # type: (SCA_PythonController, bool) -> None
+    
+    own = cont.owner
+    group = own.groupObject
+    config = globalDict["Config"]
+    index = 0 if instant else 1
+    
+    if DEBUG and len(own["Commands"][index]) > 0: print("> Exec commands of", group)
+    
+    for command in own["Commands"][index]:
+        try:
+            exec(command)
+            if DEBUG: print("  >", command)
+        except:
+            if DEBUG: print("  X", command)
