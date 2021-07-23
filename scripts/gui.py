@@ -686,17 +686,27 @@ def _getCommandsFromGroup(cont):
         # type: (str) -> str
         
         command = command.strip()
+        
         if command.startswith(EXEC_PREFIX):
             return command[1:].strip()
-        elif command[0] in ("(", "["):
+        elif command.startswith("(") or command.startswith("["):
             return "own.scene.active_camera.worldPosition = list(" + command.strip() \
                 + ") + [own.scene.active_camera.worldPosition.z]"
         else:
-            return "bge.logic.sendMessage('" + command.strip() + "')"
+            command = [i.strip() for i in command.split(":")]
+            resultCommand = "bge.logic.sendMessage('"
+            
+            if len(command):
+                resultCommand += command.pop(0)
+            if len(command):
+                resultCommand += "', '" + ":".join(command)
+                
+            resultCommand += "')"
+            return resultCommand
             
     own = cont.owner
     group = own.groupObject
-            
+    
     commands = [[], []] # Instant commands, wait commands
     
     if "Commands" in group:
