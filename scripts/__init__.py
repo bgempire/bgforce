@@ -42,7 +42,7 @@ def loadFile(_file, debugIndent=0):
     loaded = False
         
     if _file.suffix == ".json":
-        with open(_file.as_posix(), "r") as openedFile:
+        with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
             try:
                 data = json.loads(openedFile.read())
             except Exception as e:
@@ -53,7 +53,7 @@ def loadFile(_file, debugIndent=0):
 
     elif _file.suffix in [".cfg", ".ini"]:
         
-        with open(_file.as_posix(), "r") as openedFile:
+        with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
             fileData = []
                         
             for line in openedFile.read().split("\n"):
@@ -127,7 +127,7 @@ def saveFile(_file, data, ext=None, debugIndent=0):
         _file = _file.with_suffix(ext)
     
     if ext == ".json":
-        with open(_file.as_posix(), "w") as openedFile:
+        with open(_file.as_posix(), "w", encoding="utf-8") as openedFile:
             try:
                 openedFile.write(json.dumps(data, indent=4))
             except Exception as e:
@@ -142,7 +142,7 @@ def saveFile(_file, data, ext=None, debugIndent=0):
             saved = True
     
     elif ext in (".cfg", ".ini"):
-        with open(_file.as_posix(), "w") as openedFile:
+        with open(_file.as_posix(), "w", encoding="utf-8") as openedFile:
             fileContentTop = ""
             fileContent = ""
             if hasattr(data, "keys"):
