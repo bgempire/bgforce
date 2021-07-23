@@ -77,7 +77,15 @@ def widget(cont):
         
         # Start transition when GUI update is requested
         if message.positive and not own.isPlayingAction():
-            own["TransitionState"] = "Hiding"
+            bodies = []
+            
+            for body in message.bodies:
+                if body:
+                    for i in body.split(","):
+                        bodies.append(i.strip())
+                
+            if not bodies or "Group" in group and str(group["Group"]).strip() in bodies:
+                own["TransitionState"] = "Hiding"
             
         widgetProcessEnabled(cont)
         processTransition(cont)
