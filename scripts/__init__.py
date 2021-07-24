@@ -19,7 +19,7 @@ curPath = Path(bge.logic.expandPath("//")).resolve()
 def loadFramework():
     if DEBUG: print("\n> Initializing framework")
     
-    globalDict["Config"] = loadFile(curPath / "Config.ini", debugIndent=DEBUG_INDENT)
+    globalDict["Config"] = loadFile(curPath / "Config", debugIndent=DEBUG_INDENT)
     globalDict["Database"] = loadFiles(curPath / "database", debugIndent=DEBUG_INDENT)
     globalDict["Locale"] = loadFiles(curPath / "locale", debugIndent=DEBUG_INDENT)
     
@@ -37,6 +37,28 @@ def loadFile(_file, debugIndent=0):
     # type: (Path, int) -> dict
     """Load file from given path and return its content as a dict."""
     
+    def replaceVariables(target, variables):
+        # type: (dict, dict) -> None
+        
+        for key in target.keys():
+            if type(target[key]) == str and target[key] in variables.keys():
+                value = variables[target[key]]
+                try:
+                    value = literal_eval(value)
+                except:
+                    pass
+                target[key] = value
+                
+            elif type(target[key]) == dict:
+                replaceVariables(target[key], variables)
+                
+                
+    if not _file.exists() and _file.parent.exists():
+        for f in _file.parent.iterdir():
+            if f.stem == _file.stem:
+                _file = f
+                break
+    
     data = {}
     relativePath = _file.as_posix().replace(curPath.as_posix(), "")[1:]
     loaded = False
@@ -44,12 +66,33 @@ def loadFile(_file, debugIndent=0):
     if _file.suffix == ".json":
         with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
             try:
-                data = json.loads(openedFile.read())
+                fileData = []
+                for i in openedFile.read().splitlines():
+                    i = i.strip()
+                    if i and not i.startswith("//"):
+                        fileData.append(i.strip())
+                        
+                data = json.loads("".join(fileData))
+                loaded = True
             except Exception as e:
                 if DEBUG: print(e)
-                data = literal_eval(openedFile.read())
-            finally:
-                loaded = True
+                try:
+                    data = literal_eval(openedFile.read())
+                    loaded = True
+                except:
+                    if DEBUG: print((debugIndent * " ") + "X Could not load file:", relativePath)
+                    
+        # Process variables
+        variables = {}
+        
+        for key in data.keys():
+            if key.startswith("$"):
+                variables[key] = str(data[key])
+                
+        for key in variables.keys():
+            del data[key]
+            
+        replaceVariables(data, variables)
 
     elif _file.suffix in [".cfg", ".ini"]:
         
@@ -93,7 +136,7 @@ def loadFile(_file, debugIndent=0):
             
     elif _file.suffix == ".dat":
         with open(_file.as_posix(), "rb") as openedFile:
-            data = literal_eval(zlib.decompress(openedFile.read()).decode())
+            data = json.loads(zlib.decompress(openedFile.read()).decode(encoding="utf-8"))
             loaded = True
             
     if loaded:

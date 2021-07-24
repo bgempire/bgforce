@@ -1,0 +1,24 @@
+{
+    "Yes" : "Yes",
+    "No" : "No",
+
+    "MainMenuStart" : "Play",
+    "MainMenuOptions" : "Options",
+    "MainMenuAbout" : "About",
+    "MainMenuQuit" : "Quit",
+
+    "OptionsFullscreen" : "Fullscreen",
+    "OptionsVolSfx" : "SFX:",
+
+    "QuitYes" : "Yes",
+    "QuitNo" : "Yes",
+
+    "SetLang" : "Set Language",
+    "ToScreen1" : "To screen 1",
+    "ToScreen2" : "To screen 2",
+    "EnableWidgets" : "Enable widgets",
+
+    "LabelExample" : "This is a test text from locale. This text must have line breaks due to its length. However, BGForce takes care of this for you!",
+    "ButtonExample" : "Button",
+    "IconButtonExample" : "Icon Button"
+}
