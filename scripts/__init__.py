@@ -8,15 +8,21 @@ from ast import literal_eval
 from pathlib import Path
 from pprint import pprint, pformat
 
+
 # Constants
 DEBUG = 1
 DEBUG_INDENT = 2
+VARIABLE_PREFIX = "$"
+
 
 # Global variables
 curPath = Path(bge.logic.expandPath("//")).resolve()
 
 
 def loadFramework():
+    # type: () -> None
+    """Main function called at start."""
+    
     if DEBUG: print("\n> Initializing framework")
     
     globalDict["Config"] = loadFile(curPath / "Config", debugIndent=DEBUG_INDENT)
@@ -28,29 +34,58 @@ def loadFramework():
         "Bgm" : getFilePaths(curPath / "sounds/bgm", debugIndent=DEBUG_INDENT)
     }
     
-    if DEBUG:
-        # saveFile(curPath / "GlobalDictDump.json", globalDict, debugIndent=DEBUG_INDENT)
-        print("> Framework initializated\n")
+    if DEBUG: print("> Framework initializated\n")
+
+
+def _getJsonNoComments(fileContent):
+    # type: (str) -> str
+    
+    fileData = []
+    
+    for i in fileContent.splitlines():
+        i = i.strip()
+        if i and not i.startswith("//"):
+            fileData.append(i.strip())
+            
+    return "".join(fileData)
+
+
+def _replaceDictVariables(target, variables=None):
+    # type: (dict, dict) -> None
+    """Replaces all variable values from dict recursively."""
+        
+    # Move all variables from top level to its own dict
+    if variables is None:
+        variables = {}
+        
+        for key in target.keys():
+            if key.startswith(VARIABLE_PREFIX):
+                variables[key] = str(target[key])
+                
+        for key in variables.keys():
+            del target[key]
+    
+    for key in target.keys():
+        
+        # Replace variables with respective values
+        if type(target[key]) == str and target[key] in variables.keys():
+            value = variables[target[key]]
+            
+            try:
+                value = literal_eval(value)
+            except:
+                pass
+            
+            target[key] = value
+            
+        # Do replacement recursively
+        elif type(target[key]) == dict:
+            _replaceDictVariables(target[key], variables)
 
 
 def loadFile(_file, debugIndent=0):
     # type: (Path, int) -> dict
     """Load file from given path and return its content as a dict."""
-    
-    def replaceVariables(target, variables):
-        # type: (dict, dict) -> None
-        
-        for key in target.keys():
-            if type(target[key]) == str and target[key] in variables.keys():
-                value = variables[target[key]]
-                try:
-                    value = literal_eval(value)
-                except:
-                    pass
-                target[key] = value
-                
-            elif type(target[key]) == dict:
-                replaceVariables(target[key], variables)
                 
     if not _file.exists() and _file.parent.exists():
         for f in _file.parent.iterdir():
@@ -65,13 +100,7 @@ def loadFile(_file, debugIndent=0):
     if _file.suffix == ".json":
         with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
             try:
-                fileData = []
-                for i in openedFile.read().splitlines():
-                    i = i.strip()
-                    if i and not i.startswith("//"):
-                        fileData.append(i.strip())
-                        
-                data = json.loads("".join(fileData))
+                data = json.loads(_getJsonNoComments(openedFile.read()))
                 loaded = True
             except Exception as e:
                 if DEBUG: print(e)
@@ -82,20 +111,11 @@ def loadFile(_file, debugIndent=0):
                     if DEBUG: print((debugIndent * " ") + "X Could not load file:", relativePath)
                     
         # Process variables
-        variables = {}
-        
-        for key in data.keys():
-            if key.startswith("$"):
-                variables[key] = str(data[key])
-                
-        for key in variables.keys():
-            del data[key]
-            
-        replaceVariables(data, variables)
+        _replaceDictVariables(data)
             
     elif _file.suffix == ".dat":
         with open(_file.as_posix(), "rb") as openedFile:
-            data = json.loads(zlib.decompress(openedFile.read()).decode(encoding="utf-8"))
+            data = json.loads(_getJsonNoComments(zlib.decompress(openedFile.read()).decode(encoding="utf-8")))
             loaded = True
             
     if loaded:
