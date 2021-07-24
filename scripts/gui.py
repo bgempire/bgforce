@@ -6,7 +6,6 @@ from bge.types import *
 from ast import literal_eval
 from textwrap import wrap
 from math import radians
-from collections import OrderedDict
 
 from . import DEBUG
 from .thirdparty.pyp3rclip import copy, paste
@@ -15,6 +14,7 @@ __all__ = ["widget"]
 
 
 ALWAYS_SKIPPED_TICKS = 10
+MOUSE_CURSOR_CANVAS_SIZE = [100, 100, 1]
 COMMAND_SEPARATOR = " | "
 IMPORTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
@@ -44,6 +44,11 @@ INPUT_VALID_CHARS = {
 }
 
 config = globalDict["Config"]
+state = globalDict["State"]
+
+if not hasattr(bge.logic, "widgetHovered"):
+    bge.logic.widgetHovered = None
+
 
 # Controller endpoint
 def widget(cont):
@@ -94,6 +99,57 @@ def widget(cont):
         if own["ClickableObj"] is not None:
             clickableProcess(cont)
     
+
+def mouseCursor(cont):
+    # type: (SCA_PythonController) -> None
+
+    own = cont.owner
+    group = own.groupObject
+    always = cont.sensors["Always"]  # type: SCA_AlwaysSensor
+    mouseOver = cont.sensors["MouseOver"] # type: KX_MouseFocusSensor
+    lmb = cont.sensors.get("LMB", None) # type: SCA_MouseSensor
+    rmb = cont.sensors.get("RMB", None) # type: SCA_MouseSensor
+    
+    cursorObj = own.childrenRecursive["MouseCursor"]
+    canvasObj = own.childrenRecursive["MouseCursorCanvas"]
+    curWidget = bge.logic.widgetHovered # type: KX_GameObject
+    
+    if group is None:
+        own.endObject()
+        return
+    
+    if always.positive:
+        
+        if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
+            own.setParent(group)
+            bge.render.showMouse(False)
+            canvasObj.localScale = MOUSE_CURSOR_CANVAS_SIZE
+            
+        if mouseOver.positive:
+            cursorObj.visible = True
+            cursorObj.worldPosition = mouseOver.hitPosition
+            meshName = "MouseCursor"
+            
+            if curWidget is not None:
+                if not curWidget["Enabled"]:
+                    meshName += "Disabled"
+                elif lmb.positive or rmb.positive:
+                    meshName += "HandClick"
+                else:
+                    meshName += "HandNormal"
+                
+            else:
+                if lmb.positive or rmb.positive:
+                    meshName += "ArrowClick"
+                else:
+                    meshName += "ArrowNormal"
+                
+            if cursorObj.meshes[0].name != meshName:
+                cursorObj.replaceMesh(meshName)
+            
+        else:
+            cursorObj.visible = False
+
 
 # Abstraction functions
 def widgetInit(cont):
@@ -304,6 +360,12 @@ def clickableProcess(cont):
     lmb = cont.sensors.get("LMB", None) # type: SCA_MouseSensor
     rmb = cont.sensors.get("RMB", None) # type: SCA_MouseSensor
     
+    # Used by mouse cursor
+    if mouseOver.positive:
+        bge.logic.widgetHovered = own
+    elif bge.logic.widgetHovered is own:
+        bge.logic.widgetHovered = None
+    
     if own["WidgetType"] == "Checkbox":
         checkboxAction(cont, True)
     
@@ -356,8 +418,6 @@ def clickableProcess(cont):
             own["InputEnable"] = False
             
         clickableSetVisual(cont, "Normal")
-                
-            
     if own["WidgetType"] == "Input":
         inputAction(cont, "Update")
 

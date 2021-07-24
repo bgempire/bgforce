@@ -1,0 +1,5 @@
+// Default framework state such as GUI description, if mouse focusing widget, etc
+
+{
+    "Description" : ""
+}
