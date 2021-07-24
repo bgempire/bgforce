@@ -171,11 +171,15 @@ def getFilePaths(directory, debugIndent=0):
     if DEBUG: print((debugIndent * " ") + "> Getting files from:", relativePath)
     data = {}
 
-    for _file in directory.iterdir():
-        data[_file.stem] = _file.as_posix()
-        if DEBUG:
-            print(((debugIndent + DEBUG_INDENT) * " ") + "> File get:", 
-                _file.as_posix().replace(curPath.as_posix(), "")[1:])
+    if directory.exists():
+        for _file in directory.iterdir():
+            data[_file.stem] = _file.as_posix()
+            if DEBUG:
+                print(((debugIndent + DEBUG_INDENT) * " ") + "> File get:", 
+                    _file.as_posix().replace(curPath.as_posix(), "")[1:])
+                    
+    else:
+        directory.mkdir(parents=True)
         
     return data
 
