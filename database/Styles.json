@@ -1,5 +1,6 @@
-// Styles of specific widgets, similar to CSS classes.
-// - Transitions: SlideL, SlideR, ScaleV, ScaleH, Arc
+// Custom styles of one or more widgets, similar to CSS classes.
+// - Transitions: "SlideL", "SlideR", "ScaleV", "ScaleH", "Arc"
+// - CharsAllowed: "Alphabetic", "AlphaNumeric", "Numeric", "Printable"
 
 {
     

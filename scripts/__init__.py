@@ -52,7 +52,6 @@ def loadFile(_file, debugIndent=0):
             elif type(target[key]) == dict:
                 replaceVariables(target[key], variables)
                 
-                
     if not _file.exists() and _file.parent.exists():
         for f in _file.parent.iterdir():
             if f.stem == _file.stem:
@@ -93,46 +92,6 @@ def loadFile(_file, debugIndent=0):
             del data[key]
             
         replaceVariables(data, variables)
-
-    elif _file.suffix in [".cfg", ".ini"]:
-        
-        with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
-            fileData = []
-                        
-            for line in openedFile.read().split("\n"):
-                if line != "" and not line.startswith("#") and not line.isspace():
-                    fileData.append(line.strip())
-                
-            curSection = None
-            variables = {}
-            
-            for item in fileData:
-                
-                if item.startswith("["):
-                    item = item.replace("[", "").replace("]", "").strip()
-                    curSection = item
-                    data[item] = {}
-                    
-                else:
-                    item = [i.strip() for i in item.split("=", 1)] # type: list[str]
-                    
-                    if len(item) == 2:
-                        itemKey = item[0]
-                        itemVal = variables[item[1]] if item[1] in variables.keys() else item[1]
-                        
-                        try:
-                            itemVal = literal_eval(itemVal)
-                        except:
-                            pass
-                            
-                        if itemKey.startswith("$"):
-                            variables[itemKey] = itemVal
-                        elif curSection is not None:
-                            data[curSection][itemKey] = itemVal
-                        else:
-                            data[itemKey] = itemVal
-                        
-            loaded = True
             
     elif _file.suffix == ".dat":
         with open(_file.as_posix(), "rb") as openedFile:
@@ -154,7 +113,7 @@ def loadFiles(directory, debugIndent=0):
     data = {}
 
     for _file in directory.iterdir():
-        if _file.suffix in (".json", ".ini", ".cfg", ".dat"):
+        if _file.suffix in (".json", ".dat"):
             data[_file.stem] = loadFile(_file, debugIndent=debugIndent + DEBUG_INDENT)
             
     return data
@@ -181,25 +140,9 @@ def saveFile(_file, data, ext=None, debugIndent=0):
     
     elif ext == ".dat":
         with open(_file.as_posix(), "wb") as openedFile:
-            openedFile.write(zlib.compress(str(data).encode()))
+            openedFile.write(zlib.compress(json.dumps(data).encode(encoding="utf-8")))
             saved = True
-    
-    elif ext in (".cfg", ".ini"):
-        with open(_file.as_posix(), "w", encoding="utf-8") as openedFile:
-            fileContentTop = ""
-            fileContent = ""
-            if hasattr(data, "keys"):
-                for key in data.keys():
-                    if not hasattr(data[key], "keys"):
-                        fileContentTop += str(key) + "=" + str(data[key]) + "\n"
-                    elif hasattr(data[key], "keys"):
-                        fileContent += "\n[" + str(key) + "]\n"
-                        for subKey in data[key].keys():
-                            fileContent += str(subKey) + "=" + str(data[key][subKey]) + "\n"
-            openedFile.write(fileContentTop + fileContent)
-                    
-            saved = True
-        
+            
     if saved:
         if DEBUG:
             relativePath = _file.as_posix().replace(curPath.as_posix(), "")[1:]
