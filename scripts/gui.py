@@ -133,6 +133,8 @@ def mouseCursor(cont):
             if curWidget is not None:
                 if not curWidget["Enabled"]:
                     meshName += "Disabled"
+                elif curWidget["WidgetType"] == "Input":
+                    meshName += "Beam"
                 elif lmb.positive or rmb.positive:
                     meshName += "HandClick"
                 else:
