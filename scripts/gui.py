@@ -14,7 +14,6 @@ __all__ = ["widget"]
 
 
 ALWAYS_SKIPPED_TICKS = 10
-MOUSE_CURSOR_CANVAS_SIZE = [100, 100, 1]
 COMMAND_SEPARATOR = " | "
 IMPORTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
@@ -122,32 +121,47 @@ def mouseCursor(cont):
         
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
             own.setParent(group)
-            bge.render.showMouse(False)
-            canvasObj.localScale = MOUSE_CURSOR_CANVAS_SIZE
+            _getPropsFromDb(cont)
+            bge.render.showMouse(own["ShowNative"])
+            cursorObj.localScale = list(own["Size"]) + [1]
+            canvasObj.localScale = list(own["CanvasSize"]) + [1]
             
         if mouseOver.positive:
             cursorObj.visible = True
             cursorObj.worldPosition = mouseOver.hitPosition
+            cursorObj.worldPosition.x += list(own["Offset"])[0]
+            cursorObj.worldPosition.y += list(own["Offset"])[1]
             meshName = "MouseCursor"
+            color = own["ColorNormal"]
             
             if curWidget is not None:
                 if not curWidget["Enabled"]:
                     meshName += "Disabled"
+                    color = own["ColorDisabled"]
+                    
                 elif curWidget["WidgetType"] == "Input":
                     meshName += "Beam"
+                    color = own["ColorHover"]
+                    
                 elif lmb.positive or rmb.positive:
                     meshName += "HandClick"
+                    color = own["ColorClick"]
+                    
                 else:
                     meshName += "HandNormal"
+                    color = own["ColorHover"]
                 
             else:
                 if lmb.positive or rmb.positive:
                     meshName += "ArrowClick"
+                    color = own["ColorClick"]
+                    
                 else:
                     meshName += "ArrowNormal"
                 
             if cursorObj.meshes[0].name != meshName:
                 cursorObj.replaceMesh(meshName)
+                cursorObj.color = color
             
         else:
             cursorObj.visible = False
@@ -169,39 +183,7 @@ def widgetInit(cont):
         own[prop] = ([obj for obj in group.groupMembers if OBJ_REF_PROPS[prop] in obj] + [None])[0]
     
     # Create widget properties based on its database config
-    widgetDb = globalDict["Database"]["Gui"][own["WidgetType"]] # type: dict
-    own["InlineProps"] = []
-    
-    for prop in widgetDb.keys():
-        propValue = widgetDb[prop]
-        
-        if prop in group:
-            propValue = group[prop]
-            own["InlineProps"].append(prop)
-        
-        if type(propValue) == str:
-            try:
-                propValue = literal_eval(propValue)
-            except:
-                pass
-                
-        own[prop] = propValue
-        if debugProps: own.addDebugProperty(prop)
-        
-    # Apply style to current widget
-    if "Style" in group:
-        styleName = own["WidgetType"] + ":" + str(group["Style"])
-        styleDb = {}
-        
-        if styleName in globalDict["Database"]["Styles"].keys():
-            styleDb = globalDict["Database"]["Styles"][styleName]
-        
-        elif styleName in globalDict["Database"]["Gui"].keys():
-            styleDb = globalDict["Database"]["Gui"][styleName]
-            
-        for prop in styleDb.keys():
-            if not prop in own["InlineProps"]:
-                own[prop] = styleDb[prop]
+    _getPropsFromDb(cont)
     
     # Create additional props in widget
     additionalProps = {
@@ -696,6 +678,48 @@ def inputAction(cont, event):
 
 
 # Helper functions
+def _getPropsFromDb(cont):
+    # type: (SCA_PythonController) -> str
+    
+    own = cont.owner
+    group = own.groupObject
+    debugProps = True if "Debug" in group and group["Debug"] else False
+    
+    widgetDb = globalDict["Database"]["Gui"][own["WidgetType"]] # type: dict
+    own["InlineProps"] = []
+    
+    for prop in widgetDb.keys():
+        propValue = widgetDb[prop]
+        
+        if prop in group:
+            propValue = group[prop]
+            own["InlineProps"].append(prop)
+        
+        if type(propValue) == str:
+            try:
+                propValue = literal_eval(propValue)
+            except:
+                pass
+                
+        own[prop] = propValue
+        if debugProps: own.addDebugProperty(prop)
+        
+    # Apply style to current widget
+    if "Style" in group:
+        styleName = str(group["Style"])
+        styleDb = {}
+        
+        if styleName in globalDict["Database"]["Styles"].keys():
+            styleDb = globalDict["Database"]["Styles"][styleName]
+        
+        elif styleName in globalDict["Database"]["Gui"].keys():
+            styleDb = globalDict["Database"]["Gui"][styleName]
+            
+        for prop in styleDb.keys():
+            if not prop in own["InlineProps"] and prop in own:
+                own[prop] = styleDb[prop]
+
+
 def _getTextFromGroup(cont, description=False):
     # type: (SCA_PythonController, bool) -> str
     

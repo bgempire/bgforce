@@ -195,5 +195,16 @@
         "CursorCharacter" : "|",
         "CursorSpeed" : 0.2,
         "LineBreak" : false
+    },
+    
+    "MouseCursor" : {
+        "ShowNative" : false,
+        "Size" : [0.8, 0.8],
+        "Offset" : [0.0, 0.0],
+        "CanvasSize" : [100, 100],
+        "ColorNormal" : "$ColorNormal",
+        "ColorClick" : "$ColorClick",
+        "ColorHover" : "$ColorHover",
+        "ColorDisabled" : "$ColorDisabled"
     }
 }
