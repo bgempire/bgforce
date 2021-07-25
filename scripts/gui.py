@@ -227,7 +227,7 @@ def widgetInit(cont):
     # Show transition at start
     if own["Transition"] in TRANSITION_ANIMS.keys():
         own["TransitionState"] = "Showing"
-        own["InitTransition"] = False
+    own["InitTransition"] = False
         
     if own["WidgetType"] == "Checkbox":
         checkboxAction(cont, True)
