@@ -73,7 +73,7 @@ def widget(cont):
             widgetInit(cont)
         
         # Update label if property Update is provided
-        if "Update" in group and group["Update"] >= 0:
+        if "Update" in group and group["Update"] >= 0 and not own.isPlayingAction():
             always.skippedTicks = group["Update"]
             labelUpdateTextObj(cont)
             
@@ -270,7 +270,7 @@ def labelUpdateTextObj(cont):
         shadowObj = own["LabelShadowObj"]
         
         # Set text to label and shadow
-        own["TargetLabel"] = labelObj.text = shadowObj.text = _getLabelFromGroup(cont)
+        own["TargetLabel"] = labelObj.text = shadowObj.text = _getTextFromGroup(cont)
         
         # Set color and offset of label
         labelObj.color = own["LabelColor"]
@@ -365,8 +365,10 @@ def clickableProcess(cont):
     # Used by mouse cursor
     if mouseOver.positive:
         bge.logic.widgetHovered = own
+        state["Description"] = _getTextFromGroup(cont, True)
     elif bge.logic.widgetHovered is own:
         bge.logic.widgetHovered = None
+        state["Description"] = ""
     
     if own["WidgetType"] == "Checkbox":
         checkboxAction(cont, True)
@@ -691,15 +693,15 @@ def inputAction(cont, event):
 
 
 # Helper functions
-def _getLabelFromGroup(cont):
-    # type: (SCA_PythonController) -> str
+def _getTextFromGroup(cont, description=False):
+    # type: (SCA_PythonController, bool) -> str
     
     own = cont.owner
     group = own.groupObject
     curLang = globalDict["Locale"][config["Lang"]]
+    labelSource = "Label" if not description else "Description"
     
-    label = str(group["Label"]) if "Label" in group else ""
-    other = ""
+    label = str(group[labelSource]).strip() if labelSource in group else ""
     
     try:
         # Get label from code execution
@@ -713,39 +715,42 @@ def _getLabelFromGroup(cont):
     except:
         pass
         
-    if own["WidgetType"] == "List" and "List" in own and len(own["List"]) > 0:
-        other = str(own["List"][own["Index"]])
+    if not description:
+        other = ""
         
-        if own["Translate"]:
-            other = curLang.get(other, other)
-                
-        other = " " + other if label else other
-        
-    elif own["WidgetType"] == "Input":
-        label = own["InputText"] if own["InputText"] else label
+        if own["WidgetType"] == "List" and "List" in own and len(own["List"]) > 0:
+            other = str(own["List"][own["Index"]])
             
-        if own["Cursor"]:
-            other += str(own["CursorCharacter"])
+            if own["Translate"]:
+                other = curLang.get(other, other)
+                    
+            other = " " + other if label else other
+            
+        elif own["WidgetType"] == "Input":
+            label = own["InputText"] if own["InputText"] else label
+                
+            if own["Cursor"]:
+                other += str(own["CursorCharacter"])
+            
+        # Process label line breaks
+        lineBreaks = not own["LineBreak"] if "LineBreak" in own else True
+        label = wrap(str(label) + other, own["LineSize"], replace_whitespace=lineBreaks)
+        labelTemp = [i.split("\n") for i in label]
+        label.clear()
         
-    # Process label line breaks
-    lineBreaks = not own["LineBreak"] if "LineBreak" in own else True
-    label = wrap(str(label) + other, own["LineSize"], replace_whitespace=lineBreaks)
-    labelTemp = [i.split("\n") for i in label]
-    label.clear()
-    
-    for l in labelTemp:
-        for s in l:
-            label.append(s)
-    del labelTemp
-    
-    # Process label text align
-    if own["Justify"].lower() == "center":
-        label = [i.center(own["LineSize"]) for i in label]
-    elif own["Justify"].lower() == "right":
-        label = [i.rjust(own["LineSize"]) for i in label]
+        for l in labelTemp:
+            for s in l:
+                label.append(s)
+        del labelTemp
         
-    label = "\n".join(label)
-
+        # Process label text align
+        if own["Justify"].lower() == "center":
+            label = [i.center(own["LineSize"]) for i in label]
+        elif own["Justify"].lower() == "right":
+            label = [i.rjust(own["LineSize"]) for i in label]
+            
+        label = "\n".join(label)
+    
     return label
 
 

@@ -1,24 +1,19 @@
 {
-    "Yes" : "Sim",
-    "No" : "Não",
-
-    "MainMenuStart" : "Jogar",
-    "MainMenuOptions" : "Opções",
-    "MainMenuAbout" : "Sobre",
-    "MainMenuQuit" : "Sair",
-
-    "OptionsFullscreen" : "Tela Cheia",
-    "OptionsVolSfx" : "SFX:",
-
-    "QuitYes" : "Sim",
-    "QuitNo" : "Não",
-
-    "SetLang" : "Mudar Língua",
-    "ToScreen1" : "Para tela 1",
-    "ToScreen2" : "Para tela 2",
-    "EnableWidgets" : "Ativar widgets",
-
+    "Yes": "Sim",
+    "No": "Não",
+    "OptionsVolSfx": "SFX:",
+    "OptionsVolSfxDesc": "Definir volume dos efeitos sonoros.",
+    "ChooseLang": "Escolha uma linguagem.",
+    "SetLang": "Mudar Língua",
+    "SetLangDesc": "Atualizar interface para a nova língua selecionada.",
+    "ToScreen1": "Ir À Tela 1",
+    "ToScreen1Desc": "Voltar para a tela 1.",
+    "ToScreen2": "Ir À Tela 2",
+    "ToScreen2Desc": "Ir para a tela 2.",
+    "EnableWidgets": "Ativar Controles",
+    "EnableWidgetsDesc": "Definir se os controles ficarão ativados ou desativados.",
     "LabelExample" : "Este é um texto de teste da pasta locale. O texto precisa ter quebras de linhas devido ao seu tamanho. Porém, BGForce toma conta disso pra você!",
-    "ButtonExample" : "Botão",
-    "IconButtonExample" : "Botão-Ícone"
+    "InputExample": "Entrada",
+    "InputExampleDesc": "Esta é uma entrada de texto de exemplo.",
+    "ListExampleDesc": "Esta é uma lista de exemplo com tradução ativada."
 }
