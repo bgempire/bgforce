@@ -214,6 +214,7 @@ def widgetInit(cont):
         if debugProps: own.addDebugProperty(prop)
     
     # Set label and shadow properties if they exist
+    widgetProcessEnabled(cont)
     labelUpdateTextObj(cont)
     
     # Set clickable widget properties
@@ -260,8 +261,8 @@ def widgetProcessEnabled(cont):
         own["Enabled"] = True
 
 
-def labelUpdateTextObj(cont):
-    # type: (SCA_PythonController) -> None
+def labelUpdateTextObj(cont, setLabel=True):
+    # type: (SCA_PythonController, bool) -> None
 
     own = cont.owner
     
@@ -270,24 +271,25 @@ def labelUpdateTextObj(cont):
         shadowObj = own["LabelShadowObj"]
         
         # Set text to label and shadow
-        own["TargetLabel"] = labelObj.text = shadowObj.text = _getTextFromGroup(cont)
+        if setLabel:
+            own["TargetLabel"] = labelObj.text = shadowObj.text = _getTextFromGroup(cont)
         
         # Set color and offset of label
-        labelObj.color = own["LabelColor"]
+        labelObj.color = own["LabelColor"] if own["Enabled"] else own["LabelColorDisabled"]
         labelObj.localPosition = list(own["LabelOffset"]) + [labelObj.localPosition.z]
         labelObj.localScale = [own["LabelSize"], own["LabelSize"], 1.0]
         
         # Set visibility, color and offset of shadow
         shadowObj.visible = bool(own["ShadowEnable"])
-        shadowObj.color = own["ShadowColor"]
+        shadowObj.color = own["ShadowColor"] if own["Enabled"] else own["ShadowColorDisabled"]
         shadowObj.localPosition = list(labelObj.localPosition)[0:2] + [shadowObj.localPosition.z]
         shadowObj.localPosition.x += own["ShadowOffset"][0]
         shadowObj.localPosition.y += own["ShadowOffset"][1]
         shadowObj.localScale = [own["LabelSize"], own["LabelSize"], 1.0]
 
         if own["WidgetType"] == "Input" and not own["InputText"]:
-            labelObj.color = own["PlaceholderColor"]
-            shadowObj.color = own["PlaceholderShadowColor"]
+            labelObj.color = own["PlaceholderColor"] if own["Enabled"] else own["PlaceholderColorDisabled"]
+            shadowObj.color = own["PlaceholderShadowColor"] if own["Enabled"] else own["PlaceholderShadowColorDisabled"]
 
 
 def processTransition(cont):
@@ -352,6 +354,7 @@ def clickableSetVisual(cont, state, button=""):
     
     clickableObj.replaceMesh(own["WidgetType"] + other + state)
     clickableObj.color = own["Color" + state]
+    labelUpdateTextObj(cont, False)
 
 
 def clickableProcess(cont):
