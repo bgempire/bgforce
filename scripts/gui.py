@@ -17,7 +17,7 @@ ALWAYS_SKIPPED_TICKS = 10
 COMMAND_SEPARATOR = " | "
 IMPORTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
-LOCALE_PREFIX = "#"
+LANG_PREFIX = "#"
 TRANSITION_ANIMS = {
     "SlideL": {"Shown" : 0, "Hidden" : 20},
     "SlideR": {"Shown" : 30, "Hidden" : 50},
@@ -725,7 +725,7 @@ def _getTextFromGroup(cont, description=False):
     
     own = cont.owner
     group = own.groupObject
-    curLang = globalDict["Locale"][config["Lang"]]
+    curLang = globalDict["Lang"][config["Lang"]]
     labelSource = "Label" if not description else "Description"
     
     label = str(group[labelSource]).strip() if labelSource in group else ""
@@ -735,8 +735,8 @@ def _getTextFromGroup(cont, description=False):
         if label.startswith(EXEC_PREFIX):
             label = eval(label[1:])
             
-        # Get label from current locale strings
-        elif label.startswith(LOCALE_PREFIX):
+        # Get label from current lang strings
+        elif label.startswith(LANG_PREFIX):
             label = curLang[label[1:]]
             
     except:

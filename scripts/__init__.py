@@ -27,7 +27,7 @@ def loadFramework():
     
     globalDict["Config"] = loadFile(curPath / "Config", debugIndent=DEBUG_INDENT)
     globalDict["Database"] = loadFiles(curPath / "database", debugIndent=DEBUG_INDENT)
-    globalDict["Locale"] = loadFiles(curPath / "locale", debugIndent=DEBUG_INDENT)
+    globalDict["Lang"] = loadFiles(curPath / "lang", debugIndent=DEBUG_INDENT)
     globalDict["State"] = literal_eval(str(globalDict["Database"]["State"]))
     
     globalDict["Sounds"] = {

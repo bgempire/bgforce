@@ -12,7 +12,7 @@
     "ToScreen2Desc": "Ir para a tela 2.",
     "EnableWidgets": "Ativar Controles",
     "EnableWidgetsDesc": "Definir se os controles ficarão ativados ou desativados.",
-    "LabelExample" : "Este é um texto de teste da pasta locale. O texto precisa ter quebras de linhas devido ao seu tamanho. Porém, BGForce toma conta disso pra você!",
+    "LabelExample" : "Este é um texto de teste da pasta lang. O texto precisa ter quebras de linhas devido ao seu tamanho. Porém, BGForce toma conta disso pra você!",
     "InputExample": "Entrada",
     "InputExampleDesc": "Esta é uma entrada de texto de exemplo.",
     "ListExampleDesc": "Esta é uma lista de exemplo com tradução ativada."
