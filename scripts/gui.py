@@ -760,8 +760,13 @@ def _getTextFromGroup(cont, description=False):
                 other += str(own["CursorCharacter"])
             
         # Process label line breaks
+        lineSize = own["LineSize"]
+        
+        if own["WidgetType"] == "Input" and own["Cursor"]:
+            lineSize += 1
+            
         lineBreaks = not own["LineBreak"] if "LineBreak" in own else True
-        label = wrap(str(label) + other, own["LineSize"], replace_whitespace=lineBreaks)
+        label = wrap(str(label) + other, lineSize, replace_whitespace=lineBreaks)
         labelTemp = [i.split("\n") for i in label]
         label.clear()
         
@@ -772,9 +777,21 @@ def _getTextFromGroup(cont, description=False):
         
         # Process label text align
         if own["Justify"].lower() == "center":
-            label = [i.center(own["LineSize"]) for i in label]
+            label = [i.center(lineSize) for i in label]
+            
+            if own["WidgetType"] == "Input" and own["Cursor"]:
+                for i in range(len(label)):
+                    oddChars = bool(len(label[i].strip()) % 2)
+                    oddLineSize = bool(lineSize % 2)
+                    
+                    if not oddLineSize and oddChars:
+                        label[i] = " " + label[i]
+                        
+                    elif oddLineSize and not oddChars and label[i] and label[i][0].isspace():
+                        label[i] = label[i][1:]
+                        
         elif own["Justify"].lower() == "right":
-            label = [i.rjust(own["LineSize"]) for i in label]
+            label = [i.rjust(lineSize) for i in label]
             
         label = "\n".join(label)
     
