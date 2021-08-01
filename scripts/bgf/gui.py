@@ -10,7 +10,13 @@ from math import radians
 from . import DEBUG
 from .thirdparty.pyp3rclip import copy, paste
 
-__all__ = ["widget"]
+try:
+    from .. import operators
+except:
+    if DEBUG: print("X Could not import operators")
+
+
+__all__ = ["widget", "mouseCursor"]
 
 
 ALWAYS_SKIPPED_TICKS = 10
@@ -43,6 +49,7 @@ INPUT_VALID_CHARS = {
 }
 
 config = globalDict["Config"]
+db = globalDict["Database"]
 state = globalDict["State"]
 
 if not hasattr(bge.logic, "widgetHovered"):
@@ -61,7 +68,7 @@ def widget(cont):
     always = cont.sensors["Always"]  # type: SCA_AlwaysSensor
     message = cont.sensors["Message"] # type: KX_NetworkMessageSensor
 
-    if group is None:
+    if not group:
         own.endObject()
         return
 
@@ -95,7 +102,7 @@ def widget(cont):
         processTransition(cont)
         
         # Process clickable widget if applicable
-        if own["ClickableObj"] is not None:
+        if own["ClickableObj"]:
             clickableProcess(cont)
     
 
@@ -113,7 +120,7 @@ def mouseCursor(cont):
     canvasObj = own.childrenRecursive["MouseCursorCanvas"]
     curWidget = bge.logic.widgetHovered # type: KX_GameObject
     
-    if group is None:
+    if not group:
         own.endObject()
         return
     
@@ -134,7 +141,7 @@ def mouseCursor(cont):
             meshName = "MouseCursor"
             color = own["ColorNormal"]
             
-            if curWidget is not None:
+            if curWidget:
                 if not curWidget["Enabled"]:
                     meshName += "Disabled"
                     color = own["ColorDisabled"]
@@ -200,7 +207,7 @@ def widgetInit(cont):
     labelUpdateTextObj(cont)
     
     # Set clickable widget properties
-    if own["ClickableObj"] is not None:
+    if own["ClickableObj"]:
         own["Commands"] = _getCommandsFromGroup(cont)
         own["Clicked"] = False
         own["ClickableObj"].localScale = list(own["Size"]) + [1.0]
@@ -248,7 +255,7 @@ def labelUpdateTextObj(cont, setLabel=True):
 
     own = cont.owner
     
-    if own["LabelObj"] is not None and own["LabelShadowObj"] is not None:
+    if own["LabelObj"] and own["LabelShadowObj"]:
         labelObj = own["LabelObj"]
         shadowObj = own["LabelShadowObj"]
         
@@ -284,7 +291,7 @@ def processTransition(cont):
     
     if own["TransitionState"] == "Shown" and not own["InitTransition"]:
         for objRef in OBJ_REF_PROPS.keys():
-            if objRef != "LabelShadowObj" and own[objRef] is not None:
+            if objRef != "LabelShadowObj" and own[objRef]:
                 own[objRef].visible = True
                 
         own["InitTransition"] = True
@@ -301,7 +308,7 @@ def processTransition(cont):
             own.playAction("GuiTransitions", curAnim["Hidden"], curAnim["Shown"], speed=own["TransitionSpeed"])
             own["TransitionState"] = "Shown"
             
-            if own["ClickableObj"] is not None and own["TransitionOnClick"] and own["Clicked"]:
+            if own["ClickableObj"] and own["TransitionOnClick"] and own["Clicked"]:
                 own["Clicked"] = False
                 _execCommands(cont, False)
             
@@ -363,19 +370,19 @@ def clickableProcess(cont):
         
     elif mouseOver.positive and not own.isPlayingAction():
         
-        if lmb is not None and lmb.positive:
+        if lmb and lmb.positive:
             
             if own["WidgetType"] == "Input":
                 own["InputEnable"] = True
                 
             clickableSetVisual(cont, "Click", button="Left")
                 
-        elif rmb is not None and rmb.positive:
+        elif rmb and rmb.positive:
             clickableSetVisual(cont, "Click", button="Right")
         else:
             clickableSetVisual(cont, "Hover")
             
-        if lmb is not None and lmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
+        if lmb and lmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
             _execCommands(cont, True)
             
             if not own["TransitionOnClick"]:
@@ -390,7 +397,7 @@ def clickableProcess(cont):
             elif own["WidgetType"] == "List":
                 listAction(cont, "Increase")
             
-        elif rmb is not None and rmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
+        elif rmb and rmb.status == bge.logic.KX_SENSOR_JUST_DEACTIVATED:
             _execCommands(cont, True)
             
             if not own["TransitionOnClick"]:
@@ -540,7 +547,7 @@ def iconButtonAction(cont, event):
         
         iconObj.localScale = list(own["IconSize"]) + [1.0]
         
-        if own["ClickableObj"] is not None:
+        if own["ClickableObj"]:
             clickablePos = list(own["ClickableObj"].localPosition)[0:2] + [iconObj.localPosition.z]
             iconObj.localPosition = clickablePos
             
@@ -807,7 +814,10 @@ def _getCommandsFromGroup(cont):
         command = command.strip()
         
         if command.startswith(EXEC_PREFIX):
-            return command[1:].strip()
+            command = command[1:].strip()
+            if command in operators.OPERATORS.keys():
+                command = "operators.OPERATORS['" + command + "'](cont)"
+            return command
         elif command.startswith("(") or command.startswith("["):
             return "own.scene.active_camera.worldPosition = list(" + command.strip() \
                 + ") + [own.scene.active_camera.worldPosition.z]"
