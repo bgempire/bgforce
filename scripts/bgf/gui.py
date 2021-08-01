@@ -814,10 +814,7 @@ def _getCommandsFromGroup(cont):
         command = command.strip()
         
         if command.startswith(EXEC_PREFIX):
-            command = command[1:].strip()
-            if command in operators.OPERATORS.keys():
-                command = "operators.OPERATORS['" + command + "'](cont)"
-            return command
+            return command[1:].strip()
         elif command.startswith("(") or command.startswith("["):
             return "own.scene.active_camera.worldPosition = list(" + command.strip() \
                 + ") + [own.scene.active_camera.worldPosition.z]"
