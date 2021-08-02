@@ -129,7 +129,6 @@ def mouseCursor(cont):
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
             own.setParent(group)
             _getPropsFromDb(cont)
-            bge.render.showMouse(own["ShowNative"])
             cursorObj.localScale = list(own["Size"]) + [1]
             canvasObj.localScale = list(own["CanvasSize"]) + [1]
             

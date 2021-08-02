@@ -199,7 +199,6 @@
     
     
     "MouseCursor" : {
-        "ShowNative" : false,
         "Size" : [0.8, 0.8],
         "Offset" : [0.0, 0.0],
         "CanvasSize" : [100, 100],

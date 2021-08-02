@@ -35,6 +35,7 @@ def loadFramework():
         "Bgm" : getFilePaths(curPath / "sounds/bgm", debugIndent=DEBUG_INDENT)
     }
     
+    bge.render.showMouse(globalDict["Database"]["Global"]["MouseNative"])
     if DEBUG: print("> Framework initializated\n")
 
 
