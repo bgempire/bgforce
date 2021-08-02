@@ -141,7 +141,7 @@ def mouseCursor(cont):
             meshName = "MouseCursor"
             color = own["ColorNormal"]
             
-            if curWidget:
+            if curWidget and not curWidget.invalid:
                 if not curWidget["Enabled"]:
                     meshName += "Disabled"
                     color = own["ColorDisabled"]
