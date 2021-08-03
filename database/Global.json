@@ -4,5 +4,6 @@
     "Debug" : false,
     "MouseNative" : false,
     "ContextFadeSpeed" : 1.0,
-    "ExitKey" : "ESC"
+    "BgmFadeSpeed" : 1.0,
+    "ExitKey" : "F12"
 }

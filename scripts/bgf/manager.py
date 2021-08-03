@@ -1,4 +1,5 @@
 import bge
+import aud
 
 from bge.logic import globalDict
 from bge.types import *
@@ -16,7 +17,8 @@ db = globalDict["Database"]
 state = globalDict["State"]
 
 
-FADE_SPEED = 0.02
+CONTEXT_FADE_SPEED = 0.02
+BGM_FADE_SPEED = 0.01
 DEFAULT_PROPS_MANAGER = {
     "ContextTransition" : True,
     "Context" : ([ctx for ctx in db["Contexts"].keys() if db["Contexts"][ctx].get("Default")] + [""])[0],
@@ -25,7 +27,12 @@ DEFAULT_PROPS_MANAGER = {
 DEFAULT_PROPS_FADE = {
     "State" : "FadeOut",
 }
-
+DEFAULT_PROPS_BGM = {
+    "BgmTransition" : True,
+    "Bgm" : "",
+    "BgmState" : "FadeOut",
+    "BgmHandle" : None,
+}
 
 # Controller endpoint
 def manager(cont):
@@ -43,6 +50,7 @@ def manager(cont):
             
         messageManager(cont)
         contextManager(cont)
+        bgmManager(cont)
 
 
 # Abstraction functions
@@ -61,6 +69,11 @@ def managerInit(cont):
     for prop in DEFAULT_PROPS_FADE.keys():
         fadeInOut[prop] = DEFAULT_PROPS_FADE[prop]
         if DEBUG: fadeInOut.addDebugProperty(prop)
+    
+    # Init BGM props
+    for prop in DEFAULT_PROPS_BGM.keys():
+        own[prop] = DEFAULT_PROPS_BGM[prop]
+        if DEBUG: own.addDebugProperty(prop)
 
 
 def messageManager(cont):
@@ -97,7 +110,7 @@ def contextManager(cont):
             
             # Increase fade alpha while transparent
             if alpha < 1:
-                fadeObj.color[3] += FADE_SPEED * fadeSpeedFactor
+                fadeObj.color[3] += CONTEXT_FADE_SPEED * fadeSpeedFactor
                 
             # Remove scenes when fade is opaque
             elif own["ContextState"] == "Done":
@@ -132,7 +145,7 @@ def contextManager(cont):
             
             # Decrease fade alpha while opaque
             if alpha > 0:
-                fadeObj.color[3] -= FADE_SPEED * fadeSpeedFactor
+                fadeObj.color[3] -= CONTEXT_FADE_SPEED * fadeSpeedFactor
                 
             # Add scenes on loading screen and start fade out after
             elif own["ContextState"] == "AddLoading":
@@ -144,7 +157,64 @@ def contextManager(cont):
             else:
                 fadeObj["State"] = "FadeOut"
                 own["ContextTransition"] = False
+
+
+def bgmManager(cont):
+    # type: (SCA_PythonController) -> None
+    
+    own = cont.owner
+    curContext = db["Contexts"].get(own["Context"]) # type: dict
+    bgmDb = globalDict["Sounds"]["Bgm"] # type: dict
+    handle = own["BgmHandle"] # type: aud.Handle
+    bgmFadeFactor = BGM_FADE_SPEED * config["VolBgm"] * db["Global"]["BgmFadeSpeed"]
+    curBgm = ""
+    
+    if curContext:
+        curBgm = curContext.get("Bgm", "")
         
+        if own["Bgm"] != curBgm:
+            own["Bgm"] = curBgm
+            own["BgmTransition"] = True
+        
+        if own["BgmTransition"]:
+            
+            if own["BgmState"] == "FadeOut":
+                
+                if handle:
+                    
+                    if round(handle.volume, 1) > 0:
+                        handle.volume -= bgmFadeFactor
+                        
+                    else:
+                        handle.stop()
+                        own["BgmHandle"] = handle = None
+                        
+                elif curBgm in bgmDb.keys():
+                    factory = aud.Factory.file(bgmDb[curBgm])
+                    own["BgmHandle"] = handle = aud.device().play(factory, keep=True)
+                    handle.volume = 0
+                    handle.loop_count = -1
+                    own["BgmState"] = "FadeIn"
+                    
+                else:
+                    own["BgmTransition"] = False
+                
+            elif own["BgmState"] == "FadeIn":
+                
+                if handle:
+                    
+                    if round(handle.volume, 1) < config["VolBgm"]:
+                        handle.volume += bgmFadeFactor
+                        
+                    else:
+                        handle.volume = round(handle.volume, 2)
+                        own["BgmState"] = "FadeOut"
+                        own["BgmTransition"] = False
+                        
+                else:
+                    own["BgmState"] = "FadeOut"
+                    own["BgmTransition"] = False
+
 
 # Helper functions
 def _replaceContextScenes(cont, context):

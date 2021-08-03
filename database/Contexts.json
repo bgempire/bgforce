@@ -19,6 +19,7 @@
     
     // Main menu GUI and background
     "MainMenu": {
+        "Bgm": "WriteYouJoeyPecoraro",
         "Scenes": [
             {
                 "Name": "ScnMouse",
@@ -37,6 +38,7 @@
     
     // Game, in-game and pause menu GUI
     "Game": {
+        "Bgm": "SomedayCoyoteHearing",
         "Loading": "ScnLoading",
         "Scenes": [
             {
