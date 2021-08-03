@@ -10,11 +10,6 @@ from math import radians
 from . import DEBUG
 from .thirdparty.pyp3rclip import copy, paste
 
-try:
-    from .. import operators
-except:
-    if DEBUG: print("X Could not import operators")
-
 
 __all__ = ["widget", "mouseCursor"]
 
