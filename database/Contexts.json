@@ -11,7 +11,7 @@
         "Default": true,
         "Scenes": [
             {
-                "Name": "ScnSplashScreen",
+                "Name": "ScnIntro",
                 "Pausable": false
             }
         ]
@@ -21,11 +21,15 @@
     "MainMenu": {
         "Scenes": [
             {
-                "Name": "ScnMouseCursor",
+                "Name": "ScnMouse",
                 "Pausable": false
             },
             {
-                "Name": "ScnMainMenuGui",
+                "Name": "ScnMenuGui",
+                "Pausable": false
+            },
+            {
+                "Name": "ScnMenuBack",
                 "Pausable": false
             }
         ]
