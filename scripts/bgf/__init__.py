@@ -1,17 +1,15 @@
 import bge
 import json
-import pathlib
 import zlib
 
 from bge.logic import globalDict
 from ast import literal_eval
 from pathlib import Path
-from pprint import pprint, pformat
+from pprint import pformat
 
 
 # Constants
-DEBUG = 1
-DEBUG_INDENT = 2
+DEBUG = True
 VARIABLE_PREFIX = "$"
 
 
@@ -23,20 +21,23 @@ def loadFramework():
     # type: () -> None
     """Main function called at start."""
     
+    global DEBUG
     if DEBUG: print("\n> Initializing framework")
     
-    globalDict["Config"] = loadFile(curPath / "Config", debugIndent=DEBUG_INDENT)
-    globalDict["Database"] = loadFiles(curPath / "database", debugIndent=DEBUG_INDENT)
-    globalDict["Lang"] = loadFiles(curPath / "lang", debugIndent=DEBUG_INDENT)
+    globalDict["Config"] = loadFile(curPath / "Config")
+    globalDict["Database"] = loadFiles(curPath / "database")
+    globalDict["Lang"] = loadFiles(curPath / "lang")
     globalDict["State"] = literal_eval(str(globalDict["Database"]["State"]))
     
     globalDict["Sounds"] = {
-        "Sfx" : getFilePaths(curPath / "sounds/sfx", debugIndent=DEBUG_INDENT),
-        "Bgm" : getFilePaths(curPath / "sounds/bgm", debugIndent=DEBUG_INDENT)
+        "Sfx" : getFilePaths(curPath / "sounds/sfx"),
+        "Bgm" : getFilePaths(curPath / "sounds/bgm")
     }
     
     bge.render.showMouse(globalDict["Database"]["Global"]["MouseNative"])
     if DEBUG: print("> Framework initializated\n")
+    
+    DEBUG = globalDict["Database"]["Global"]["Debug"]
 
 
 def _getJsonNoComments(fileContent):
@@ -136,7 +137,7 @@ def loadFiles(directory, debugIndent=0):
 
     for _file in directory.iterdir():
         if _file.suffix in (".json", ".dat"):
-            data[_file.stem] = loadFile(_file, debugIndent=debugIndent + DEBUG_INDENT)
+            data[_file.stem] = loadFile(_file, debugIndent=debugIndent + 2)
             
     return data
 
@@ -183,7 +184,7 @@ def getFilePaths(directory, debugIndent=0):
         for _file in directory.iterdir():
             data[_file.stem] = _file.as_posix()
             if DEBUG:
-                print(((debugIndent + DEBUG_INDENT) * " ") + "> File get:", 
+                print(((debugIndent + 2) * " ") + "> File get:", 
                     _file.as_posix().replace(curPath.as_posix(), "")[1:])
                     
     else:

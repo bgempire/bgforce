@@ -1,4 +1,6 @@
 // Default global configuration
+
 {
+    "Debug" : false,
     "MouseNative" : false
 }
