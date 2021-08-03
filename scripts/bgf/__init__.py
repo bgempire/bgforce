@@ -35,9 +35,36 @@ def loadFramework():
     }
     
     bge.render.showMouse(globalDict["Database"]["Global"]["MouseNative"])
+    processExitKey(globalDict["Database"]["Global"]["ExitKey"])
+    
     if DEBUG: print("> Framework initializated\n")
     
     DEBUG = globalDict["Database"]["Global"]["Debug"]
+
+
+def processExitKey(key):
+    keyCode = bge.events.ESCKEY
+    
+    # Get int constant from str key
+    if type(key) == str:
+        key = key.upper()
+        
+        if hasattr(bge.events, key):
+            keyCode = eval("bge.events." + key)
+            
+        elif hasattr(bge.events, key + "KEY"):
+            keyCode = eval("bge.events." + key + "KEY")
+            
+    # Validate int key
+    elif type(key) == int:
+        for k in dir(bge.events):
+            if k.isupper():
+                curKeyCode = eval("bge.events." + k)
+                if key == curKeyCode:
+                    keyCode = key
+                    break
+    
+    bge.logic.setExitKey(keyCode)
 
 
 def _getJsonNoComments(fileContent):
