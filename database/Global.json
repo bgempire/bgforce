@@ -2,5 +2,6 @@
 
 {
     "Debug" : false,
-    "MouseNative" : false
+    "MouseNative" : false,
+    "ContextFadeSpeed" : 1.0
 }

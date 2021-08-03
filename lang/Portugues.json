@@ -1,6 +1,7 @@
 {
     "Yes": "Sim",
     "No": "Não",
+    "Loading" : "Carregando...",
     "OptionsVolSfx": "SFX:",
     "OptionsVolSfxDesc": "Definir volume dos efeitos sonoros.",
     "ChooseLang": "Escolha uma linguagem.",
@@ -15,5 +16,7 @@
     "LabelExample" : "Este é um texto de teste da pasta lang. O texto precisa ter quebras de linhas devido ao seu tamanho. Porém, BGForce toma conta disso pra você!",
     "InputExample": "Entrada",
     "InputExampleDesc": "Esta é uma entrada de texto de exemplo.",
-    "ListExampleDesc": "Esta é uma lista de exemplo com tradução ativada."
+    "ListExampleDesc": "Esta é uma lista de exemplo com tradução ativada.",
+    "SplashScreen": "Este é um texto exemplo para tela de abertura. Esta tela pode conter informações a respeito do estúdio desenvolvedor, direitos autorais e outras informações relevantes. Este é um texto exemplo para tela de abertura. Esta tela pode conter informações a respeito do estúdio desenvolvedor, direitos autorais e outras informações relevantes.",
+    "MainMenuStart" : "Iniciar"
 }

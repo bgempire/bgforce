@@ -3,5 +3,18 @@
 // - CharsAllowed: "Alphabetic", "AlphaNumeric", "Numeric", "Printable"
 
 {
+    // Copyright label on splash screen scene
+    "SplashScreenLabel" : {
+        "Transition" : "None",
+        "Justify" : "Center",
+        "ShadowEnable" : false,
+        "LineSize" : 85,
+        "LabelSize" : 0.35
+    },
     
+    // Loading text label on loading scene
+    "LoadingLabel" : {
+        "Transition" : "None",
+        "LabelSize" : 1.2
+    }
 }
