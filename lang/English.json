@@ -1,22 +1,25 @@
 {
+    // General
     "Yes": "Yes",
     "No": "No",
+    "Enable" : "Enable",
+    "Disable" : "Disable",
+    "Previous": "Previous",
+    "Next": "Next",
+    "Confirm" : "Confirm",
+    "Cancel" : "Cancel",
     "Loading" : "Loading...",
-    "OptionsVolSfx": "SFX:",
-    "OptionsVolSfxDesc": "Set sound effects volume.",
-    "ChooseLang": "Choose a language.",
-    "SetLang": "Set Language",
-    "SetLangDesc": "Update GUI to newly selected language.",
-    "ToScreen1": "To screen 1",
-    "ToScreen1Desc": "Go back to screen 1.",
-    "ToScreen2": "To screen 2",
-    "ToScreen2Desc": "Go to screen 2.",
-    "EnableWidgets": "Enable widgets",
-    "EnableWidgetsDesc": "Toggle to enable or disable widgets.",
-    "LabelExample": "This is a test text from lang folder. This text must have line breaks due to its length. However, BGForce takes care of this for you!",
-    "InputExample": "Input",
-    "InputExampleDesc": "This an example input.",
-    "ListExampleDesc": "This an example list with translation enabled.",
     "SplashScreen": "This an example splash screen text. This screen may contain information about the game studio, copyrights and other relevant information. This an example splash screen text. This screen may contain information about the game studio, copyrights and other relevant information.",
-    "MainMenuStart" : "Start"
+    
+    // Main menu
+    "MainMenuStart" : "Start",
+    "MainMenuOptions" : "Options",
+    "MainMenuAbout" : "About",
+    "MainMenuQuit" : "Exit",
+    
+    // Options menu
+    "OptionsVolSfx": "Sound:",
+    "OptionsVolSfxDesc": "Set sound effects volume.",
+    "OptionsVolBgm": "Music:",
+    "OptionsVolBgmDesc": "Set background music volume."
 }

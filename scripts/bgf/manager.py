@@ -92,6 +92,10 @@ def messageManager(cont):
                     own["Context"] = context
                     own["ContextTransition"] = True
                     break
+        
+        if "ExitGame" in subjects:
+            own["ContextState"] = "ExitGame"
+            own["ContextTransition"] = True
 
 
 def contextManager(cont):
@@ -111,6 +115,10 @@ def contextManager(cont):
             # Increase fade alpha while transparent
             if alpha < 1:
                 fadeObj.color[3] += CONTEXT_FADE_SPEED * fadeSpeedFactor
+                
+            # Exit game when requested
+            elif own["ContextState"] == "ExitGame":
+                bge.logic.endGame()
                 
             # Remove scenes when fade is opaque
             elif own["ContextState"] == "Done":

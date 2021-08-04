@@ -2,6 +2,5 @@
     "VolSfx" : 1.0,
     "VolBgm" : 0.8,
     "Lang" : "English",
-    "Fullscreen" : false,
-    "EnableWidgets" : true
+    "Fullscreen" : false
 }
