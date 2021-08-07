@@ -7,7 +7,7 @@ from ast import literal_eval
 from textwrap import wrap
 from math import radians
 
-from . import DEBUG
+from . import DEBUG, config, database, state, lang, cache
 from .thirdparty.pyp3rclip import copy, paste
 
 
@@ -43,12 +43,9 @@ INPUT_VALID_CHARS = {
     "PRINTABLE" : string.printable,
 }
 
-config = globalDict["Config"]
-db = globalDict["Database"]
-state = globalDict["State"]
 
 if not hasattr(bge.logic, "widgetHovered"):
-    bge.logic.widgetHovered = None
+    bge.logic.__widgetHovered = None
 
 
 # Controller endpoint
@@ -113,7 +110,7 @@ def mouseCursor(cont):
     
     cursorObj = own.childrenRecursive["MouseCursor"]
     canvasObj = own.childrenRecursive["MouseCursorCanvas"]
-    curWidget = bge.logic.widgetHovered # type: KX_GameObject
+    curWidget = bge.logic.__widgetHovered # type: KX_GameObject
     
     if not group:
         own.endObject()
@@ -350,10 +347,10 @@ def clickableProcess(cont):
     
     # Used by mouse cursor
     if mouseOver.positive:
-        bge.logic.widgetHovered = own
+        bge.logic.__widgetHovered = own
         state["Description"] = _getTextFromGroup(cont, True)
-    elif bge.logic.widgetHovered is own:
-        bge.logic.widgetHovered = None
+    elif bge.logic.__widgetHovered is own:
+        bge.logic.__widgetHovered = None
         state["Description"] = ""
     
     if own["WidgetType"] == "Checkbox":
@@ -686,7 +683,7 @@ def _getPropsFromDb(cont):
     group = own.groupObject
     debugProps = True if "Debug" in group and group["Debug"] else False
     
-    widgetDb = globalDict["Database"]["Gui"][own["WidgetType"]] # type: dict
+    widgetDb = database["Gui"][own["WidgetType"]] # type: dict
     own["InlineProps"] = []
     
     for prop in widgetDb.keys():
@@ -710,11 +707,11 @@ def _getPropsFromDb(cont):
         styleName = str(group["Style"])
         styleDb = {}
         
-        if styleName in globalDict["Database"]["Styles"].keys():
-            styleDb = globalDict["Database"]["Styles"][styleName]
+        if styleName in database["Styles"].keys():
+            styleDb = database["Styles"][styleName]
         
-        elif styleName in globalDict["Database"]["Gui"].keys():
-            styleDb = globalDict["Database"]["Gui"][styleName]
+        elif styleName in database["Gui"].keys():
+            styleDb = database["Gui"][styleName]
             
         for prop in styleDb.keys():
             if not prop in own["InlineProps"] and prop in own:
@@ -726,7 +723,7 @@ def _getTextFromGroup(cont, description=False):
     
     own = cont.owner
     group = own.groupObject
-    curLang = globalDict["Lang"][config["Lang"]]
+    curLang = lang[config["Lang"]]
     labelSource = "Label" if not description else "Description"
     
     label = str(group[labelSource]).strip() if labelSource in group else ""
@@ -861,7 +858,6 @@ def _execCommands(cont, instant):
     
     own = cont.owner
     group = own.groupObject
-    config = globalDict["Config"]
     index = 0 if instant else 1
     
     if DEBUG and len(own["Commands"][index]) > 0: print("> Exec commands of", group)

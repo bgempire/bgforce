@@ -13,33 +13,43 @@ DEBUG = True
 VARIABLE_PREFIX = "$"
 
 
-# Global variables
+# Helper variables
 curPath = Path(bge.logic.expandPath("//")).resolve()
+
+
+# Global variables
+config = {}
+database = {}
+lang = {}
+state = {}
+cache = {}
+sounds = {}
+requests = {}
 
 
 def loadFramework():
     # type: () -> None
     """Main function called at start."""
     
-    global DEBUG
+    global DEBUG, config, database, lang, state, cache, sounds, requests
+    
     if DEBUG: print("\n> Initializing framework")
     
-    globalDict["Config"] = loadFile(curPath / "Config")
-    globalDict["Database"] = loadFiles(curPath / "database")
-    globalDict["Lang"] = loadFiles(curPath / "lang")
-    globalDict["State"] = literal_eval(str(globalDict["Database"]["State"]))
-    
-    globalDict["Sounds"] = {
+    config = bge.logic.__config = loadFile(curPath / "Config")
+    database = bge.logic.__database = loadFiles(curPath / "database")
+    lang = bge.logic.__lang = loadFiles(curPath / "lang")
+    state = bge.logic.__state = literal_eval(str(database["State"]))
+    cache = bge.logic.__cache = getFilePaths(curPath / ".cache")
+    requests = bge.logic.__requests = {}
+    sounds = bge.logic.__sounds = {
         "Sfx" : getFilePaths(curPath / "sounds/sfx"),
         "Bgm" : getFilePaths(curPath / "sounds/bgm")
     }
     
-    bge.render.showMouse(globalDict["Database"]["Global"]["MouseNative"])
-    processExitKey(globalDict["Database"]["Global"]["ExitKey"])
-    
+    bge.render.showMouse(database["Global"]["MouseNative"])
+    processExitKey(database["Global"]["ExitKey"])
     if DEBUG: print("> Framework initializated\n")
-    
-    DEBUG = globalDict["Database"]["Global"]["Debug"]
+    DEBUG = database["Global"]["Debug"]
 
 
 def processExitKey(key):
@@ -67,7 +77,7 @@ def processExitKey(key):
     bge.logic.setExitKey(keyCode)
 
 
-def _getJsonNoComments(fileContent):
+def __getJsonNoComments(fileContent):
     # type: (str) -> str
     
     fileData = []
@@ -80,7 +90,7 @@ def _getJsonNoComments(fileContent):
     return "".join(fileData)
 
 
-def _replaceDictVariables(target, variables=None):
+def __replaceDictVariables(target, variables=None):
     # type: (dict, dict) -> None
     """Replaces all variable values from dict recursively."""
         
@@ -110,7 +120,7 @@ def _replaceDictVariables(target, variables=None):
             
         # Do replacement recursively
         elif type(target[key]) == dict:
-            _replaceDictVariables(target[key], variables)
+            __replaceDictVariables(target[key], variables)
 
 
 def loadFile(_file, debugIndent=0):
@@ -130,7 +140,7 @@ def loadFile(_file, debugIndent=0):
     if _file.suffix == ".json":
         with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
             try:
-                data = json.loads(_getJsonNoComments(openedFile.read()))
+                data = json.loads(__getJsonNoComments(openedFile.read()))
                 loaded = True
             except Exception as e:
                 if DEBUG: print(e)
@@ -141,11 +151,11 @@ def loadFile(_file, debugIndent=0):
                     if DEBUG: print((debugIndent * " ") + "X Could not load file:", relativePath)
                     
         # Process variables
-        _replaceDictVariables(data)
+        __replaceDictVariables(data)
             
     elif _file.suffix == ".dat":
         with open(_file.as_posix(), "rb") as openedFile:
-            data = json.loads(_getJsonNoComments(zlib.decompress(openedFile.read()).decode(encoding="utf-8")))
+            data = json.loads(__getJsonNoComments(zlib.decompress(openedFile.read()).decode(encoding="utf-8")))
             loaded = True
             
     if loaded:

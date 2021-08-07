@@ -3,3 +3,4 @@ __pycache__
 *Dump.json
 *dump.json
 .vscode
+.cache

@@ -5,23 +5,18 @@ from bge.logic import globalDict
 from bge.types import *
 from ast import literal_eval
 
-from . import DEBUG
+from . import DEBUG, config, database, state, sounds
 from .. import operators
 
 
 __all__ = ["manager"]
 
 
-config = globalDict["Config"]
-db = globalDict["Database"]
-state = globalDict["State"]
-
-
 CONTEXT_FADE_SPEED = 0.02
 BGM_FADE_SPEED = 0.01
 DEFAULT_PROPS_MANAGER = {
     "ContextTransition" : True,
-    "Context" : ([ctx for ctx in db["Contexts"].keys() if db["Contexts"][ctx].get("Default")] + [""])[0],
+    "Context" : ([ctx for ctx in database["Contexts"].keys() if database["Contexts"][ctx].get("Default")] + [""])[0],
     "ContextState" : "Done",
 }
 DEFAULT_PROPS_FADE = {
@@ -87,7 +82,7 @@ def messageManager(cont):
         bodies = [b for b in message.bodies if b]
         
         if "SetContext" in subjects:
-            for context in db["Contexts"].keys():
+            for context in database["Contexts"].keys():
                 if context in bodies:
                     own["Context"] = context
                     own["ContextTransition"] = True
@@ -102,9 +97,9 @@ def contextManager(cont):
     # type: (SCA_PythonController) -> None
     
     own = cont.owner
-    curContext = db["Contexts"].get(own["Context"]) # type: dict
+    curContext = database["Contexts"].get(own["Context"]) # type: dict
     fadeObj = own["FadeObj"] # type: KX_GameObject
-    fadeSpeedFactor = db["Global"]["ContextFadeSpeed"]
+    fadeSpeedFactor = database["Global"]["ContextFadeSpeed"]
     
     if own["ContextTransition"] and curContext:
         alpha = round(fadeObj.color[3], 2)
@@ -171,10 +166,10 @@ def bgmManager(cont):
     # type: (SCA_PythonController) -> None
     
     own = cont.owner
-    curContext = db["Contexts"].get(own["Context"]) # type: dict
-    bgmDb = globalDict["Sounds"]["Bgm"] # type: dict
+    curContext = database["Contexts"].get(own["Context"]) # type: dict
+    bgmDb = sounds["Bgm"] # type: dict
     handle = own["BgmHandle"] # type: aud.Handle
-    bgmFadeFactor = BGM_FADE_SPEED * config["VolBgm"] * db["Global"]["BgmFadeSpeed"]
+    bgmFadeFactor = BGM_FADE_SPEED * config["VolBgm"] * database["Global"]["BgmFadeSpeed"]
     curBgm = ""
     
     if curContext:

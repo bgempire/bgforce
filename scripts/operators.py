@@ -2,12 +2,7 @@ import bge
 
 from bge.logic import globalDict
 from bge.types import *
-
-
-# Global variables
-config = globalDict["Config"]
-db = globalDict["Database"]
-state = globalDict["State"]
+from .bgf import config, database, state
 
 
 # Custom operators
