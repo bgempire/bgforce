@@ -7,7 +7,7 @@
     "$ColorNormal" : [0.6, 0.6, 1.0, 1.0],
     "$ColorHover" : [0.6, 1.0, 0.6, 1.0],
     "$ColorClick" : [1.0, 0.6, 0.6, 1.0],
-    "$ColorDisabled" : [1.0, 1.0, 1.0, 1.0],
+    "$ColorDisabled" : [0.5, 0.5, 0.5, 1.0],
     "$LabelColor" : [1.0, 1.0, 1.0, 1.0],
     "$LabelColorDisabled" : [0.5, 0.5, 0.5, 1.0],
     "$ShadowEnable" : true,
@@ -196,8 +196,35 @@
         "CursorSpeed" : 0.2,
         "LineBreak" : false
     },
-    
-    
+
+
+    "Image" : {
+        "Transition" : "SlideL",
+        "TransitionSpeed" : "$TransitionSpeed",
+        
+        // Label and shadow
+        "LineSize" : 12,
+        "Justify" : "Left",
+        "LabelColor" : "$LabelColor",
+        "LabelColorDisabled" : "$LabelColorDisabled",
+        "LabelOffset" : "$SquareWidgetLabelOffset",
+        "LabelSize" : 0.65,
+        "ShadowColor" : "$ShadowColor",
+        "ShadowColorDisabled" : "$ShadowColorDisabled",
+        "ShadowOffset" : "$ShadowOffset",
+        "ShadowEnable" : "$ShadowEnable",
+        
+        // Clickable element
+        "TransitionOnClick" : false,
+        "Offset" : [0.0, 0.0],
+        "Size" : "$SquareWidgetSize",
+        "ColorNormal" : "$ColorNormal",
+        "ColorClick" : "$ColorClick",
+        "ColorHover" : "$ColorHover",
+        "ColorDisabled" : "$ColorDisabled"
+    },
+
+
     "MouseCursor" : {
         "Size" : [0.8, 0.8],
         "Offset" : [0.0, 0.0],

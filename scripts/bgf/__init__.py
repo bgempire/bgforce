@@ -2,7 +2,6 @@ import bge
 import json
 import zlib
 
-from bge.logic import globalDict
 from ast import literal_eval
 from pathlib import Path
 from pprint import pformat

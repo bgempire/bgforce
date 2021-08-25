@@ -1,13 +1,15 @@
 import bge
 import string
 
-from bge.logic import globalDict
 from bge.types import *
 from ast import literal_eval
 from textwrap import wrap
 from math import radians
+from pathlib import Path
+from hashlib import md5
 
-from . import DEBUG, config, database, state, lang, cache
+from . import DEBUG, config, database, state, lang, cache, curPath
+from .request import Request
 from .thirdparty.pyp3rclip import copy, paste
 
 
@@ -220,6 +222,9 @@ def widgetInit(cont):
         
     elif own["WidgetType"] == "Input":
         inputAction(cont, "Init")
+        
+    elif own["WidgetType"] == "Image":
+        imageAction(cont, "Init")
 
 
 def widgetProcessEnabled(cont):
@@ -312,6 +317,7 @@ def clickableSetVisual(cont, state, button=""):
     
     own = cont.owner
     clickableObj = own["ClickableObj"]
+    colorState = state
     other = ""
     
     if own["WidgetType"] == "Checkbox":
@@ -331,10 +337,23 @@ def clickableSetVisual(cont, state, button=""):
     elif own["WidgetType"] == "Input":
         if own["InputEnable"]:
             state = "Click"
+        
+    elif own["WidgetType"] == "Image":
+        if own["Loading"]:
+            state = "Loading"
+        elif not own["ImagePathTarget"]:
+            state = "NotFound"
+        elif own["ImageMesh"] in range(1, 11):
+            state = str(own["ImageMesh"])
+        else:
+            state = "NotFound"
     
     clickableObj.replaceMesh(own["WidgetType"] + other + state)
-    clickableObj.color = own["Color" + state]
+    clickableObj.color = own["Color" + colorState]
     labelUpdateTextObj(cont, False)
+    
+    if own["WidgetType"] == "Image" and own["ImagePath"] != own["ImagePathTarget"]:
+        imageAction(cont, "LoadImage")
 
 
 def clickableProcess(cont):
@@ -673,6 +692,102 @@ def inputAction(cont, event):
                 if DEBUG and keyboard.positive: print("> Input", group, "set target to:", repr(eval(target)))
             except:
                 if DEBUG: print("X Input", group, "couldn't set to target:", target)
+
+
+def imageAction(cont, event):
+    # type: (SCA_PythonController, str) -> None
+    
+    def _writeImageToCache(args):
+        # type: (list) -> None
+        
+        request = args[0] # type: Request
+        own = args[1] # type: KX_GameObject
+        filePath = args[2] # type: Path
+        cache = args[3] # type: dict
+        
+        if request.data and type(request.data) == bytes:
+            
+            with open(filePath.as_posix(), "wb") as openedFile:
+                openedFile.write(request.data)
+                cache[filePath.name] = filePath
+                own["ImagePathTarget"] = filePath.as_posix()
+                if DEBUG: print("> Cached file written to:", filePath.as_posix())
+    
+    own = cont.owner
+    group = own.groupObject
+    global DEBUG
+    
+    # Set image widget properties
+    if event == "Init":
+        DEBUG = 1
+        IMAGE_DEFAULT_PROPS = {
+            "ImageMesh" : 1,
+            "ImagePath" : "",
+            "ImagePathTarget" : "",
+            "Loading" : False,
+            "Request" : None,
+        }
+        for prop in IMAGE_DEFAULT_PROPS.keys():
+            own[prop] = IMAGE_DEFAULT_PROPS[prop]
+            if "Debug" in group and group["Debug"]: own.addDebugProperty(prop)
+            
+    # Get image file and ensure if it exists locally
+    if "Image" in group and group["Image"]:
+        imagePath = str(group["Image"])
+        
+        # Process image from external URL
+        if imagePath.startswith(("http:", "https:", "ftp:")):
+            imagePath = imagePath.replace("\\", "")
+            fileCached = curPath / (".cache/" + md5(imagePath.encode()).hexdigest())
+            
+            # Request image from URL and enable image loading
+            if not own["Loading"] and not fileCached.stem in cache.keys():
+                own["Loading"] = True
+                own["Request"] = Request(
+                    imagePath, 
+                    callback=_writeImageToCache, 
+                    callbackArgs=[own, fileCached, cache]
+                )
+                
+            # Set cached image as target image
+            elif fileCached.stem in cache.keys():
+                imagePath = Path(cache[fileCached.stem])
+                
+                if imagePath.exists():
+                    own["Loading"] = False
+                    own["ImagePathTarget"] = imagePath.as_posix()
+                else:
+                    own["ImagePath"] = ""
+                    own["ImagePathTarget"] = ""
+                    if DEBUG: print("X Cached image do not exist:", imagePath)
+            
+        # Process local image
+        else:
+            imagePath = Path(bge.logic.expandPath("//" + imagePath))
+            
+            if imagePath.exists():
+                own["ImagePathTarget"] = imagePath.as_posix()
+                if DEBUG: print("> Relative image:", imagePath)
+            else:
+                own["ImagePath"] = ""
+                own["ImagePathTarget"] = ""
+                if DEBUG: print("X Image do not exist:", imagePath)
+    
+    # Load and set image to material
+    if event == "LoadImage" and own["ImagePath"] != own["ImagePathTarget"]:
+        
+        try:
+            clicakbleObj = own["ClickableObj"] # type: KX_GameObject
+            matId = bge.texture.materialID(clicakbleObj, "MAGuiImage" + str(own["ImageMesh"]))
+            texture = bge.texture.Texture(clicakbleObj, matId)
+            texture.source = bge.texture.ImageFFmpeg(own["ImagePathTarget"])
+            clicakbleObj["TextureImageFFmpeg"] = texture
+            texture.refresh(True)
+            own["ImagePath"] = own["ImagePathTarget"]
+            if DEBUG: print("> Load image on", group)
+            
+        except:
+            if DEBUG: print("X Could not load image on", group)
 
 
 # Helper functions
