@@ -1,11 +1,5 @@
-cache = {}
+from . import cache, DEBUG
 
-try:
-    from . import cache
-except:
-    pass
-
-DEBUG = 0
 
 class Request:
     
@@ -72,16 +66,16 @@ class Request:
             if DEBUG and returnType != "bytes":
                 print("> Return type:", returnType)
                 print(self.data)
-            
-            # Run callback function if provided
-            if self._callback:
-                self._callback([self] + list(self._callbackArgs))
                 
             self.status = "success"
             
         except Exception as e:
             self.status = "error"
             if DEBUG: print(e)
+            
+        # Run callback function if provided
+        if self._callback:
+            self._callback([self] + list(self._callbackArgs))
             
         if DEBUG: print("> Request result:", self.status, "\n")
 
