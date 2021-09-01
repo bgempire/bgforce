@@ -339,9 +339,9 @@ def clickableSetVisual(cont, state, button=""):
             state = "Click"
         
     elif own["WidgetType"] == "Image":
-        if own["Loading"]:
+        if own["ImageStatus"] == "Loading":
             state = "Loading"
-        elif not own["ImagePathTarget"]:
+        elif own["ImageStatus"] == "NotFound":
             state = "NotFound"
         elif own["ImageMesh"] in range(1, 11):
             state = str(own["ImageMesh"])
@@ -712,6 +712,11 @@ def imageAction(cont, event):
                 cache[filePath.name] = filePath
                 own["ImagePathTarget"] = filePath.as_posix()
                 if DEBUG: print("> Cached file written to:", filePath.as_posix())
+                
+        else:
+            own["ImageStatus"] = "NotFound"
+            own["ImagePath"] = ""
+            own["ImagePathTarget"] = ""
     
     own = cont.owner
     group = own.groupObject
@@ -724,25 +729,28 @@ def imageAction(cont, event):
             "ImageMesh" : 1,
             "ImagePath" : "",
             "ImagePathTarget" : "",
-            "Loading" : False,
+            "ImageStatus" : "",
             "Request" : None,
         }
         for prop in IMAGE_DEFAULT_PROPS.keys():
             own[prop] = IMAGE_DEFAULT_PROPS[prop]
             if "Debug" in group and group["Debug"]: own.addDebugProperty(prop)
             
+        if not "UsedMeshes" in own.scene:
+            own.scene["UsedMeshes"] = {}
+            
     # Get image file and ensure if it exists locally
     if "Image" in group and group["Image"]:
         imagePath = str(group["Image"])
+        fileCached = curPath / (".cache/" + md5(imagePath.encode()).hexdigest())
         
         # Process image from external URL
         if imagePath.startswith(("http:", "https:", "ftp:")):
             imagePath = imagePath.replace("\\", "")
-            fileCached = curPath / (".cache/" + md5(imagePath.encode()).hexdigest())
             
             # Request image from URL and enable image loading
-            if not own["Loading"] and not fileCached.stem in cache.keys():
-                own["Loading"] = True
+            if own["ImageStatus"] == "" and not fileCached.stem in cache.keys():
+                own["ImageStatus"] = "Loading"
                 own["Request"] = Request(
                     imagePath, 
                     callback=_writeImageToCache, 
@@ -754,9 +762,10 @@ def imageAction(cont, event):
                 imagePath = Path(cache[fileCached.stem])
                 
                 if imagePath.exists():
-                    own["Loading"] = False
+                    own["ImageStatus"] = "Exists"
                     own["ImagePathTarget"] = imagePath.as_posix()
                 else:
+                    own["ImageStatus"] = "NotFound"
                     own["ImagePath"] = ""
                     own["ImagePathTarget"] = ""
                     if DEBUG: print("X Cached image do not exist:", imagePath)
