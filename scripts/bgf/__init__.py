@@ -5,6 +5,7 @@ import zlib
 from ast import literal_eval
 from pathlib import Path
 from pprint import pformat
+from shutil import rmtree
 
 
 # Constants
@@ -38,12 +39,16 @@ def loadFramework():
     database = bge.logic.__database = loadFiles(curPath / "database")
     lang = bge.logic.__lang = loadFiles(curPath / "lang")
     state = bge.logic.__state = literal_eval(str(database["State"]))
-    cache = bge.logic.__cache = getFilePaths(curPath / ".cache")
     requests = bge.logic.__requests = {}
     sounds = bge.logic.__sounds = {
         "Sfx" : getFilePaths(curPath / "sounds/sfx"),
         "Bgm" : getFilePaths(curPath / "sounds/bgm")
     }
+    
+    if not database["Global"]["Cache"]:
+        rmtree((curPath / ".cache").as_posix())
+        
+    cache = bge.logic.__cache = getFilePaths(curPath / ".cache")
     
     bge.render.showMouse(database["Global"]["MouseNative"])
     processExitKey(database["Global"]["ExitKey"])
