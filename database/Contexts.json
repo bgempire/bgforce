@@ -22,7 +22,7 @@
         "Bgm": "WriteYouJoeyPecoraro",
         "Scenes": [
             {
-                "Name": "ScnMouse",
+                "Name": "ScnMouseCursor",
                 "Pausable": false
             },
             {
@@ -30,7 +30,7 @@
                 "Pausable": false
             },
             {
-                "Name": "ScnMenuBack",
+                "Name": "ScnMenuBackground",
                 "Pausable": false
             }
         ]
