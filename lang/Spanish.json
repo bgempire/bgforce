@@ -1,0 +1,25 @@
+{
+    // General
+    "Yes": "Si",
+    "No": "No",
+    "Enable" : "Habilitar",
+    "Disable" : "Deshabilitar",
+    "Previous": "Anterior",
+    "Next": "Siguiente",
+    "Confirm" : "Confirmar",
+    "Cancel" : "Cancelar",
+    "Loading" : "Cargando...",
+    "SplashScreen": "Este es un ejemplo de texto de pantalla de presentación. Esta pantalla puede contener información sobre el estudio productor del juego, derechos de autor u otra información relevante. Este es un ejemplo de texto de pantalla de presentación. Esta pantalla puede contener información sobre el estudio productor del juego, derechos de autor o cualquier otra información relevante.",
+    
+    // Main menu
+    "MainMenuStart" : "Inicio",
+    "MainMenuOptions" : "Opciones",
+    "MainMenuAbout" : "Acerca",
+    "MainMenuQuit" : "Salir",
+    
+    // Options menu
+    "OptionsVolSfx": "Sonido:",
+    "OptionsVolSfxDesc": "Configurar el volumen de los efectos de sonido.",
+    "OptionsVolBgm": "Música:",
+    "OptionsVolBgmDesc": "Configurar el volumen de la música de fondo."
+}
