@@ -45,7 +45,7 @@ def loadFramework():
         "Bgm" : getFilePaths(curPath / "sounds/bgm")
     }
     
-    if not database["Global"]["Cache"]:
+    if not database["Global"]["Cache"] and (curPath / ".cache").exists():
         rmtree((curPath / ".cache").as_posix())
         
     cache = bge.logic.__cache = getFilePaths(curPath / ".cache")
