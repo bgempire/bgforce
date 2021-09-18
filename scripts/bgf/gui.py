@@ -104,7 +104,6 @@ def mouseCursor(cont):
     # type: (SCA_PythonController) -> None
 
     own = cont.owner
-    group = own.groupObject
     always = cont.sensors["Always"]  # type: SCA_AlwaysSensor
     mouseOver = cont.sensors["MouseOver"] # type: KX_MouseFocusSensor
     lmb = cont.sensors.get("LMB", None) # type: SCA_MouseSensor
@@ -114,14 +113,9 @@ def mouseCursor(cont):
     canvasObj = own.childrenRecursive["MouseCursorCanvas"]
     curWidget = bge.logic.__widgetHovered # type: KX_GameObject
     
-    if not group:
-        own.endObject()
-        return
-    
     if always.positive:
         
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
-            own.setParent(group)
             _getPropsFromDb(cont)
             cursorObj.localScale = list(own["Size"]) + [1]
             canvasObj.localScale = list(own["CanvasSize"]) + [1]
@@ -814,13 +808,12 @@ def meshButtonAction(cont, event):
         clickable.reinstancePhysicsMesh()
         
 
-
 # Helper functions
 def _getPropsFromDb(cont):
     # type: (SCA_PythonController) -> str
     
     own = cont.owner
-    group = own.groupObject
+    group = own.groupObject if own.groupObject else []
     debugProps = True if "Debug" in group and group["Debug"] else False
     
     widgetDb = database["Gui"][own["WidgetType"]] # type: dict
