@@ -225,6 +225,9 @@ def widgetInit(cont):
         
     elif own["WidgetType"] == "Image":
         imageAction(cont, "Init")
+        
+    elif own["WidgetType"] == "MeshButton":
+        meshButtonAction(cont, "ReplaceMesh")
 
 
 def widgetProcessEnabled(cont):
@@ -340,7 +343,7 @@ def clickableSetVisual(cont, state, button=""):
         if own["InputEnable"]:
             state = "Click"
         
-    elif own["WidgetType"] == "Image":
+    elif own["WidgetType"] in ("Image", "MeshButton"):
         performReplace = False
     
     if performReplace:
@@ -795,6 +798,21 @@ def imageAction(cont, event):
             if DEBUG:
                 print("X Could not load image on", group)
                 print("  X Exception:", exception)
+
+
+def meshButtonAction(cont, event):
+    # type: (SCA_PythonController, str) -> None
+    
+    own = cont.owner
+    group = own.groupObject
+    clickable = own["ClickableObj"] # type: KX_GameObject
+    
+    # Set mesh
+    if event == "ReplaceMesh" and "Mesh" in group:
+        mesh = str(group["Mesh"])
+        clickable.replaceMesh(mesh)
+        clickable.reinstancePhysicsMesh()
+        
 
 
 # Helper functions

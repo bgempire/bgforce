@@ -100,6 +100,33 @@
     },
 
 
+    "MeshButton" : {
+        "Transition" : "SlideL",
+        "TransitionSpeed" : "$TransitionSpeed",
+        
+        // Label and shadow
+        "LineSize" : 12,
+        "Justify" : "Left",
+        "LabelColor" : "$LabelColor",
+        "LabelColorDisabled" : "$LabelColorDisabled",
+        "LabelOffset" : "$SquareWidgetLabelOffset",
+        "LabelSize" : 0.65,
+        "ShadowColor" : "$ShadowColor",
+        "ShadowColorDisabled" : "$ShadowColorDisabled",
+        "ShadowOffset" : "$ShadowOffset",
+        "ShadowEnable" : "$ShadowEnable",
+        
+        // Clickable element
+        "TransitionOnClick" : false,
+        "Offset" : [0.0, 0.0],
+        "Size" : "$SquareWidgetSize",
+        "ColorNormal" : "$ColorNormal",
+        "ColorClick" : "$ColorClick",
+        "ColorHover" : "$ColorHover",
+        "ColorDisabled" : "$ColorDisabled"
+    },
+
+
     "Checkbox" : {
         "Transition" : "SlideR",
         "TransitionSpeed" : "$TransitionSpeed",
