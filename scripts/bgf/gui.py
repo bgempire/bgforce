@@ -440,7 +440,9 @@ def listUpdate(cont):
                 
             elif hasattr(sourceList, "__iter__"):
                 tempList = list(sourceList)
-                tempList.sort()
+                
+                if "Sort" in group and group["Sort"]:
+                    tempList.sort()
             
             else:
                 if DEBUG: print("X List", group, "source must be iterable:", group["List"])
