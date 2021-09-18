@@ -119,7 +119,7 @@
         // Clickable element
         "TransitionOnClick" : false,
         "Offset" : [0.0, 0.0],
-        "Size" : "$SquareWidgetSize",
+        "Size" : [1.0, 1.0],
         "ColorNormal" : "$ColorNormal",
         "ColorClick" : "$ColorClick",
         "ColorHover" : "$ColorHover",
@@ -159,15 +159,15 @@
         "TransitionSpeed" : "$TransitionSpeed",
     
         // Label and shadow
-        "LineSize" : "$RectWidgetLineSize",
+        "LineSize" : 22,
         "Justify" : "Center",
         "LabelColor" : "$LabelColor",
         "LabelColorDisabled" : "$LabelColorDisabled",
         "LabelOffset" : "$RectWidgetLabelOffset",
-        "LabelSize" : 0.65,
+        "LabelSize" : 0.5,
         "ShadowColor" : "$ShadowColor",
         "ShadowColorDisabled" : "$ShadowColorDisabled",
-        "ShadowOffset" : "$ShadowOffset",
+        "ShadowOffset" : [0.05, -0.05],
         "ShadowEnable" : "$ShadowEnable",
     
         // Clickable element

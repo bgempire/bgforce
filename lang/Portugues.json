@@ -5,6 +5,7 @@
     "Enable" : "Ativar",
     "Disable" : "Desativar",
     "Previous": "Anterior",
+    "Back": "Voltar",
     "Next": "Próximo",
     "Confirm" : "Confirmar",
     "Cancel" : "Cancelar",
@@ -21,8 +22,19 @@
     "MainMenuQuitMessage" : "Tem certeza que quer sair?",
     
     // Options menu
+    "OptionsTitle": "Opções",
+    "OptionsLang": "Língua:",
+    "OptionsLangDesc": "Escolha a linguagem do jogo.",
+    "OptionsResolution" : "Resolução:",
+    "OptionsResolutionDesc" : "Escolha a resolução do jogo.",
+    "OptionsFullscreen" : "Tela cheia",
+    "OptionsFullscreenDesc" : "Escolha se quer jogar no modo de tela cheia.",
     "OptionsVolSfx": "Som:",
     "OptionsVolSfxDesc": "Definir volume dos efeitos sonoros.",
     "OptionsVolBgm": "Música:",
-    "OptionsVolBgmDesc": "Definir volume da música."
+    "OptionsVolBgmDesc": "Definir volume da música.",
+    
+    // About menu
+    "AboutTitle" : "Sobre",
+    "AboutText" : "BGForce é um framework para Blender Game Engine e UPBGE criado por Joel Gomes (BGEmpire). Você está livre para usá-lo como desejar."
 }
