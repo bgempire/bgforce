@@ -316,9 +316,11 @@ def clickableSetVisual(cont, state, button=""):
     # type: (SCA_PythonController, str, str) -> None
     
     own = cont.owner
-    clickableObj = own["ClickableObj"]
+    clickableObj = own["ClickableObj"] # type: KX_GameObject
     colorState = state
     other = ""
+    meshName = own["WidgetType"] # type: str
+    performReplace = True
     
     if own["WidgetType"] == "Checkbox":
         other = str(own["Checked"])
@@ -327,11 +329,11 @@ def clickableSetVisual(cont, state, button=""):
     elif own["WidgetType"] == "List":
         arrowLeftObj = own["ArrowLeftObj"] # type: KX_GameObject
         arrowRighttObj = own["ArrowRightObj"] # type: KX_GameObject
-        meshName = "ListArrowClick" if state == "Click" else "ListArrow"
+        meshName_ = "ListArrowClick" if state == "Click" else "ListArrow"
             
-        arrowLeftObj.replaceMesh(meshName + "Left")
+        arrowLeftObj.replaceMesh(meshName_ + "Left")
         arrowLeftObj.color = own["ArrowColorClick"] if button == "Right" else own["ArrowColorNormal"]
-        arrowRighttObj.replaceMesh(meshName + "Right")
+        arrowRighttObj.replaceMesh(meshName_ + "Right")
         arrowRighttObj.color = own["ArrowColorClick"] if button == "Left" else own["ArrowColorNormal"]
         
     elif own["WidgetType"] == "Input":
@@ -339,16 +341,11 @@ def clickableSetVisual(cont, state, button=""):
             state = "Click"
         
     elif own["WidgetType"] == "Image":
-        if own["ImageStatus"] == "Loading":
-            state = "Loading"
-        elif own["ImageStatus"] == "NotFound":
-            state = "NotFound"
-        elif own["ImageMesh"] in range(1, 11):
-            state = str(own["ImageMesh"])
-        else:
-            state = "NotFound"
+        performReplace = False
     
-    clickableObj.replaceMesh(own["WidgetType"] + other + state)
+    if performReplace:
+        clickableObj.replaceMesh(meshName + other + state)
+        
     clickableObj.color = own["Color" + colorState]
     labelUpdateTextObj(cont, False)
     
@@ -726,7 +723,6 @@ def imageAction(cont, event):
     if event == "Init":
         DEBUG = 1
         IMAGE_DEFAULT_PROPS = {
-            "ImageMesh" : 1,
             "ImagePath" : "",
             "ImagePathTarget" : "",
             "ImageStatus" : "",
@@ -787,7 +783,7 @@ def imageAction(cont, event):
         
         try:
             clicakbleObj = own["ClickableObj"] # type: KX_GameObject
-            matId = bge.texture.materialID(clicakbleObj, "MAGuiImage" + str(own["ImageMesh"]))
+            matId = clicakbleObj.meshes[0].materials[0].material_index # type: int
             texture = bge.texture.Texture(clicakbleObj, matId)
             texture.source = bge.texture.ImageFFmpeg(own["ImagePathTarget"])
             clicakbleObj["TextureImageFFmpeg"] = texture
@@ -795,8 +791,10 @@ def imageAction(cont, event):
             own["ImagePath"] = own["ImagePathTarget"]
             if DEBUG: print("> Load image on", group)
             
-        except:
-            if DEBUG: print("X Could not load image on", group)
+        except Exception as exception:
+            if DEBUG:
+                print("X Could not load image on", group)
+                print("  X Exception:", exception)
 
 
 # Helper functions
