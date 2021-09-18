@@ -17,6 +17,9 @@
     "MainMenuAbout" : "About",
     "MainMenuQuit" : "Exit",
     
+    // Main menu quit
+    "MainMenuQuitMessage" : "Are you sure you want to quit?",
+    
     // Options menu
     "OptionsVolSfx": "Sound:",
     "OptionsVolSfxDesc": "Set sound effects volume.",
