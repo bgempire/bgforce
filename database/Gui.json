@@ -20,11 +20,13 @@
     "$RectWidgetLabelOffset" : [0.6, 0.67],
     "$RectWidgetSize" : [1.9, 1.5],
     "$RectWidgetLineSize" : 16,
+    "$UpdateFrequency" : 20,
     
     
     "Label" : {
         "Transition" : "Arc",
         "TransitionSpeed" : "$TransitionSpeed",
+        "UpdateFrequency" : "$UpdateFrequency",
         
         // Label and shadow,
         "LineSize" : 50,
@@ -43,6 +45,7 @@
     "Button" : {
         "Transition" : "SlideR",
         "TransitionSpeed" : "$TransitionSpeed",
+        "UpdateFrequency" : "$UpdateFrequency",
     
         // Label and shadow
         "LineSize" : "$RectWidgetLineSize",
@@ -70,6 +73,7 @@
     "IconButton" : {
         "Transition" : "SlideL",
         "TransitionSpeed" : "$TransitionSpeed",
+        "UpdateFrequency" : "$UpdateFrequency",
         
         // Label and shadow
         "LineSize" : 12,
@@ -103,6 +107,7 @@
     "MeshButton" : {
         "Transition" : "SlideL",
         "TransitionSpeed" : "$TransitionSpeed",
+        "UpdateFrequency" : "$UpdateFrequency",
         
         // Label and shadow
         "LineSize" : 12,
@@ -130,6 +135,7 @@
     "Checkbox" : {
         "Transition" : "SlideR",
         "TransitionSpeed" : "$TransitionSpeed",
+        "UpdateFrequency" : "$UpdateFrequency",
     
         // Label and shadow
         "LineSize" : 40,
@@ -157,6 +163,7 @@
     "List" : {
         "Transition" : "SlideL",
         "TransitionSpeed" : "$TransitionSpeed",
+        "UpdateFrequency" : "$UpdateFrequency",
     
         // Label and shadow
         "LineSize" : 22,
@@ -190,6 +197,7 @@
     "Input" : {
         "Transition" : "SlideL",
         "TransitionSpeed" : "$TransitionSpeed",
+        "UpdateFrequency" : "$UpdateFrequency",
     
         // Label and shadow
         "LineSize" : "$RectWidgetLineSize",
@@ -228,6 +236,7 @@
     "Image" : {
         "Transition" : "SlideL",
         "TransitionSpeed" : "$TransitionSpeed",
+        "UpdateFrequency" : "$UpdateFrequency",
         
         // Label and shadow
         "LineSize" : 12,
