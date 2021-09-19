@@ -16,7 +16,7 @@ from .thirdparty.pyp3rclip import copy, paste
 __all__ = ["widget", "mouseCursor"]
 
 
-ALWAYS_SKIPPED_TICKS = 10
+ALWAYS_SKIPPED_TICKS = 5
 COMMAND_SEPARATOR = " | "
 IMPORTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
@@ -71,14 +71,20 @@ def widget(cont):
         # Initialize widget at start
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
             widgetInit(cont)
+            
+            if own["ClickableObj"]:
+                clickableSetVisual(cont, "Normal")
         
         # Update label if property Update is provided
-        if "Update" in group and group["Update"] >= 0 and not own.isPlayingAction():
+        if own.isPlayingAction():
+            always.skippedTicks = ALWAYS_SKIPPED_TICKS
+        
+        elif "Update" in group and group["Update"] >= 0:
             always.skippedTicks = group["Update"]
             labelUpdateTextObj(cont)
             
         else:
-            always.skippedTicks = ALWAYS_SKIPPED_TICKS
+            always.skippedTicks = own["UpdateFrequency"]
         
         # Start transition when GUI update is requested
         if message.positive and not own.isPlayingAction():
@@ -204,7 +210,12 @@ def widgetInit(cont):
     if own["Transition"] in TRANSITION_ANIMS.keys():
         own["TransitionState"] = "Showing"
     own["InitTransition"] = False
-        
+    
+    # Show objects at start
+    for objRef in OBJ_REF_PROPS.keys():
+        if objRef != "LabelShadowObj" and own[objRef]:
+            own[objRef].visible = True
+            
     if own["WidgetType"] == "Checkbox":
         checkboxAction(cont, True)
         
@@ -281,12 +292,9 @@ def processTransition(cont):
     group = own.groupObject
     camera = own.scene.active_camera
     curAnim = TRANSITION_ANIMS.get(own["Transition"])
+    always = cont.sensors["Always"] # type: SCA_AlwaysSensor
     
     if own["TransitionState"] == "Shown" and not own["InitTransition"]:
-        for objRef in OBJ_REF_PROPS.keys():
-            if objRef != "LabelShadowObj" and own[objRef]:
-                own[objRef].visible = True
-                
         own["InitTransition"] = True
     
     if not own.isPlayingAction() and curAnim:
