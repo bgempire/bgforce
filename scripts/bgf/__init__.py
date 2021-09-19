@@ -49,6 +49,7 @@ def loadFramework():
         rmtree((curPath / ".cache").as_posix())
         
     cache = bge.logic.__cache = getFilePaths(curPath / ".cache")
+    database["Keys"] = getGameKeys()
     
     bge.render.showMouse(database["Global"]["MouseNative"])
     processExitKey(database["Global"]["ExitKey"])
@@ -236,6 +237,21 @@ def getFilePaths(directory, debugIndent=0):
         directory.mkdir(parents=True)
         
     return data
+
+
+def getGameKeys():
+    keys = {
+        "NameCode" : {},
+        "CodeName" : {},
+    }
+    
+    for alias in dir(bge.events):
+        if alias.isupper():
+            code = eval("bge.events." + alias)
+            keys["NameCode"][alias] = code
+            keys["CodeName"][code] = alias
+            
+    return keys
 
 
 loadFramework()
