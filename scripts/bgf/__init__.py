@@ -88,7 +88,7 @@ def __getJsonNoComments(fileContent):
     
     for i in fileContent.splitlines():
         i = i.strip()
-        if i and not i.startswith("//"):
+        if i and not i.startswith(("//", "#")):
             fileData.append(i.strip())
             
     return "".join(fileData)
@@ -140,11 +140,15 @@ def loadFile(_file, debugIndent=0):
     data = {}
     relativePath = _file.as_posix().replace(curPath.as_posix(), "")[1:]
     loaded = False
+    isDict = True
         
     if _file.suffix == ".json":
         with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
+            dataRaw = __getJsonNoComments(openedFile.read())
+            isDict = dataRaw.startswith("{")
+            
             try:
-                data = json.loads(__getJsonNoComments(openedFile.read()))
+                data = json.loads(dataRaw)
                 loaded = True
             except Exception as e:
                 if DEBUG: print(e)
@@ -155,7 +159,7 @@ def loadFile(_file, debugIndent=0):
                     if DEBUG: print((debugIndent * " ") + "X Could not load file:", relativePath)
                     
         # Process variables
-        __replaceDictVariables(data)
+        if isDict: __replaceDictVariables(data)
             
     elif _file.suffix == ".dat":
         with open(_file.as_posix(), "rb") as openedFile:
