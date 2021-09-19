@@ -1,5 +1,6 @@
 import bge
 import aud
+import sys
 
 from bge.logic import globalDict
 from bge.types import *
@@ -59,6 +60,10 @@ def managerInit(cont):
     for prop in DEFAULT_PROPS_MANAGER.keys():
         own[prop] = DEFAULT_PROPS_MANAGER[prop]
         if DEBUG: own.addDebugProperty(prop)
+        
+    # Get context from command line arguments
+    if sys.argv[-1] in database["Contexts"].keys():
+        own["Context"] = sys.argv[-1]
     
     # Init fade props
     for prop in DEFAULT_PROPS_FADE.keys():
