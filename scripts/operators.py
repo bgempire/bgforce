@@ -1,18 +1,20 @@
 import bge
 
-from bge.logic import globalDict
 from bge.types import *
-from .bgf import config, database, state
+
+
+# Default operators
+def saveConfig(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    from .bgf import curPath, config, saveFile
+    saveFile(curPath / "Config.json", config)
 
 
 # Custom operators
-def testFunction(cont):
-    # type: (SCA_PythonController) -> None
-    
-    print(cont.name)
 
 
 # Main declaration
 OPERATORS = {
-    "TestFunction" : testFunction
+    "SaveConfig" : saveConfig,
 }

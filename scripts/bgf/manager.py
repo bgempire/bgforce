@@ -7,7 +7,6 @@ from bge.types import *
 from ast import literal_eval
 
 from . import DEBUG, config, database, state, sounds
-from .. import operators
 
 
 __all__ = ["manager"]
@@ -79,23 +78,47 @@ def managerInit(cont):
 def messageManager(cont):
     # type: (SCA_PythonController) -> None
     
+    from ..operators import OPERATORS
+    
     own = cont.owner
     message = cont.sensors["Message"] # type: KX_NetworkMessageSensor
         
     if message.positive:
-        subjects = [s for s in message.subjects if s]
-        bodies = [b for b in message.bodies if b]
+        subjects = list(message.subjects) # type: list[str]
+        bodies = list(message.bodies) # type: list[str]
         
-        if "SetContext" in subjects:
-            for context in database["Contexts"].keys():
-                if context in bodies:
-                    own["Context"] = context
+        # Get one-line operators
+        for i in range(len(subjects)):
+            subject = [s.strip() for s in subjects[i].split(":", 1) if s.strip()]
+            
+            if len(subject) == 2:
+                subjects[i] = subject[0]
+                bodies[i] = subject[1]
+            
+        # Run operators
+        for i in range(len(subjects)):
+            subject = subjects[i]
+            body = bodies[i]
+            
+            if subject == "SetContext":
+                if body in database["Contexts"].keys():
+                    own["Context"] = body
                     own["ContextTransition"] = True
                     break
-        
-        if "ExitGame" in subjects:
-            own["ContextState"] = "ExitGame"
-            own["ContextTransition"] = True
+            
+            elif subject == "ExitGame":
+                own["ContextState"] = "ExitGame"
+                own["ContextTransition"] = True
+                
+            # Run custom operator
+            elif subject in OPERATORS.keys():
+                try:
+                    OPERATORS[subject](cont, body)
+                except TypeError as e1:
+                    try:
+                        OPERATORS[subject](cont)
+                    except Exception as e2:
+                        if DEBUG: print(e2)
 
 
 def contextManager(cont):
