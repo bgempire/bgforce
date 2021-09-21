@@ -78,7 +78,8 @@ def managerInit(cont):
 def messageManager(cont):
     # type: (SCA_PythonController) -> None
     
-    from ..operators import OPERATORS
+    from .operators import OPERATORS as OPERATORS_DEFAULT
+    from ..operators import OPERATORS as OPERATORS_CUSTOM
     
     own = cont.owner
     message = cont.sensors["Message"] # type: KX_NetworkMessageSensor
@@ -104,21 +105,19 @@ def messageManager(cont):
                 if body in database["Contexts"].keys():
                     own["Context"] = body
                     own["ContextTransition"] = True
-                    break
             
             elif subject == "ExitGame":
                 own["ContextState"] = "ExitGame"
                 own["ContextTransition"] = True
                 
             # Run custom operator
-            elif subject in OPERATORS.keys():
-                try:
-                    OPERATORS[subject](cont, body)
-                except TypeError as e1:
-                    try:
-                        OPERATORS[subject](cont)
-                    except Exception as e2:
-                        if DEBUG: print(e2)
+            elif subject in OPERATORS_DEFAULT.keys() or subject in OPERATORS_CUSTOM.keys():
+                operatorFunction = OPERATORS_DEFAULT.get(subject, OPERATORS_CUSTOM[subject])
+                
+                if body:
+                    operatorFunction(cont, body)
+                else:
+                    operatorFunction(cont)
 
 
 def contextManager(cont):
