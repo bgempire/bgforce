@@ -440,7 +440,7 @@ def listUpdate(cont):
     
     if "List" in group:
         try:
-            sourceList = eval(group["List"])
+            sourceList = eval(str(group["List"]))
             
             if type(sourceList) == dict:
                 tempList = [key for key in sourceList.keys()]
@@ -461,13 +461,28 @@ def listUpdate(cont):
             if DEBUG: print("X List", group, "invalid source:", group["List"])
             
     if "Target" in group:
-        try:
-            tempTarget = eval(group["Target"])
-            own["Target"] = group["Target"]
-            tempIndex = tempList.index(tempTarget) if tempTarget in tempList else tempIndex
+        tempTarget = str(group["Target"])
+        
+        if not tempTarget.startswith("!"):
+            try:
+                tempTarget = eval(tempTarget)
+                own["Target"] = str(group["Target"])
+                tempIndex = tempList.index(tempTarget) if tempTarget in tempList else tempIndex
+            except:
+                if DEBUG: print("X List", group, "invalid target:", group["Target"])
             
-        except:
-            if DEBUG: print("X List", group, "invalid target:", group["Target"])
+        else:
+            tempTarget = tempTarget[1:]
+            
+            if tempIndex > -1:
+                try:
+                    exec(tempTarget + " = " + repr(tempList[tempIndex]))
+                    own["Target"] = tempTarget
+                except:
+                    if DEBUG: print("X List", group, "invalid target:", group["Target"])
+                    
+            else:
+                if DEBUG: print("X List", group, "no source List for Target:", group["Target"])
             
     own["List"] = tempList
     own["Index"] = tempIndex
