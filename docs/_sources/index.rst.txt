@@ -3,16 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to BGForce's documentation!
-===================================
+BGForce: Manual de Referência
+==============================
+
+Bem vindo ao manual do BGForce! Aqui você encontrará o manual e as definições 
+do framework, além de dicas de como usar as features. Utilize o menu de 
+navegação para achar o que procura.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Conteúdo:
+   
+   pages/introduction
 
 
-
-Indices and tables
+Índices e Tabelas
 ==================
 
 * :ref:`genindex`
