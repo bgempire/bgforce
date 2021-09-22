@@ -15,6 +15,7 @@ navegação para achar o que procura.
    :caption: Conteúdo:
    
    pages/introduction
+   pages/structure
 
 
 Índices e Tabelas
