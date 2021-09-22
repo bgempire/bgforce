@@ -18076,10 +18076,8 @@ html body .md-typeset .headerlink {
     margin: 0
 }
 
-@media(min-width:768px) {
-    .td-sidebar-nav__section>ul {
-        padding-left: .5rem
-    }
+.td-sidebar-nav__section>ul {
+    padding-left: .5rem
 }
 
 .td-sidebar-nav__section-title {
