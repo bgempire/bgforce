@@ -1,6 +1,3 @@
-__pycache__
-.vscode
-docs/doctrees
-docs/html
-docs/.buildinfo
-*.inv
+vendor
+_site
+Gemfile.lock
