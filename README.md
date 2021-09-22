@@ -1,6 +1,6 @@
 # BGForce
 
-### [Manual em Português](https://github.com/bgempire/bgforce/wiki)
+### [Manual em Português](https://bgempire.github.io/bgforce/)
 
 **BGForce** is a [Blender Game Engine](https://en.wikipedia.org/wiki/Blender_Game_Engine) framework with 
 pre-made common systems such as GUI and data management. It acts as a boilerplate project, but also provides 
