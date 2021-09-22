@@ -1,6 +1,5 @@
 __pycache__
 .vscode
-docs/_sources
 docs/doctrees
 docs/html
 docs/.buildinfo
