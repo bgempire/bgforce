@@ -1,9 +1,4 @@
-// Contexts definitions, including containing groups of scenes and its definitions
-// - Default: If this is the default context when starting the game
-// - Loading: Name of the loading scene between last and current context, or omit to disable
-// - Scenes: List of scenes this context is composed of
-//     - Name: Name of scene that is part of the context
-//     - Pausable: If scene is pausable when game pause is requested
+// Contexts definitions containing groups of scenes and its settings
 
 {
     // Splash screen
