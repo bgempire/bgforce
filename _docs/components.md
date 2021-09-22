@@ -5,18 +5,18 @@ description:
 
 # Componentes
 BGForce contém alguns componentes que podem ser adicionados ao jogo. Estes componentes estão no formato 
-de cenas dentro do arquivo `LibBgf.blend`, e podem ser linkadas (`File` > `Link`) no arquivo blend 
+de cenas dentro do arquivo **`LibBgf.blend`**, e podem ser linkadas (`File` > `Link`) no arquivo blend 
 principal do jogo para uso.
 
-## Gerenciador: `LibBgf.blend` > `ScnManager`
+## Gerenciador: ScnManager
 
 ![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-components-00.png)
 
 A cena `ScnManager` é o gerenciador principal do BGForce. Apenas através do uso dela que podemos 
 utilizar os recursos de:
 
-- [Execução de operadores](https://github.com/bgempire/bgforce/wiki/Operadores)
-- [Troca de contextos](https://github.com/bgempire/bgforce/wiki/Contextos)
+- [Execução de operadores]({{ site.baseurl }}/operators)
+- [Troca de contextos]({{ site.baseurl }}/contexts)
 - Reprodução de música e efeitos sonoros
 - Transição de fade in/out de música e cenas
 
@@ -24,7 +24,7 @@ A cena `ScnManager` **deve ser a cena ativa no arquivo blend principal do jogo**
 de contextos do jogo serão obedecidas, adicionando e removendo outras cenas automaticamente e podendo executar 
 as mais diversas ações por meio dos operadores.
 
-## Cursor do Mouse: `LibBgf.blend` > `ScnMouseCursor`
+## Cursor do Mouse: ScnMouseCursor
 
 ![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-components-01.png)
 

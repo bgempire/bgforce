@@ -12,5 +12,5 @@ ao serem clicados.
 ## Propriedades
 Este widget é composto por outros widgets, portanto consulte as seguintes páginas para referência de outras 
 propriedades que este widget suporta.
-- [Widgets Clicáveis](https://github.com/bgempire/bgforce/wiki/Widgets-Clicáveis#propriedades) 
-- [GuiLabel](https://github.com/bgempire/bgforce/wiki/GuiLabel#propriedades)
+- [Widgets Clicáveis]({{ site.baseurl }}/widgets/clickable#propriedades) 
+- [GuiLabel]({{ site.baseurl }}/widgets/label#propriedades)

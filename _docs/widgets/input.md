@@ -7,10 +7,12 @@ description:
 Em progresso...
 
 ## Propriedades
-Abaixo estão listadas as propriedades únicas deste widget. Este widget é composto por outros widgets, portanto consulte 
-as seguintes páginas para referência de outras propriedades que este widget suporta.
-- [Widgets Clicáveis](https://github.com/bgempire/bgforce/wiki/Widgets-Clicáveis#propriedades) 
-- [GuiLabel](https://github.com/bgempire/bgforce/wiki/GuiLabel#propriedades)
+Abaixo estão listadas as propriedades únicas deste widget. Este widget é 
+composto por outros widgets, portanto consulte as seguintes páginas para 
+referência de outras propriedades que este widget suporta.
+
+- [Widgets Clicáveis]({{ site.baseurl }}/widgets/clickable#propriedades) 
+- [GuiLabel]({{ site.baseurl }}/widgets/label#propriedades)
 
 ### Target
 - Expressão representando o alvo que este widget deve alterar. Por exemplo: uma propriedade `Target` com valor 

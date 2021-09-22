@@ -22,7 +22,7 @@ de contextos do BGForce.
 ## Conceito
 Contextos no BGForce são definições de cenas e configurações que serão usadas para alterar grupos de cenas, 
 músicas e ainda fará transições suaves ao alterar tais elementos, entre outras funcionalidades, tudo isso 
-com o disparo de um operador [`SetContext`](https://github.com/bgempire/bgforce/wiki/Operadores-Padrão#setcontext). 
+com o disparo de um operador [`SetContext`]({{ site.baseurl }}/operators/default#setcontext). 
 O arquivo que contém todas as definições de contextos do jogo é `database/Contexts.json`.
 
 Abaixo está o modelo comum da definição de um contexto:

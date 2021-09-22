@@ -6,26 +6,30 @@ title: GuiLabel
 # GuiLabel
 ![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-label-00.png)
 
-**GuiLabels** são rótulos de texto dinâmicos que permitem a exibição de textos a partir de diversas fontes, sejam elas:
+**GuiLabels** são rótulos de texto dinâmicos que permitem a exibição de textos 
+a partir de diversas fontes, sejam elas:
 
 - Textos estáticos
 - Textos dinâmicos
 - Traduções
 
-A principal propriedade para uma GuiLabel é a propriedade `Label`, que terá um texto estático ou uma referência para um texto dinâmico.
+A principal propriedade para uma GuiLabel é a propriedade `Label`, que terá um 
+texto estático ou uma referência para um texto dinâmico.
 
 ## Textos Estáticos
 
 ![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-label-01.png)
 
-Os textos estáticos são simplesmente um texto simples definido para a propriedade `Label`.
+Os textos estáticos são simplesmente um texto simples definido para a 
+propriedade `Label`.
 
 ## Textos Dinâmicos
 
 ![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-label-02.png)
 
-Os textos dinâmicos são um valor obtido através de uma expressão de Python. É possível obter resultados de chamadas de funções, 
-valores de listas ou qualquer outra expressão que esteja disponível no escopo.
+Os textos dinâmicos são um valor obtido através de uma expressão de Python. É 
+possível obter resultados de chamadas de funções, valores de listas ou 
+qualquer outra expressão que esteja disponível no escopo.
 
 Os textos dinâmicos utilizam um caractere `>` antes da expressão.
 
@@ -33,10 +37,11 @@ Os textos dinâmicos utilizam um caractere `>` antes da expressão.
 
 ![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-label-03.png)
 
-Traduções são um tipo especial de texto dinâmico que variam de acordo com a linguagem definida no `Config.json` na raiz do projeto.
+Traduções são um tipo especial de texto dinâmico que variam de acordo com a 
+linguagem definida no `Config.json` na raiz do projeto.
 
-As traduções utilizam um caractere `#` seguido de uma palavra chave que deve estar disponível nos arquivos de linguagem 
-na pasta `lang`. Por exemplo:
+As traduções utilizam um caractere `#` seguido de uma palavra chave que deve 
+estar disponível nos arquivos de linguagem na pasta `lang`. Por exemplo:
 
 - Definir a propriedade `Label` para `#Yes`
 - Em `lang/English.json`
@@ -44,9 +49,13 @@ na pasta `lang`. Por exemplo:
 - Em `lang/Portugues.json`
     - `"Yes" : "Sim"`
 
-Neste caso, a GuiLabel mostrará `"Yes"` caso a linguagem definida em `Config.json` for `"English"`, e mostrará `"Sim"` caso a linguagem definida em `Config.json` for `"Portugues"`.
+Neste caso, a GuiLabel mostrará `"Yes"` caso a linguagem definida em 
+`Config.json` for `"English"`, e mostrará `"Sim"` caso a linguagem definida 
+em `Config.json` for `"Portugues"`.
 
-**Observação:** A sintaxe de tradução nada mais é do que um atalho para a expressão de texto dinâmico:
+**Observação:** A sintaxe de tradução nada mais é do que um atalho para a 
+expressão de texto dinâmico:
+
 - `lang[config["Lang"]]["PalavraChave"]`.
 
 ## Propriedades

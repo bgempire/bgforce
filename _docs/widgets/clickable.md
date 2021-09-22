@@ -5,15 +5,15 @@ title: Widgets Clicáveis
 
 # Widgets Clicáveis
 Um **widget clicável** é um controle que permite a execução de comandos ao ser clicado.
-Todos os widgets, com exceção da [GuiLabel](https://github.com/bgempire/bgforce/wiki/GuiLabel), 
+Todos os widgets, com exceção da [GuiLabel]({{ site.baseurl }}/widgets/label), 
 são clicáveis, e isso inclui:
 
-- [GuiButton](https://github.com/bgempire/bgforce/wiki/GuiButton)
-- [GuiIconButton](https://github.com/bgempire/bgforce/wiki/GuiIconButton)
-- [GuiMeshButton](https://github.com/bgempire/bgforce/wiki/GuiMeshButton)
-- [GuiCheckbox](https://github.com/bgempire/bgforce/wiki/GuiCheckbox)
-- [GuiList](https://github.com/bgempire/bgforce/wiki/GuiList)
-- [GuiInput](https://github.com/bgempire/bgforce/wiki/GuiInput)
+- [GuiButton]({{ site.baseurl }}/widgets/button)
+- [GuiIconButton]({{ site.baseurl }}/widgets/iconbutton)
+- [GuiMeshButton]({{ site.baseurl }}/widgets/meshbutton)
+- [GuiCheckbox]({{ site.baseurl }}/widgets/checkbox)
+- [GuiList]({{ site.baseurl }}/widgets/list)
+- [GuiInput]({{ site.baseurl }}/widgets/input)
 
 ## Comandos
 

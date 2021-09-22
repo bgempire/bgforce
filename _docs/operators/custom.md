@@ -5,7 +5,7 @@ description:
 
 # Operadores Customizados
 Os operadores customizados são funções que o usuário desenvolve por conta própria e configura para serem executadas 
-através do disparo de uma mensagem, semelhante ao uso dos [operadores padrão](https://github.com/bgempire/bgforce/wiki/Operadores-Padrão).
+através do disparo de uma mensagem, semelhante ao uso dos [operadores padrão]({{ site.baseurl }}/operators/default).
 
 **Importante:** Todos os operadores customizados necessitam do componente 
 [`ScnManager`][1] ativo no jogo para serem executados.
@@ -50,4 +50,4 @@ OPERATORS = {
 
 O usuário pode adicionar quantas funções desejar a esta constante, e então poderá invocar seus próprios operadores através de mensagens.
 
-[1]: https://github.com/bgempire/bgforce/wiki/Componentes
+[1]: {{ site.baseurl }}/components

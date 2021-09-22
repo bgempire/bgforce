@@ -7,7 +7,7 @@ description:
 Os operadores padrão são aqueles que já estão disponíveis para uso no BGForce. 
 
 **Importante:** Com exceção do operador `UpdateGui`, todos os outros operadores necessitam do componente 
-[`ScnManager`](https://github.com/bgempire/bgforce/wiki/Componentes) ativo no jogo para serem executados.
+[`ScnManager`]({{ site.baseurl }}/components) ativo no jogo para serem executados.
 
 ## Referência
 

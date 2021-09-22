@@ -65,7 +65,7 @@ O script `scripts/operators.py` permite que funções sejam facilmente executada
 livre para editar este arquivo à vontade **contanto que não remova a declaração do dicionário `OPERATORS`**. 
 O dicionário `OPERATORS` deve conter o padrão `"NomeDoOperador" : funcaoEmPython`, e a partir disso será possível 
 executar as funções através de uma mensagem como `NomeDoOperador:Argumentos`. Veja mais em 
-[Operadores Customizados](https://github.com/bgempire/bgforce/wiki/Operadores-Customizados).
+[Operadores Customizados]({{ site.baseurl }}/operators/custom).
 
 ## sounds
 A pasta `sounds` contém os sons utilizados no jogo. Ao iniciar o jogo, a lista de todos os sons dentro 
@@ -94,8 +94,8 @@ as texturas existentes para criar seu próprio tema de interface de usuário.
 ## LibBgf.blend
 O arquivo `LibBgf.blend` contém todos os grupos e componentes (cenas) necessários para o funcionamento do framework. Nele se encontram:
 
-- Grupos de [widgets](https://github.com/bgempire/bgforce/wiki/Widgets) de interface de usuário
-- Cenas de [componentes](https://github.com/bgempire/bgforce/wiki/Componentes)
+- Grupos de [widgets]({{ site.baseurl }}/widgets) de interface de usuário
+- Cenas de [componentes]({{ site.baseurl }}/components)
     - ScnManager (gerenciador do BGForce)
     - ScnMouseCursor (cursor do mouse personalizável)
 

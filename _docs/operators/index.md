@@ -10,7 +10,7 @@ padrão e dá ao usuário a possibilidade de criar operadores customizados.
 
 ## Conceito
 Operadores são disparados através de mensagens a partir de qualquer objeto, seja por blocos de lógica, Python 
-ou a partir de commandos de [widgets clicáveis](https://github.com/bgempire/bgforce/wiki/Widgets-Clicáveis). 
+ou a partir de commandos de [widgets clicáveis]({{ site.baseurl }}/widgets/clickable). 
 Com isso, o padrão de mensagens para disparar operadores é:
 
 - Mensagens sem corpo
@@ -33,5 +33,5 @@ bge.logic.sendMessage("UpdateGui", "Formulario")
 ```
 
 O operador `UpdateGui` é recebido apenas por widgets de interface de usuário, já todos os outros operadores 
-(sejam eles padrão ou customizados) **precisam da cena de gerenciador [`ScnManager`](https://github.com/bgempire/bgforce/wiki/Componentes) 
+(sejam eles padrão ou customizados) **precisam da cena de gerenciador [`ScnManager`]({{ site.baseurl }}/components) 
 para funcionarem**.

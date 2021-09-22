@@ -12,8 +12,8 @@ elemento de [GuiLabel][2], sendo ambos personalizáveis em suas respectivas prop
 ## Propriedades
 Abaixo está listada a propriedade única deste widget. Este widget é composto por outros widgets, portanto consulte 
 as seguintes páginas para referência de outras propriedades que este widget suporta.
-- [Widgets Clicáveis](https://github.com/bgempire/bgforce/wiki/Widgets-Clicáveis#propriedades) 
-- [GuiLabel](https://github.com/bgempire/bgforce/wiki/GuiLabel#propriedades)
+- [Widgets Clicáveis]({{ site.baseurl }}/widgets/clickable#propriedades) 
+- [GuiLabel]({{ site.baseurl }}/widgets/label#propriedades)
 
 ### Icon
 - Número de índice que representa um ícone presente na textura `textures/gui/IconButtonIcons.png`.
@@ -35,6 +35,6 @@ as seguintes páginas para referência de outras propriedades que este widget su
 - Fator de escala `[x, y]` do elemento de ícone. Exemplo: `[1.5, 2.0]`.
 - **Tipo:** [float, float]
 
-[1]: https://github.com/bgempire/bgforce/wiki/Widgets-Clicáveis
-[2]: https://github.com/bgempire/bgforce/wiki/GuiLabel
-[3]: https://github.com/bgempire/bgforce/wiki/GuiButton
+[1]: {{ site.baseurl }}/widgets/clickable
+[2]: {{ site.baseurl }}/widgets/label
+[3]: {{ site.baseurl }}/widgets/button
