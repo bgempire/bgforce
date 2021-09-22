@@ -1,1 +1,4 @@
 __pycache__
+docs/html
+docs/doctrees
+.vscode
