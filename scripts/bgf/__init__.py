@@ -45,7 +45,20 @@ def loadFramework():
         "Bgm" : getFilePaths(curPath / "sounds/bgm")
     }
     
+    # Get numeric definitions of resolutions
     bge.logic.__resolutions = getResolutions()
+    
+    # Remove outdated keys from config
+    configKeys = tuple(config.keys())
+    
+    for key in configKeys:
+        if not key in database["Config"].keys():
+            del config[key]
+    
+    # Add to config new keys from database
+    for key in database["Config"].keys():
+        if not key in config.keys():
+            config[key] = database["Config"][key]
     
     database["Keys"] = getGameKeys()
     

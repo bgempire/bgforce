@@ -1,0 +1,9 @@
+// Default config
+
+{
+    "Fullscreen" : false,
+    "Lang" : "English",
+    "Resolution" : "960x540",
+    "VolBgm" : 0.8,
+    "VolSfx" : 1.0
+}
