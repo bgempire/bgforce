@@ -112,12 +112,13 @@ def messageManager(cont):
                 
             # Run custom operator
             elif subject in OPERATORS_DEFAULT.keys() or subject in OPERATORS_CUSTOM.keys():
-                operatorFunction = OPERATORS_DEFAULT.get(subject, OPERATORS_CUSTOM[subject])
+                operatorFunction = OPERATORS_DEFAULT.get(subject, OPERATORS_CUSTOM.get(subject))
                 
-                if body:
-                    operatorFunction(cont, body)
-                else:
-                    operatorFunction(cont)
+                if operatorFunction is not None:
+                    if body:
+                        operatorFunction(cont, body)
+                    else:
+                        operatorFunction(cont)
 
 
 def contextManager(cont):
