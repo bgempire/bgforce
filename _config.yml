@@ -16,7 +16,7 @@
 
 title: BGForce
 email: your-email@domain.com
-author: BGEmpire, Joel Gomes da Silva
+author: BGEmpire, Joel Gomes
 description: > # this means to ignore newlines until "baseurl:"
   Blender Game Engine framework with pre-made common systems such as GUI and data management.
 
