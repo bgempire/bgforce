@@ -45,10 +45,8 @@ def loadFramework():
         "Bgm" : getFilePaths(curPath / "sounds/bgm")
     }
     
-    if not database["Global"]["Cache"] and (curPath / ".cache").exists():
-        rmtree((curPath / ".cache").as_posix())
-        
-    cache = bge.logic.__cache = getFilePaths(curPath / ".cache")
+    bge.logic.__resolutions = getResolutions()
+    
     database["Keys"] = getGameKeys()
     
     bge.render.showMouse(database["Global"]["MouseNative"])
@@ -252,6 +250,32 @@ def getGameKeys():
             keys["CodeName"][code] = alias
             
     return keys
+
+
+def getResolutions():
+    # type: () -> dict[str, list]
+    
+    resolutions = {}
+    displayDimensions = list(bge.render.getDisplayDimensions())
+    
+    for resolution in database["Resolutions"]:
+        resolution = str(resolution)
+        
+        if resolution:
+            if not resolution[0].isnumeric():
+                resolutions[resolution] = displayDimensions
+                
+            else:
+                resolutionList = resolution.lower().split("x")
+                resolutionList = [int(r) for r in resolutionList]
+                
+                if resolutionList[0] <= displayDimensions[0] \
+                and resolutionList[1] <= displayDimensions[1]:
+                    resolutions[resolution] = resolutionList
+                else:
+                    resolutions[resolution] = displayDimensions
+            
+    return resolutions
 
 
 loadFramework()
