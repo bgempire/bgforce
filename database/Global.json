@@ -6,5 +6,8 @@
     "MouseNative" : false,
     "ContextFadeSpeed" : 1.0,
     "BgmFadeSpeed" : 1.0,
-    "ExitKey" : "F12"
+    "ExitKey" : "F12",
+    "StartupOperators" : [
+        "ApplyConfig"
+    ]
 }

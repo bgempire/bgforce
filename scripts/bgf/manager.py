@@ -43,6 +43,10 @@ def manager(cont):
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
             managerInit(cont)
             
+            if database["Global"].get("StartupOperators"):
+                for operator in database["Global"]["StartupOperators"]:
+                    bge.logic.sendMessage(operator)
+            
         messageManager(cont)
         contextManager(cont)
         bgmManager(cont)
