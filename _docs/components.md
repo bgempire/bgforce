@@ -10,7 +10,7 @@ principal do jogo para uso.
 
 ## Gerenciador: ScnManager
 
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-components-00.png)
+![]({{ site.baseurl }}/assets/img/wiki-components-00.png)
 
 A cena `ScnManager` é o gerenciador principal do BGForce. Apenas através do uso dela que podemos 
 utilizar os recursos de:
@@ -26,6 +26,6 @@ as mais diversas ações por meio dos operadores.
 
 ## Cursor do Mouse: ScnMouseCursor
 
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-components-01.png)
+![]({{ site.baseurl }}/assets/img/wiki-components-01.png)
 
 A cena `ScnMouseCursor` é um componente opcional de cursor do mouse customizável.

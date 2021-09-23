@@ -5,7 +5,7 @@ permalink: /widgets
 ---
 
 # Widgets
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-gui-00.jpg)
+![]({{ site.baseurl }}/assets/img/wiki-gui-00.jpg)
 
 O BGForce provê um poderoso sistema de interfaces de usuário altamente customizável. Esta seção visa detalhar o uso dessas funcionalidades.
 
@@ -54,7 +54,7 @@ do padrão, mas semelhantes entre si. Neste caso:
 
 - Adicione em todos os widgets de texto que deverão ter esse estilo uma propriedade com a classe criada:
 
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-gui-01.jpg)
+![]({{ site.baseurl }}/assets/img/wiki-gui-01.jpg)
 
 ### fonts
 A pasta `fonts` contém as fontes `.ttf` utilizadas por cada widget específico. Substituir as fontes padrão por 

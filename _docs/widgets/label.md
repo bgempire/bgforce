@@ -4,7 +4,7 @@ title: GuiLabel
 ---
 
 # GuiLabel
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-label-00.png)
+![]({{ site.baseurl }}/assets/img/wiki-label-00.png)
 
 **GuiLabels** são rótulos de texto dinâmicos que permitem a exibição de textos 
 a partir de diversas fontes, sejam elas:
@@ -18,14 +18,14 @@ texto estático ou uma referência para um texto dinâmico.
 
 ## Textos Estáticos
 
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-label-01.png)
+![]({{ site.baseurl }}/assets/img/wiki-label-01.png)
 
 Os textos estáticos são simplesmente um texto simples definido para a 
 propriedade `Label`.
 
 ## Textos Dinâmicos
 
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-label-02.png)
+![]({{ site.baseurl }}/assets/img/wiki-label-02.png)
 
 Os textos dinâmicos são um valor obtido através de uma expressão de Python. É 
 possível obter resultados de chamadas de funções, valores de listas ou 
@@ -35,7 +35,7 @@ Os textos dinâmicos utilizam um caractere `>` antes da expressão.
 
 ## Traduções
 
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-label-03.png)
+![]({{ site.baseurl }}/assets/img/wiki-label-03.png)
 
 Traduções são um tipo especial de texto dinâmico que variam de acordo com a 
 linguagem definida no `Config.json` na raiz do projeto.

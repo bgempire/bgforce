@@ -4,7 +4,7 @@ title: GuiButton
 ---
 
 # GuiButton
-![](https://github.com/bgempire/bgforce/raw/gh-pages/img/wiki-button-00.png)
+![]({{ site.baseurl }}/assets/img/wiki-button-00.png)
 
 **GuiButtons** são a espécie mais básica de widgets clicáveis, e portanto são capazes de executar comandos 
 ao serem clicados.
