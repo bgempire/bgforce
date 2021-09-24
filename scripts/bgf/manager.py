@@ -201,7 +201,7 @@ def bgmManager(cont):
     curContext = database["Contexts"].get(own["Context"]) # type: dict
     bgmDb = sounds["Bgm"] # type: dict
     handle = own["BgmHandle"] # type: aud.Handle
-    bgmFadeFactor = BGM_FADE_SPEED * config["VolBgm"] * database["Global"]["BgmFadeSpeed"]
+    bgmFadeFactor = BGM_FADE_SPEED * config["BgmVol"] * database["Global"]["BgmFadeSpeed"]
     curBgm = ""
     
     if curContext:
@@ -238,7 +238,7 @@ def bgmManager(cont):
                 
                 if handle:
                     
-                    if round(handle.volume, 1) < config["VolBgm"]:
+                    if round(handle.volume, 1) < config["BgmVol"]:
                         handle.volume += bgmFadeFactor
                         
                     else:
