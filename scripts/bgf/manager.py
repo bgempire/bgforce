@@ -249,6 +249,9 @@ def bgmManager(cont):
                 else:
                     own["BgmState"] = "FadeOut"
                     own["BgmTransition"] = False
+        
+        elif not own["BgmTransition"] and handle:
+            handle.volume = config["BgmVol"]
 
 
 # Helper functions
