@@ -48,6 +48,7 @@ INPUT_VALID_CHARS = {
 
 if not hasattr(bge.logic, "widgetHovered"):
     bge.logic.__widgetHovered = None
+    bge.logic.__widgetDescription = ""
 
 
 # Controller endpoint
@@ -369,10 +370,10 @@ def clickableProcess(cont):
     # Used by mouse cursor
     if mouseOver.positive:
         bge.logic.__widgetHovered = own
-        state["Description"] = _getTextFromGroup(cont, True)
+        bge.logic.__widgetDescription = _getTextFromGroup(cont, True)
     elif bge.logic.__widgetHovered is own:
         bge.logic.__widgetHovered = None
-        state["Description"] = ""
+        bge.logic.__widgetDescription = ""
     
     if own["WidgetType"] == "Checkbox":
         checkboxAction(cont, True)
@@ -882,21 +883,30 @@ def _getTextFromGroup(cont, description=False):
     own = cont.owner
     group = own.groupObject
     curLang = lang[config["Lang"]]
-    labelSource = "Label" if not description else "Description"
     
-    label = str(group[labelSource]).strip() if labelSource in group else ""
+    label = str(group["Label"]).strip() if "Label" in group else ""
     
-    try:
-        # Get label from code execution
-        if label.startswith(EXEC_PREFIX):
-            label = eval(label[1:])
-            
-        # Get label from current lang strings
-        elif label.startswith(LANG_PREFIX):
-            label = curLang[label[1:]]
-            
-    except:
-        pass
+    if label == "DESCRIPTION":
+        return bge.logic.__widgetDescription
+        
+    else:
+        try:
+            # Get label from code execution
+            if label.startswith(EXEC_PREFIX):
+                label = eval(label[1:])
+                
+            # Get label from current lang strings
+            elif label.startswith(LANG_PREFIX):
+                    
+                if not description:
+                    label = curLang[label[1:]]
+                
+                elif description and "Label" in group:
+                    label = (str(group["Label"]).strip() + "Desc")[1:]
+                    label = curLang[label]
+                
+        except:
+            label = ""
         
     if not description:
         other = ""
