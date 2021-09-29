@@ -56,7 +56,7 @@ o framework carregará os dados e funcionará corretamente.
 ### scripts/bgf
 O módulo `scripts/bgf` contém toda a lógica do framework. **Recomendamos que não altere o seu conteúdo.**
 
-### scripts/__init__.py
+### scripts/\_\_init\_\_.py
 O script `scripts/__init__.py` roda a inicialização do framework. O usuário está livre para editar este arquivo à vontade 
 **contanto que não remova a linha 1** (onde há a importação do módulo `scripts/bgf`).
 
