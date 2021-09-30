@@ -861,7 +861,14 @@ def _getPropsFromDb(cont):
         own[prop] = propValue
         if debugProps: own.addDebugProperty(prop)
         
-    # Apply style to current widget
+    # Apply default style to current widget
+    if own["WidgetType"] in database["Styles"].keys():
+        
+        for prop in database["Styles"][own["WidgetType"]].keys():
+            if not prop in own["InlineProps"] and prop in own:
+                own[prop] = database["Styles"][own["WidgetType"]][prop]
+        
+    # Apply custom style to current widget
     if "Style" in group:
         styleName = str(group["Style"])
         styleDb = {}
@@ -871,7 +878,7 @@ def _getPropsFromDb(cont):
         
         elif styleName in database["Gui"].keys():
             styleDb = database["Gui"][styleName]
-            
+        
         for prop in styleDb.keys():
             if not prop in own["InlineProps"] and prop in own:
                 own[prop] = styleDb[prop]
