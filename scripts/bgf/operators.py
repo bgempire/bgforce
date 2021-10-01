@@ -63,8 +63,21 @@ def applyConfig(cont, arg=""):
         bge.render.setGLSLMaterialSetting(option, bool(glslSettings[option]))
 
 
+def playSfx(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    import aud
+    from . import config, sounds
+    
+    if config["SfxEnable"] and arg in sounds["Sfx"].keys():
+        factory = aud.Factory.file(sounds["Sfx"][arg])
+        handle = aud.device().play(factory) # type: aud.Handle
+        handle.volume = config["SfxVol"]
+
+
 # Operators declaration
 OPERATORS = {
     "SaveConfig" : saveConfig,
     "ApplyConfig" : applyConfig,
+    "PlaySfx" : playSfx,
 } # type: dict[str, function]
