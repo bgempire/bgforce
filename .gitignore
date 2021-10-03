@@ -4,3 +4,4 @@ __pycache__
 .vscode
 .cache
 Config.json
+/release
