@@ -1,6 +1,5 @@
-// Custom styles of one or more widgets, similar to CSS classes.
-// - Transitions: "SlideL", "SlideR", "ScaleV", "ScaleH", "Arc"
-// - CharsAllowed: "Alphabetic", "AlphaNumeric", "Numeric", "Printable"
+// Custom styles of one or more widgets, similar to CSS classes
+// Reference: https://bgempire.github.io/bgforce/widgets
 
 {
     // Copyright label on splash screen scene

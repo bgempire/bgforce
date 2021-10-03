@@ -1,3 +1,5 @@
+"""Custom operator definitions. Reference: https://bgempire.github.io/bgforce/operators/custom"""
+
 import bge
 
 

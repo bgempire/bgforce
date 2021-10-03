@@ -1,4 +1,5 @@
 // Global configuration
+// Reference: https://bgempire.github.io/bgforce/structure
 
 {
     "Debug" : false,
