@@ -176,6 +176,10 @@ def widgetInit(cont):
     group = own.groupObject
     debugProps = True if "Debug" in group and group["Debug"] else False
     
+    # Parent children of group to widget parent
+    for obj in group.children:
+        obj.setParent(own)
+    
     # Set widget parent to group object
     own.setParent(group)
     
