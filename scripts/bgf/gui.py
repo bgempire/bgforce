@@ -831,7 +831,6 @@ def meshButtonAction(cont, event):
     if event == "ReplaceMesh" and "Mesh" in group:
         mesh = str(group["Mesh"])
         clickable.replaceMesh(mesh)
-        clickable.reinstancePhysicsMesh()
         
 
 # Helper functions
