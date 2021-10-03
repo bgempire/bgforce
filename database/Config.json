@@ -1,7 +1,10 @@
 // Default config
 
 {
+    // General
     "Lang" : "English",
+    
+    // Sound
     "BgmVol" : 0.8,
     "SfxVol" : 1.0,
     "BgmEnable" : true,
