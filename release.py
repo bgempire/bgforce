@@ -1,3 +1,6 @@
+"""Script to automate build of BGForce releases.
+Intended only for the framework releases, CAN be safely deleted on your game!"""
+
 import glob
 import os
 from pathlib import Path
