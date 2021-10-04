@@ -105,17 +105,8 @@ def messageManager(cont):
             subject = subjects[i]
             body = bodies[i]
             
-            if subject == "SetContext":
-                if body in database["Contexts"].keys():
-                    own["Context"] = body
-                    own["ContextTransition"] = True
-            
-            elif subject == "ExitGame":
-                own["ContextState"] = "ExitGame"
-                own["ContextTransition"] = True
-                
             # Run custom operator
-            elif subject in OPERATORS_DEFAULT.keys() or subject in OPERATORS_CUSTOM.keys():
+            if subject in OPERATORS_DEFAULT.keys() or subject in OPERATORS_CUSTOM.keys():
                 operatorFunction = OPERATORS_DEFAULT.get(subject, OPERATORS_CUSTOM.get(subject))
                 
                 if operatorFunction is not None:

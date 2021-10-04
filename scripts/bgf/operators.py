@@ -3,6 +3,25 @@ from bge.types import *
 
 
 # Default operators
+def setContext(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    from . import database
+    own = cont.owner
+    
+    if arg in database["Contexts"].keys():
+        own["Context"] = arg
+        own["ContextTransition"] = True
+
+
+def exitGame(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    own = cont.owner
+    own["ContextState"] = "ExitGame"
+    own["ContextTransition"] = True
+
+
 def saveConfig(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
@@ -75,9 +94,62 @@ def playSfx(cont, arg=""):
         handle.volume = config["SfxVol"]
 
 
+def pauseContext(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    from . import database
+    own = cont.owner
+    
+    if own["Context"] in database["Contexts"].keys():
+        ctxScns = database["Contexts"][own["Context"]]["Scenes"] # type: list[dict]
+        sceneList = {} # type: dict[KX_Scene]
+        
+        for scn in bge.logic.getSceneList():
+            if scn.name != "ScnManager":
+                sceneList[scn.name] = scn
+        
+        for scn in ctxScns:
+            if scn.get("Name") in sceneList.keys() and scn.get("Pausable"):
+                curScene = sceneList[scn["Name"]] # type: KX_Scene
+                
+                if (not arg or arg.lower() == "true") and not curScene.suspended:
+                    curScene.suspend()
+                
+                elif arg.lower() == "false" and curScene.suspended:
+                    curScene.resume()
+
+
+def resumeContext(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    pauseContext(cont, "False")
+
+
+def showMouseCursor(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    if (not arg or  str(arg).lower() == "true"):
+        bge.logic.__showMouseCursor = True
+    
+    elif str(arg).lower() == "false":
+        bge.logic.__showMouseCursor = False
+
+
+def hideMouseCursor(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    showMouseCursor(cont, "False")
+
+
 # Operators declaration
 OPERATORS = {
+    "SetContext": setContext,
+    "ExitGame": exitGame,
     "SaveConfig" : saveConfig,
     "ApplyConfig" : applyConfig,
     "PlaySfx" : playSfx,
+    "PauseContext" : pauseContext,
+    "ResumeContext" : resumeContext,
+    "ShowMouseCursor" : showMouseCursor,
+    "HideMouseCursor" : hideMouseCursor,
 } # type: dict[str, function]
