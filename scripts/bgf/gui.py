@@ -133,7 +133,10 @@ def mouseCursor(cont):
             cursorObj.localScale = list(own["Size"]) + [1]
             canvasObj.localScale = list(own["CanvasSize"]) + [1]
             
-        if mouseOver.positive:
+            if not hasattr(bge.logic, "__cursorVisible"):
+                bge.logic.__showMouseCursor = True
+            
+        if bge.logic.__showMouseCursor and mouseOver.positive:
             cursorObj.visible = True
             cursorObj.worldPosition = mouseOver.hitPosition
             cursorObj.worldPosition.x += list(own["Offset"])[0]
