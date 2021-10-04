@@ -89,15 +89,21 @@ def widget(cont):
         
         # Start transition when GUI update is requested
         if message.positive and not own.isPlayingAction():
-            bodies = []
+            bodies = [i.strip() for i in message.bodies if i.strip()]
+            groups = [] # type: list[str]
+            command = ""
             
-            for body in message.bodies:
-                if body:
-                    for i in body.split(","):
-                        bodies.append(i.strip())
+            for body in bodies:
+                if body[0] in ("[", "("):
+                    command = _processCommand(body)
+                else:
+                    groups += [g.strip() for g in body.split(",")]
                 
-            if not bodies or "Group" in group and str(group["Group"]).strip() in bodies:
+            if not groups or "Group" in group and str(group["Group"]).strip() in groups:
                 own["TransitionState"] = "Hiding"
+                
+            if command:
+                own.scene["CommandCamera"] = command
             
         widgetProcessEnabled(cont)
         processTransition(cont)
@@ -313,6 +319,15 @@ def processTransition(cont):
         elif own["TransitionState"] == "Showing":
             own.playAction("GuiTransitions", curAnim["Hidden"], curAnim["Shown"], speed=own["TransitionSpeed"])
             own["TransitionState"] = "Shown"
+            
+            # Execute camera move command
+            if "CommandCamera" in own.scene:
+                try:
+                    exec(own.scene["CommandCamera"])
+                except Exception as e:
+                    if DEBUG: print(e)
+                finally:
+                    del own.scene["CommandCamera"]
             
             if own["ClickableObj"] and own["TransitionOnClick"] and own["Clicked"]:
                 own["Clicked"] = False
@@ -976,28 +991,6 @@ def _getTextFromGroup(cont, description=False):
 
 def _getCommandsFromGroup(cont):
     # type: (SCA_PythonController) -> list[str]
-    
-    def processCommand(command):
-        # type: (str) -> str
-        
-        command = command.strip()
-        
-        if command.startswith(EXEC_PREFIX):
-            return command[1:].strip()
-        elif command.startswith("(") or command.startswith("["):
-            return "own.scene.active_camera.worldPosition = list(" + command.strip() \
-                + ") + [own.scene.active_camera.worldPosition.z]"
-        else:
-            command = [i.strip() for i in command.split(":")]
-            resultCommand = "bge.logic.sendMessage('"
-            
-            if len(command):
-                resultCommand += command.pop(0)
-            if len(command):
-                resultCommand += "', '" + ":".join(command)
-                
-            resultCommand += "')"
-            return resultCommand
             
     own = cont.owner
     group = own.groupObject
@@ -1008,14 +1001,14 @@ def _getCommandsFromGroup(cont):
         commandsTemp = group["Commands"].split(COMMAND_SEPARATOR) # type: list[str]
         
         for i in range(len(commands)):
-            commandsTemp[i] = processCommand(commandsTemp[i])
+            commandsTemp[i] = _processCommand(commandsTemp[i])
             commands = commandsTemp
             
         for command in commandsTemp:
             if str(command).strip().startswith(IMPORTANT_PREFIX):
-                commands[0].append(processCommand(command[1:]))
+                commands[0].append(_processCommand(command[1:]))
             else:
-                commands[1].append(processCommand(command))
+                commands[1].append(_processCommand(command))
             
     else:
         props = group.getPropertyNames() # type: list[str]
@@ -1024,11 +1017,34 @@ def _getCommandsFromGroup(cont):
         for prop in props:
             if prop.startswith("Command"):
                 if str(group[prop]).strip().startswith(IMPORTANT_PREFIX):
-                    commands[0].append(processCommand(group[prop][1:]))
+                    commands[0].append(_processCommand(group[prop][1:]))
                 else:
-                    commands[1].append(processCommand(group[prop]))
+                    commands[1].append(_processCommand(group[prop]))
                     
     return commands
+
+
+def _processCommand(command):
+    # type: (str) -> str
+    
+    command = command.strip()
+    
+    if command.startswith(EXEC_PREFIX):
+        return command[1:].strip()
+    elif command.startswith("(") or command.startswith("["):
+        return "own.scene.active_camera.worldPosition = list(" + command.strip() \
+            + ") + [own.scene.active_camera.worldPosition.z]"
+    else:
+        command = [i.strip() for i in command.split(":")]
+        resultCommand = "bge.logic.sendMessage('"
+        
+        if len(command):
+            resultCommand += command.pop(0)
+        if len(command):
+            resultCommand += "', '" + ":".join(command)
+            
+        resultCommand += "')"
+        return resultCommand
 
 
 def _execCommands(cont, instant):
@@ -1037,10 +1053,11 @@ def _execCommands(cont, instant):
     own = cont.owner
     group = own.groupObject
     index = 0 if instant else 1
+    commands = own["Commands"][index] # type: list[str]
     
-    if DEBUG and len(own["Commands"][index]) > 0: print("> Exec commands of", group)
+    if DEBUG and len(commands) > 0: print("> Exec commands of", group)
     
-    for command in own["Commands"][index]:
+    for command in commands:
         try:
             exec(command)
             if DEBUG: print("  >", command)
