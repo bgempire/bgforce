@@ -58,3 +58,23 @@ layout: null
     };
     Search.init();
 }(jQuery));
+
+function scrollToAnchor() {
+    
+    try {
+        const offset = window.innerWidth > 768 ? 70 : 0;
+        if(location.hash && $(location.hash).length){
+            scrollTo(0, $(location.hash).offset().top - offset);
+        }
+    } catch (error) {
+        console.log('Anchor not found:', location.hash);
+    }
+}
+
+$(window).bind('hashchange', function(e){
+    scrollToAnchor();
+});
+
+$(document).ready(function(){
+    scrollToAnchor();
+});
