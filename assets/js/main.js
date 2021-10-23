@@ -63,11 +63,24 @@ function scrollToAnchor() {
     
     try {
         const offset = window.innerWidth > 768 ? 70 : 0;
-        if(location.hash && $(location.hash).length){
-            scrollTo(0, $(location.hash).offset().top - offset);
+        const hash = location.hash ? decodeURIComponent(location.hash) : '';
+        if(hash && $(hash).length){
+            scrollTo(0, $(hash).offset().top - offset);
         }
     } catch (error) {
         console.log('Anchor not found:', location.hash);
+    }
+}
+
+function addLinksToAnchors() {
+    const anchors = $('h2[id], h3[id], h4[id], h5[id]');
+    
+    if (anchors.length) {
+        anchors.each(function(e) {
+            const element = $(anchors[e]);
+            const targetUrl = window.location.origin + window.location.pathname + '#' + element.attr('id');
+            element.html(element.text() + '<a class="heading-anchor" href="' + targetUrl + '">🔗</a>')
+        });
     }
 }
 
@@ -77,4 +90,5 @@ $(window).bind('hashchange', function(e){
 
 $(document).ready(function(){
     scrollToAnchor();
+    addLinksToAnchors();
 });

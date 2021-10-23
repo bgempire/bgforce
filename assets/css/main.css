@@ -18362,7 +18362,7 @@ html body .md-typeset .headerlink {
 }
 
 .td-content>h2:not(:first-child) {
-    margin-top: 1rem
+    margin-top: 2.5rem
 }
 
 .td-content>h2+h3 {
@@ -18604,4 +18604,14 @@ footer {
         height: 5rem;
         visibility: hidden
     }
+}
+
+.heading-anchor {
+    color: transparent;
+    font-size: 1.7rem;
+    margin-left: 6px;
+}
+
+.heading-anchor:hover {
+    color: black;
 }
