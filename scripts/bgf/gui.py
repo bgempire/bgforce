@@ -21,6 +21,7 @@ COMMAND_SEPARATOR = " | "
 IMPORTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
 LANG_PREFIX = "#"
+COMPUTED_PREFIX = "$"
 TRANSITION_ANIMS = {
     "SlideL": {"Shown" : 0, "Hidden" : 20},
     "SlideR": {"Shown" : 30, "Hidden" : 50},
@@ -259,7 +260,12 @@ def widgetProcessEnabled(cont):
     if "Enabled" in group:
         if type(group["Enabled"]) == str:
             try:
-                own["Enabled"] = bool(eval(group["Enabled"]))
+                expression = group["Enabled"].strip() # type: str
+                
+                if expression.startswith(COMPUTED_PREFIX):
+                    own["Enabled"] = bool(_getComputed(expression))
+                else:
+                    own["Enabled"] = bool(eval(expression))
             except:
                 own["Enabled"] = True
         else:
@@ -933,6 +939,10 @@ def _getTextFromGroup(cont, description=False):
                     label = (str(group["Label"]).strip() + "Desc")[1:]
                     label = curLang[label]
                 
+            # Get label from code execution
+            elif label.startswith(COMPUTED_PREFIX):
+                label = _getComputed(label)
+                
         except:
             label = ""
         
@@ -1066,3 +1076,16 @@ def _execCommands(cont, instant):
             if DEBUG: print("  >", command)
         except:
             if DEBUG: print("  X", command)
+
+
+def _getComputed(expression):
+    # type: (str) -> object
+    
+    from .. import computed
+    
+    expression = expression.strip()
+    
+    if expression.startswith(COMPUTED_PREFIX):
+        expression = "computed." + expression[1:].strip() + "()"
+        return eval(expression)
+        
