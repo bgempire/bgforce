@@ -291,4 +291,15 @@ def getResolutions():
     return resolutions
 
 
+def _(key):
+    # type: (str) -> str
+    
+    curLang = lang[config["Lang"]] # type: dict[str, str]
+    
+    if key in curLang.keys():
+        return lang[config["Lang"]][key]
+    else:
+        return ""
+
+
 loadFramework()
