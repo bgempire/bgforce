@@ -4,6 +4,8 @@ description:
 ---
 
 # GuiCheckbox
+![]({{ site.baseurl }}/assets/img/wiki-checkbox-00.jpg)
+
 Em progresso...
 
 ## Propriedades

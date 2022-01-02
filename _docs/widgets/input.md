@@ -4,6 +4,8 @@ description:
 ---
 
 # GuiInput
+![]({{ site.baseurl }}/assets/img/wiki-input-00.png)
+
 Em progresso...
 
 ## Propriedades

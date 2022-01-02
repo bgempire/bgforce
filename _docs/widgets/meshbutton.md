@@ -4,6 +4,8 @@ description:
 ---
 
 # GuiMeshButton
+![]({{ site.baseurl }}/assets/img/wiki-meshbutton-00.png)
+
 **GuiMeshButtons** são widgets clicáveis capazes de executar comandos. São 
 semelhantes aos [GuiButtons][2], com o adicional de terem uma propriedade 
 que permite a alteração de sua malha, que pode ser qualquer uma presente na 
