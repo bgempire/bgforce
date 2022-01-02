@@ -60,6 +60,11 @@ O módulo `scripts/bgf` contém toda a lógica do framework. **Recomendamos que 
 O script `scripts/__init__.py` roda a inicialização do framework. O usuário está livre para editar este arquivo à vontade 
 **contanto que não remova a linha 1** (onde há a importação do módulo `scripts/bgf`).
 
+### scripts/computed.py
+O script `scripts/computed.py` possui definições de funções que retornam informações dinâmicas, 
+e podem ser usadas nos widgets em qualquer propriedade que utilize uma expressão em Python. Veja mais em 
+[Variáveis Computadas]({{ site.baseurl }}/variables/computed).
+
 ### scripts/operators.py
 O script `scripts/operators.py` permite que funções sejam facilmente executadas através de mensagens. O usuário está 
 livre para editar este arquivo à vontade **contanto que não remova a declaração do dicionário `OPERATORS`**. 

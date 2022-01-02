@@ -15,6 +15,9 @@
       url: "operators/custom"
 - title: "Variáveis"
   url: "variables"
+  links:
+    - title: "Variáveis Computadas"
+      url: "variables/computed"
 - title: "Widgets"
   url: "widgets"
   links:
