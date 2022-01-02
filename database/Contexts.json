@@ -2,19 +2,9 @@
 // Reference: https://bgempire.github.io/bgforce/contexts
 
 {
-    // Splash screen
-    "SplashScreen": {
-        "Default": true,
-        "Scenes": [
-            {
-                "Name": "ScnIntro",
-                "Pausable": false
-            }
-        ]
-    },
-    
     // Main menu GUI and background
     "MainMenu": {
+        "Default": true,
         "Bgm": "WriteYouJoeyPecoraro",
         "Scenes": [
             {
