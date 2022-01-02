@@ -6,7 +6,9 @@ description:
 # GuiInput
 ![]({{ site.baseurl }}/assets/img/wiki-input-00.png)
 
-Em progresso...
+**GuiInputs** são entradas de texto digitado que alteram o valor de um alvo. 
+Eles tem suporte a ações de copiar e colar enquanto o cursor estiver ativo utilizando 
+os atalhos <kbd>Ctrl</kbd> + <kbd>C</kbd> e <kbd>Ctrl</kbd> + <kbd>V</kbd> respectivamente.
 
 ## Propriedades
 Abaixo estão listadas as propriedades únicas deste widget. Este widget é 

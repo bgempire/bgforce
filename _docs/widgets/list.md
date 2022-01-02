@@ -6,7 +6,8 @@ description:
 # GuiList
 ![]({{ site.baseurl }}/assets/img/wiki-list-00.png)
 
-Em progresso...
+**GuiLists** são listagens de valores que alteram o valor de um alvo. O clique esquerdo do 
+mouse avança o valor selecionado da lista e o clique direito retrocede.
 
 ## Propriedades
 Abaixo estão listadas as propriedades únicas deste widget. Este widget é 

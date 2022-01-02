@@ -6,7 +6,9 @@ description:
 # GuiCheckbox
 ![]({{ site.baseurl }}/assets/img/wiki-checkbox-00.jpg)
 
-Em progresso...
+**GuiCheckboxes** são widgets clicáveis de caixas de seleção que permitem a alteração 
+de um valor alvo semelhante a um interruptor (ligado/desligado). 
+Além disso, caso estes contenham a propriedade `Value`, se comportam como botões de opção (*radio buttons*).
 
 ## Propriedades
 Abaixo estão listadas as propriedades únicas deste widget. Este widget é composto por outros widgets, portanto consulte 
