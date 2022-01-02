@@ -654,8 +654,8 @@ a>code {
 kbd {
     padding: .2rem .4rem;
     font-size: 87.5%;
-    color: #fff;
-    background-color: #222;
+    color: #000;
+    background-color: #ededed;
     border-radius: .2rem;
     -webkit-box-shadow: inset 0 -.1rem 0 rgba(0, 0, 0, .25);
     box-shadow: inset 0 -.1rem 0 rgba(0, 0, 0, .25)
