@@ -5,7 +5,6 @@ import zlib
 from ast import literal_eval
 from pathlib import Path
 from pprint import pformat
-from shutil import rmtree
 
 
 # Constants
@@ -18,13 +17,13 @@ curPath = Path(bge.logic.expandPath("//")).resolve()
 
 
 # Global variables
-config = {}
-database = {}
-lang = {}
-state = {}
-cache = {}
-sounds = {}
-requests = {}
+config = {} # type: dict[str, object]
+database = {} # type: dict[str, dict | list]
+lang = {} # type: dict[str, dict[str, str]]
+state = {} # type: dict[str, object]
+cache = {} # type: dict[str, object]
+sounds = {} # type: dict[str, dict[str, str]]
+requests = {} # type: dict[str, object]
 
 
 def loadFramework():
@@ -69,6 +68,8 @@ def loadFramework():
 
 
 def processExitKey(key):
+    # type: (str | int) -> None
+    
     keyCode = bge.events.ESCKEY
     
     # Get int constant from str key
@@ -251,6 +252,8 @@ def getFilePaths(directory, debugIndent=0):
 
 
 def getGameKeys():
+    # type: () -> dict[str, dict]
+    
     keys = {
         "NameCode" : {},
         "CodeName" : {},
@@ -293,6 +296,7 @@ def getResolutions():
 
 def _(key):
     # type: (str) -> str
+    """Get translation of provided key from current language set in config."""
     
     curLang = lang[config["Lang"]] # type: dict[str, str]
     
