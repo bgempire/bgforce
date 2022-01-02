@@ -3,32 +3,6 @@ from bge.types import *
 
 
 # Default operators
-def setContext(cont, arg=""):
-    # type: (SCA_PythonController, str) -> None
-    
-    from . import database
-    own = cont.owner
-    
-    if arg in database["Contexts"].keys():
-        own["Context"] = arg
-        own["ContextTransition"] = True
-
-
-def exitGame(cont, arg=""):
-    # type: (SCA_PythonController, str) -> None
-    
-    own = cont.owner
-    own["ContextState"] = "ExitGame"
-    own["ContextTransition"] = True
-
-
-def saveConfig(cont, arg=""):
-    # type: (SCA_PythonController, str) -> None
-    
-    from . import curPath, config, saveFile
-    saveFile(curPath / "Config.json", config)
-
-
 def applyConfig(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
@@ -82,16 +56,18 @@ def applyConfig(cont, arg=""):
         bge.render.setGLSLMaterialSetting(option, bool(glslSettings[option]))
 
 
-def playSfx(cont, arg=""):
+def exitGame(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
-    import aud
-    from . import config, sounds
+    own = cont.owner
+    own["ContextState"] = "ExitGame"
+    own["ContextTransition"] = True
+
+
+def hideMouseCursor(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
     
-    if config["SfxEnable"] and arg in sounds["Sfx"].keys():
-        factory = aud.Factory.file(sounds["Sfx"][arg])
-        handle = aud.device().play(factory) # type: aud.Handle
-        handle.volume = config["SfxVol"]
+    showMouseCursor(cont, "False")
 
 
 def pauseContext(cont, arg=""):
@@ -119,10 +95,46 @@ def pauseContext(cont, arg=""):
                     curScene.resume()
 
 
+def playBgm(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    pass
+
+
+def playSfx(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    import aud
+    from . import config, sounds
+    
+    if config["SfxEnable"] and arg in sounds["Sfx"].keys():
+        factory = aud.Factory.file(sounds["Sfx"][arg])
+        handle = aud.device().play(factory) # type: aud.Handle
+        handle.volume = config["SfxVol"]
+
+
 def resumeContext(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
     pauseContext(cont, "False")
+
+
+def saveConfig(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    from . import curPath, config, saveFile
+    saveFile(curPath / "Config.json", config)
+
+
+def setContext(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    from . import database
+    own = cont.owner
+    
+    if arg in database["Contexts"].keys():
+        own["Context"] = arg
+        own["ContextTransition"] = True
 
 
 def showMouseCursor(cont, arg=""):
@@ -135,21 +147,23 @@ def showMouseCursor(cont, arg=""):
         bge.logic.__showMouseCursor = False
 
 
-def hideMouseCursor(cont, arg=""):
+def stopBgm(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
-    showMouseCursor(cont, "False")
+    pass
 
 
 # Operators declaration
 OPERATORS = {
-    "SetContext": setContext,
-    "ExitGame": exitGame,
-    "SaveConfig" : saveConfig,
     "ApplyConfig" : applyConfig,
-    "PlaySfx" : playSfx,
-    "PauseContext" : pauseContext,
-    "ResumeContext" : resumeContext,
-    "ShowMouseCursor" : showMouseCursor,
+    "ExitGame": exitGame,
     "HideMouseCursor" : hideMouseCursor,
+    "PauseContext" : pauseContext,
+    "PlayBgm" : playBgm,
+    "PlaySfx" : playSfx,
+    "ResumeContext" : resumeContext,
+    "SaveConfig" : saveConfig,
+    "SetContext": setContext,
+    "ShowMouseCursor" : showMouseCursor,
+    "StopBgm" : stopBgm,
 } # type: dict[str, function]
