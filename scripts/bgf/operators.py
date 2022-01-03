@@ -98,7 +98,9 @@ def pauseContext(cont, arg=""):
 def playBgm(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
-    pass
+    cont.owner["Bgm"] = arg
+    cont.owner["BgmState"] = "FadeOut"
+    cont.owner["BgmTransition"] = True
 
 
 def playSfx(cont, arg=""):
@@ -150,7 +152,7 @@ def showMouseCursor(cont, arg=""):
 def stopBgm(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
-    pass
+    playBgm(cont)
 
 
 # Operators declaration
