@@ -196,9 +196,9 @@ def bgmManager(cont):
     curBgm = ""
     
     if curContext:
-        curBgm = curContext.get("Bgm", "")
+        curBgm = curContext.get("Bgm", own["Bgm"])
         
-        if own["Bgm"] != curBgm:
+        if curBgm and curBgm != own["Bgm"]:
             own["Bgm"] = curBgm
             own["BgmTransition"] = True
         
