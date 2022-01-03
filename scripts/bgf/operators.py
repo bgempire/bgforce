@@ -98,9 +98,10 @@ def pauseContext(cont, arg=""):
 def playBgm(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
-    cont.owner["Bgm"] = arg
-    cont.owner["BgmState"] = "FadeOut"
-    cont.owner["BgmTransition"] = True
+    if cont.owner["Bgm"] != arg:
+        cont.owner["Bgm"] = arg
+        cont.owner["BgmState"] = "FadeOut"
+        cont.owner["BgmTransition"] = True
 
 
 def playSfx(cont, arg=""):
