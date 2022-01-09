@@ -2,11 +2,9 @@ import bge
 import aud
 import sys
 
-from bge.logic import globalDict
 from bge.types import *
-from ast import literal_eval
 
-from . import DEBUG, config, database, state, sounds
+from . import DEBUG, config, database, sounds
 
 
 __all__ = ["manager"]
