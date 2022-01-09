@@ -21,8 +21,6 @@
       url: "database/styles"
 - title: "Componentes"
   url: "components"
-- title: "Contextos"
-  url: "contexts"
 - title: "Operadores"
   url: "operators"
   links:

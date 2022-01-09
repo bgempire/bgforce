@@ -16,7 +16,7 @@ A cena `ScnManager` é o gerenciador principal do BGForce. Apenas através do us
 utilizar os recursos de:
 
 - [Execução de operadores]({{ site.baseurl }}/operators)
-- [Troca de contextos]({{ site.baseurl }}/contexts)
+- [Troca de contextos]({{ site.baseurl }}/database/contexts)
 - Reprodução de música e efeitos sonoros
 - Transição de fade in/out de música e cenas
 

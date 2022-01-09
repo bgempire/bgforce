@@ -18,14 +18,14 @@ Abaixo estão listadas as propriedades válidas deste arquivo.
 - **Tipo:** str
 
 ### BgmVol
-- Volume da música. Tem efeito na música tocada por [contextos]({{ site.baseurl }}/contexts) 
+- Volume da música. Tem efeito na música tocada por [contextos]({{ site.baseurl }}/database/contexts) 
 ou pelo operador [`PlayBgm`]({{ site.baseurl }}/operators/default#playbgm).
 
 - **Tipo:** float
 
 ### BgmEnable
 - Se a reprodução de música está ativada. Tem efeito na música tocada por 
-[contextos]({{ site.baseurl }}/contexts) ou pelo operador 
+[contextos]({{ site.baseurl }}/database/contexts) ou pelo operador 
 [`PlayBgm`]({{ site.baseurl }}/operators/default#playbgm).
 
 - **Tipo:** bool
