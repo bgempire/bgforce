@@ -155,18 +155,3 @@ def stopBgm(cont, arg=""):
     
     playBgm(cont)
 
-
-# Operators declaration
-OPERATORS = {
-    "ApplyConfig" : applyConfig,
-    "ExitGame": exitGame,
-    "HideMouseCursor" : hideMouseCursor,
-    "PauseContext" : pauseContext,
-    "PlayBgm" : playBgm,
-    "PlaySfx" : playSfx,
-    "ResumeContext" : resumeContext,
-    "SaveConfig" : saveConfig,
-    "SetContext": setContext,
-    "ShowMouseCursor" : showMouseCursor,
-    "StopBgm" : stopBgm,
-} # type: dict[str, function]

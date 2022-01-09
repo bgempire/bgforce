@@ -80,8 +80,8 @@ def managerInit(cont):
 def messageManager(cont):
     # type: (SCA_PythonController) -> None
     
-    from .operators import OPERATORS as OPERATORS_DEFAULT
-    from ..operators import OPERATORS as OPERATORS_CUSTOM
+    from . import operators as operatorsDefault
+    from .. import operators as operatorsCustom
     
     own = cont.owner
     message = cont.sensors["Message"] # type: KX_NetworkMessageSensor
@@ -100,12 +100,20 @@ def messageManager(cont):
             
         # Run operators
         for i in range(len(subjects)):
-            subject = subjects[i]
+            subject = subjects[i][0].lower() + subjects[i][1:]
             body = bodies[i]
             
             # Run custom operator
-            if subject in OPERATORS_DEFAULT.keys() or subject in OPERATORS_CUSTOM.keys():
-                operatorFunction = OPERATORS_DEFAULT.get(subject, OPERATORS_CUSTOM.get(subject))
+            if hasattr(operatorsDefault, subject) or hasattr(operatorsCustom, subject):
+                operatorFunction = None # type: function
+                
+                try:
+                    operatorFunction = eval("operatorsDefault." + subject)
+                except:
+                    try:
+                        operatorFunction = eval("operatorsCustom." + subject)
+                    except:
+                        pass
                 
                 if operatorFunction is not None:
                     if body:

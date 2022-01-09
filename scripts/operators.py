@@ -7,8 +7,3 @@ import bge
 # def customOperator(cont, args=""):
 #     pass
 
-
-# Operators declaration
-OPERATORS = {
-    # "CustomOperator" : customOperator
-}
