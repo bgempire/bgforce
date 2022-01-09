@@ -93,8 +93,11 @@ O arquivo `LibBgf.blend` contém todos os grupos e componentes (cenas) necessár
 Basta linkar (`File` > `Link`) os dados a partir de outro arquivo blend para utilizar suas funcionalidades.
 
 ## Config.json
-O arquivo `Config.json` contém as configurações de usuário do jogo. O usuário está livre para adicionar novas 
-configurações a este arquivo **contanto que não remova as configurações existentes**.
+O arquivo `Config.json` contém as configurações de usuário salvas do jogo. Este arquivo é criado com base no arquivo de 
+definições padrão [`database/Config.json`]({{ site.baseurl }}/database/config), que é seu modelo. Desta forma, este arquivo 
+é atualizado sempre as configurações de usuário são salvos, diferente de seu modelo que é estático. Este arquivo pode 
+não existir enquanto o usuário não solicitar o salvamento de configurações através do operador 
+[`SaveConfig`]({{ site.baseurl }}/operators/default#saveconfig).
 
 Os dados podem ser acessados como um dicionário ao importar a variável `config` do módulo `scripts/bgf`.
 
