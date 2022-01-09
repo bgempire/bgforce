@@ -8,20 +8,7 @@ A estrutura de arquivos do BGForce possui um padrão conciso e otimizado para o 
 A seguir será explicado o objetivo de cada pasta e arquivo relevante do framework.
 
 ## database
-A pasta `database` contém definições de estruturas de dados utilizadas pelo framework. O usuário está livre para 
-adicionar novos arquivos à esta pasta e editar os arquivos existentes **contanto que não remova nenhum dos arquivos padrão**.
-
-Os dados podem ser acessados como dicionários ao importar a variável `database` do módulo `scripts/bgf`.
-
-#### Exemplo
-Levando em conta um script qualquer que esteja dentro da pasta `scripts`, para importar `database` use o código:
-
-```python
-from .bgf import database
-
-# Obter propriedade lida de database/Global.json
-contextFadeSpeed = database["Global"]["ContextFadeSpeed"]
-```
+A pasta `database` contém definições de estruturas de dados utilizadas pelo framework. Veja mais em [Database]({{ site.baseurl }}/database).
 
 ## fonts
 A pasta `fonts` contém as fontes utilizadas pelos widgets de interface de usuário do framework. Basta substituir 
