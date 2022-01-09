@@ -12,7 +12,7 @@ através do disparo de uma mensagem, semelhante ao uso dos [operadores padrão](
 
 ## Criando Um Operador Customizado
 O script `scripts/operators.py` contém as definições de operadores customizados. A estrutura básica deste script inclui 
-declarações de funções e declaração de operadores.
+declarações de funções com os nomes dos operadores que recebam dois argumentos.
 
 ### Declarações de funções
 A estrutura mínima de uma função de operador é a seguinte:
@@ -22,32 +22,22 @@ def funcaoDoOperador(cont, args=""):
     pass # Lógica do operador
 ```
 
-- `funcaoDoOperador`: Função que executará a lógica do operador. Pode ter qualquer nome.
+- `funcaoDoOperador`: Função que executará a lógica do operador. Seu nome representa o nome do operador.
 - `cont`: Referência para o controlador do componente [`ScnManager`][1].
 - `args`: Argumento opcional que receberá o corpo da mensagem do operador.
 
 O usuário pode criar quantas funções desejar para seus operadores, e não está limitado a criá-las apenas neste mesmo script: 
-caso deseje, pode criá-las em outros scripts e importá-las em `scripts/operators.py` para declará-las na constante `OPERATORS`.
+caso deseje, pode criá-las em outros scripts e importá-las em `scripts/operators.py` para tê-las disponíveis no jogo.
 
-### Declaração de Operadores
-A declaração de operadores nada mais é do que um dicionário que deve estar ao final do script 
-`scripts/operators.py` contendo a seguinte estrutura:
+Uma vez que as funções de operadores customizados estejam definidas neste script, o usuário poderá disparar os 
+operadores em questão apenas enviando mensagens com os nomes dos operadores. **Nota:** a primeira letra do operador 
+na mensagem deverá ser **maiúscula** independentemente se o nome da função começar com letra minúscula.
 
-```python
-OPERATORS = {
-    "OperadorCustom1" : funcaoDoOperador,
-    "OperadorCustom2" : outraFuncaoDoOperador,
-    # etc
-}
-```
+Por exemplo, dada a função `funcaoDoOperador` declarada acima, para disparar este operador no jogo basta enviar 
+qualquer uma das mensagens:
 
-- `OPERATORS`: Nome da constante em que os operadores estão declarados. **Deve ter esse nome obrigatoriamente**.
-- `"OperadorCustom1"` e `"OperadorCustom2"`: Nomes dos operadores que servirão como assuntos das mensagens. Exemplos:
-    - `bge.logic.sendMessage("OperadorCustom1")`
-    - `bge.logic.sendMessage("OperadorCustom1:ValorDeArgumento")`
-    - `bge.logic.sendMessage("OperadorCustom2", "ValorDeArgumento")`
-- `funcaoDoOperador` e `outraFuncaoDoOperador`: Objetos de função que serão executadas quando seus respectivos operadores forem invocados.
-
-O usuário pode adicionar quantas funções desejar a esta constante, e então poderá invocar seus próprios operadores através de mensagens.
+- `bge.logic.sendMessage("FuncaoDoOperador")` (operador sem argumentos)
+- `bge.logic.sendMessage("FuncaoDoOperador:ValorDeArgumento")` (operador com argumentos, mensagem com apenas assunto)
+- `bge.logic.sendMessage("FuncaoDoOperador", "ValorDeArgumento")` (operador com argumentos, mensagem com assunto e corpo)
 
 [1]: {{ site.baseurl }}/components

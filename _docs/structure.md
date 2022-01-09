@@ -66,10 +66,9 @@ e podem ser usadas nos widgets em qualquer propriedade que utilize uma expressã
 [Variáveis Computadas]({{ site.baseurl }}/variables/computed).
 
 ### scripts/operators.py
-O script `scripts/operators.py` permite que funções sejam facilmente executadas através de mensagens. O usuário está 
-livre para editar este arquivo à vontade **contanto que não remova a declaração do dicionário `OPERATORS`**. 
-O dicionário `OPERATORS` deve conter o padrão `"NomeDoOperador" : funcaoEmPython`, e a partir disso será possível 
-executar as funções através de uma mensagem como `NomeDoOperador:Argumentos`. Veja mais em 
+O script `scripts/operators.py` permite que funções sejam facilmente executadas através de mensagens. O usuário está livre para editar este script à vontade. 
+Uma vez que uma função que receba dois argumentos seja definida (`def nomeDaFuncao(cont, args="")`) será possível 
+executar as funções através de uma mensagem como `NomeDaFuncao:Argumentos`. Veja mais em 
 [Operadores Customizados]({{ site.baseurl }}/operators/custom).
 
 ## sounds
