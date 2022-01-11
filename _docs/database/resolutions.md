@@ -15,7 +15,7 @@ o operador [`ApplyConfig`]({{ site.baseurl }}/operators/default#applyconfig).
 valor `"Native"`, que representa a resolução nativa.
 
 ## Exemplo
-Um exemplo básico da da lista de resoluções está demonstrado a seguir:
+Um exemplo básico da lista de resoluções está demonstrado a seguir:
 
 ```json
 [
