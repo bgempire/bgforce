@@ -7,7 +7,7 @@ from pathlib import Path
 import shutil
 
 PROJECT = "bgforce"
-VERSION = [0, 0, 1]
+VERSION = [0, 0, 3]
 
 curPath = Path(__file__).parent.resolve()
 releaseTarget = curPath / ("release/" + PROJECT + "-v" + ".".join([str(i) for i in VERSION]))
