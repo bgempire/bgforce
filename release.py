@@ -4,6 +4,7 @@ Intended only for the framework releases, CAN be safely deleted on your game!"""
 import os
 from pathlib import Path
 import shutil
+import glob
 
 PROJECT = "bgforce"
 VERSION = [0, 0, 4]
@@ -11,8 +12,21 @@ VERSION = [0, 0, 4]
 curPath = Path(__file__).parent.resolve()
 releaseTarget = curPath / ("release/" + PROJECT + "-v" + ".".join([str(i) for i in VERSION]))
 
-if not releaseTarget.exists():
-    releaseTarget.mkdir(parents=True)
+         
+def deletePath(_path):
+    # type: (Path) -> None
+    
+    if _path.is_file():
+        _path.unlink()
+    
+    elif _path.is_dir():
+        shutil.rmtree(_path)
+
+
+if releaseTarget.exists():
+    shutil.rmtree(releaseTarget)
+
+releaseTarget.mkdir(parents=True)
 
 data = {
     "OverwriteString": "$COMMENT\n{\n    \n}",
@@ -26,6 +40,8 @@ data = {
         "./database/Gui.json",
         "./database/Resolutions.json",
         "./fonts",
+        "./scripts",
+        "./.gitignore",
         "./textures/gui",
         "./LibBgf.blend",
     ],
@@ -35,7 +51,10 @@ data = {
         "./database/Styles.json",
         "./lang/English.json",
     ],
-}
+    "Ignore": [
+        "__pycache__"
+    ]
+} # type: dict[str, list[str]]
 
 for pathStr in data["CreatePaths"]:
     source = Path(pathStr)
@@ -54,10 +73,8 @@ for pathStr in data["CopyPaths"]:
             shutil.copy2(source, releaseTarget / source)
             print("> Copied:", source)
         elif source.is_dir():
-            for f in source.rglob("*"):
-                os.makedirs((releaseTarget / f).parent, exist_ok=True)
-                shutil.copy2(curPath / f, releaseTarget / f)
-                print("  > Copied from inside", source, ":", f)
+            shutil.copytree(curPath / source, releaseTarget / source)
+            print("  > Copied:", source)
     else:
         print("X Copy path do not exist:", source)
 
@@ -86,3 +103,13 @@ for path in data["OverwritePaths"]:
         with open(target.as_posix(), "w", encoding="utf-8") as openedFile:
             openedFile.write(targetFileContent)
             
+            
+for pattern in data["Ignore"]:
+    ignoredPath = releaseTarget / ("**/" + pattern)
+    ignoredPaths = glob.glob(ignoredPath.as_posix(), recursive=True)
+    
+    for ignored in ignoredPaths:
+        deletePath(Path(ignored))
+        print("X Removed ignored:", ignored)
+        
+    
