@@ -13,7 +13,7 @@ VARIABLE_PREFIX = "$"
 
 
 # Helper variables
-curPath = Path(bge.logic.expandPath("//")).resolve()
+curPath = Path(__file__).parent.parent.resolve()
 
 
 # Global variables
@@ -26,14 +26,15 @@ sounds = {} # type: dict[str, dict[str, str]]
 requests = {} # type: dict[str, object]
 
 
-def loadFramework():
+def __loadFramework():
     # type: () -> None
     """Main function called at start."""
     
-    global DEBUG, config, database, lang, state, cache, sounds, requests
+    global DEBUG, config, database, lang, state, cache, sounds, requests, curPath
     
     if DEBUG: print("\n> Initializing framework")
     
+    curPath = Path(bge.logic.expandPath("//")).resolve()
     config = bge.logic.__config = loadFile(curPath / "Config")
     database = bge.logic.__database = loadFiles(curPath / "database")
     lang = bge.logic.__lang = loadFiles(curPath / "lang")
@@ -306,4 +307,7 @@ def _(key):
         return ""
 
 
-loadFramework()
+try:
+    __loadFramework()
+except Exception as exc:
+    print(exc)
