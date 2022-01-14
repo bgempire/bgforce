@@ -3,5 +3,5 @@ __pycache__
 *.blend1
 .vscode
 .cache
-Config.json
+/Config.json
 /release
