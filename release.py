@@ -1,13 +1,12 @@
 """Script to automate build of BGForce releases.
 Intended only for the framework releases, CAN be safely deleted on your game!"""
 
-import glob
 import os
 from pathlib import Path
 import shutil
 
 PROJECT = "bgforce"
-VERSION = [0, 0, 3]
+VERSION = [0, 0, 4]
 
 curPath = Path(__file__).parent.resolve()
 releaseTarget = curPath / ("release/" + PROJECT + "-v" + ".".join([str(i) for i in VERSION]))
