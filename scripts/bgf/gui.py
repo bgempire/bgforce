@@ -1083,9 +1083,8 @@ def _getComputed(expression):
     
     from .. import computed
     
-    expression = expression.strip()
-    
-    if expression.startswith(COMPUTED_PREFIX):
-        expression = "computed." + expression[1:].strip() + "()"
-        return eval(expression)
+    expression = expression.lstrip().split(":", maxsplit=1)
+    args = repr(expression[1]) if len(expression) == 2 else ""
+    expression = "computed." + expression[0][1:].strip() + "(" + args + ")"
+    return eval(expression)
         
