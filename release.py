@@ -52,7 +52,9 @@ data = {
         "./lang/English.json",
     ],
     "Ignore": [
-        "__pycache__"
+        "__pycache__",
+        ".git",
+        ".gitignore",
     ]
 } # type: dict[str, list[str]]
 
