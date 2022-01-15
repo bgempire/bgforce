@@ -1,0 +1,3 @@
+[submodule "scripts/bgf"]
+	path = scripts/bgf
+	url = https://github.com/bgempire/bgf-core.git
