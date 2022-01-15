@@ -1,6 +1,7 @@
 import bge
 import json
 import zlib
+import aud
 
 from ast import literal_eval
 from pathlib import Path
@@ -349,6 +350,36 @@ def isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE):
                 return keyPressed == status
             else:
                 return _keyboard.events.get(key) == status
+
+
+def playSound(sound, origin=None):
+    # type: (str, bge.types.KX_GameObject) -> aud.Handle
+    """Play specific sound."""
+    
+    if sound.startswith("./"):
+        sound = curPath / sound if (curPath / sound).exists() else None
+    else:
+        sound = sounds["Sfx"].get(sound) # type: str
+        sound = Path(sound) if sound else None # type: Path
+        
+    if sound:
+        device = aud.device() # type: aud.Device
+        factory = aud.Factory.file(sound.as_posix())
+        handle = device.play(factory)
+        
+        if origin:
+            device.distance_model = aud.AUD_DISTANCE_MODEL_LINEAR
+            device.listener_location = origin.scene.active_camera.worldPosition
+            device.listener_orientation = origin.scene.active_camera.worldOrientation.to_quaternion()
+            device.listener_velocity = origin.scene.active_camera.getLinearVelocity()
+            
+            handle.relative = False
+            handle.location = origin.worldPosition
+            handle.velocity = origin.getLinearVelocity()
+            handle.distance_maximum = 50
+            handle.distance_reference = 1
+        
+        return handle
 
 
 def _(key):
