@@ -295,6 +295,62 @@ def getResolutions():
     return resolutions
 
 
+def isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE):
+    # type: (str | int, int) -> bool
+    
+    def _checkInputStatus(key, status):
+        # type: (bge.types.SCA_InputEvent, int) -> bool
+            
+        if status == bge.logic.KX_INPUT_NONE:
+            return key.inactive
+            
+        elif status == bge.logic.KX_INPUT_JUST_ACTIVATED:
+            return key.activated
+        
+        elif status == bge.logic.KX_INPUT_ACTIVE:
+            return key.active
+            
+        elif status == bge.logic.KX_INPUT_JUST_RELEASED:
+            return key.released
+    
+    _keyboard = bge.logic.keyboard # type: bge.types.SCA_PythonKeyboard
+    _mouse = bge.logic.mouse # type: bge.types.SCA_PythonMouse
+    
+    # Get key code
+    if type(key) == str:
+        if not key.endswith("KEY"):
+            key += "KEY"
+            
+        key = database["Keys"]["NameCode"].get(key) # type: int
+        
+    elif type(key) != int:
+        return
+    
+    if key:
+        
+        # Check UPBGE inputs
+        if hasattr(bge.app, "upbge_version_string"):
+            keyPressed = _mouse.inputs.get(key) # type: bge.types.SCA_InputEvent
+            
+            if keyPressed != None:
+                return _checkInputStatus(keyPressed, status=status)
+                
+            else:
+                keyPressed = _keyboard.inputs.get(key) # type: bge.types.SCA_InputEvent
+                
+                if keyPressed != None:
+                    return _checkInputStatus(keyPressed, status=status)
+            
+        # Check BGE events
+        else:
+            keyPressed = _mouse.events.get(key)
+            
+            if keyPressed != None:
+                return keyPressed == status
+            else:
+                return _keyboard.events.get(key) == status
+
+
 def _(key):
     # type: (str) -> str
     """Get translation of provided key from current language set in config."""
