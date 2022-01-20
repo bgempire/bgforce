@@ -8,7 +8,7 @@ from math import radians
 from pathlib import Path
 from hashlib import md5
 
-from . import DEBUG, config, database, state, lang, cache, curPath
+from . import DEBUG, config, database, lang, cache, curPath
 from .request import Request
 from .thirdparty.pyp3rclip import copy, paste
 
