@@ -187,21 +187,23 @@ def loadFile(_file):
     return data
 
 
-def loadFiles(directory):
-    # type: (Path) -> dict
+def loadFiles(directory, pattern=""):
+    # type: (Path, str) -> dict
     """Get all files from given directory recursively, 
     load their content and return data as dict."""
     
+    from fnmatch import filter
     if DEBUG: print("> Loading files from:", directory.as_posix().replace(curPath.as_posix(), "")[1:])
     data = {}
     
     for _file in directory.iterdir():
         
         if _file.is_dir():
-            data[_file.name] = loadFiles(_file)
+            data[_file.name] = loadFiles(_file, pattern=pattern)
             
         elif _file.suffix in (".json", ".jsonc", ".dat"):
-            data[_file.stem] = loadFile(_file)
+            if not pattern or filter([_file.name], pattern):
+                data[_file.stem] = loadFile(_file)
             
     return data
 
