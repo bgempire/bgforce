@@ -1,11 +1,7 @@
 import bge
-import json
-import zlib
 import aud
 
-from ast import literal_eval
 from pathlib import Path
-from pprint import pformat
 
 
 # Constants
@@ -31,6 +27,7 @@ def __loadFramework():
     # type: () -> None
     """Main function called at start."""
     
+    from ast import literal_eval
     global DEBUG, config, database, lang, state, cache, sounds, requests, curPath
     
     if DEBUG: print("\n> Initializing framework")
@@ -112,6 +109,8 @@ def __getJsonNoComments(fileContent):
 def __replaceDictVariables(target, variables=None):
     # type: (dict, dict) -> None
     """Replaces all variable values from dict recursively."""
+    
+    from ast import literal_eval
         
     # Move all variables from top level to its own dict
     if variables is None:
@@ -145,6 +144,10 @@ def __replaceDictVariables(target, variables=None):
 def loadFile(_file):
     # type: (Path) -> dict
     """Load file from given path and return its content as a dict."""
+    
+    import json
+    import zlib
+    from ast import literal_eval
                 
     if not _file.exists() and _file.parent.exists():
         for f in _file.parent.iterdir():
@@ -210,6 +213,11 @@ def loadFiles(directory, pattern=""):
 
 def saveFile(_file, data, ext=None):
     # type: (Path, object, str) -> None
+    
+    import json
+    import zlib
+    from pprint import pformat
+    
     saved = False
     
     if ext is None:
