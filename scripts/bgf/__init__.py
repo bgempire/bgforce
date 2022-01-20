@@ -202,7 +202,10 @@ def loadFiles(directory, pattern=""):
     for _file in directory.iterdir():
         
         if _file.is_dir():
-            data[_file.name] = loadFiles(_file, pattern=pattern)
+            subdirData = loadFiles(_file, pattern=pattern)
+            
+            if subdirData:
+                data[_file.name] = subdirData
             
         elif _file.suffix in (".json", ".jsonc", ".dat"):
             if not pattern or filter([_file.name], pattern):
@@ -423,3 +426,4 @@ try:
     __loadFramework()
 except Exception as exc:
     print(exc)
+
