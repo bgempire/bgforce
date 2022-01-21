@@ -52,3 +52,11 @@
       url: "widgets/list"
     - title: "GuiInput"
       url: "widgets/input"
+
+- title: "API"
+  url: "api"
+  links:
+    - title: "Variáveis"
+      url: "api/variables"
+    - title: "Funções"
+      url: "api/functions"
