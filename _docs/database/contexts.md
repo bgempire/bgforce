@@ -3,7 +3,8 @@ title: Contexts
 description: 
 ---
 
-# Contexts
+# {{ page.title }}
+
 Jogos costumam ter diversas telas diferentes como: título, menu inicial, jogo, loja, etc. Cada uma dessas telas 
 é formada por diversos elementos que trabalham em conjunto para entregar o resultado como um todo, e isso inclui:
 

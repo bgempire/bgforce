@@ -3,7 +3,7 @@ title: Introdução
 description: 
 ---
 
-# Introdução
+# {{ page.title }}
 
 BGForce é um framework para Blender Game Engine e UPBGE com sistemas comuns 
 pré programados, como interface de usuário e gerenciamento de dados. Ele age 

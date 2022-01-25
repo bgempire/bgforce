@@ -3,7 +3,8 @@ title: Operadores Padrão
 description: 
 ---
 
-# Operadores Padrão
+# {{ page.title }}
+
 Os operadores padrão são aqueles que já estão disponíveis para uso no BGForce. 
 
 **Importante:** Com exceção do operador `UpdateGui`, todos os outros operadores necessitam do componente 

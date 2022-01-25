@@ -3,7 +3,8 @@ title: Estrutura
 description: 
 ---
 
-# Estrutura
+# {{ page.title }}
+
 A estrutura de arquivos do BGForce possui um padrão conciso e otimizado para o uso com o Blender Game Engine e UPBGE.
 A seguir será explicado o objetivo de cada pasta e arquivo relevante do framework.
 

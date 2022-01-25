@@ -3,7 +3,8 @@ title: Operadores Customizados
 description: 
 ---
 
-# Operadores Customizados
+# {{ page.title }}
+
 Os operadores customizados são funções que o usuário desenvolve por conta própria e configura para serem executadas 
 através do disparo de uma mensagem, semelhante ao uso dos [operadores padrão]({{ site.baseurl }}/operators/default).
 

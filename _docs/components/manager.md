@@ -3,12 +3,7 @@ title: Componentes
 description: 
 ---
 
-# Componentes
-BGForce contém alguns componentes que podem ser adicionados ao jogo. Estes componentes estão no formato 
-de cenas dentro do arquivo **`LibBgf.blend`**, e podem ser linkadas (`File` > `Link`) no arquivo blend 
-principal do jogo para uso.
-
-## Gerenciador: ScnManager
+# {{ page.title }}
 
 ![]({{ site.baseurl }}/assets/img/wiki-components-00.png)
 
@@ -23,9 +18,3 @@ utilizar os recursos de:
 A cena `ScnManager` **deve ser a cena ativa no arquivo blend principal do jogo**, e a partir dela as definições 
 de contextos do jogo serão obedecidas, adicionando e removendo outras cenas automaticamente e podendo executar 
 as mais diversas ações por meio dos operadores.
-
-## Cursor do Mouse: ScnMouseCursor
-
-![]({{ site.baseurl }}/assets/img/wiki-components-01.png)
-
-A cena `ScnMouseCursor` é um componente opcional de cursor do mouse customizável.

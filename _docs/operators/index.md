@@ -3,7 +3,8 @@ title: Operadores
 description: 
 ---
 
-# Operadores
+# {{ page.title }}
+
 Operadores são mensagens específicas que podem ser enviadas e recebidas por widgets ou pelo gerenciador do 
 BGForce, e a partir disso podem executar uma função pré-determinada. O BGForce provê alguns operadores 
 padrão e dá ao usuário a possibilidade de criar operadores customizados.
@@ -35,3 +36,13 @@ bge.logic.sendMessage("UpdateGui", "Formulario")
 O operador `UpdateGui` é recebido apenas por widgets de interface de usuário, já todos os outros operadores 
 (sejam eles padrão ou customizados) **precisam da cena de gerenciador [`ScnManager`]({{ site.baseurl }}/components) 
 para funcionarem**.
+
+## Índice
+
+{%- for section in site.data.toc %}
+{%- if section.url == "operators" %}
+{%- for link in section.links %}
+- [{{ link.title }}]({{ site.baseurl }}/{{ link.url }})
+{%- endfor %}
+{%- endif %}
+{%- endfor %}

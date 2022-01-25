@@ -21,6 +21,11 @@
       url: "database/styles"
 - title: "Componentes"
   url: "components"
+  links:
+    - title: "ScnManager"
+      url: "components/manager"
+    - title: "ScnMouseCursor"
+      url: "components/mousecursor"
 - title: "Operadores"
   url: "operators"
   links:
@@ -28,11 +33,8 @@
       url: "operators/default"
     - title: "Operadores Customizados"
       url: "operators/custom"
-- title: "Variáveis"
-  url: "variables"
-  links:
-    - title: "Variáveis Computadas"
-      url: "variables/computed"
+- title: "Variáveis Computadas"
+  url: "computed"
 - title: "Widgets"
   url: "widgets"
   links:

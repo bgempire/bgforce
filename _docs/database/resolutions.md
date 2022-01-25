@@ -3,7 +3,8 @@ title: Resolutions
 description: 
 ---
 
-# Resolutions
+# {{ page.title }}
+
 O arquivo `database/Resolutions.json` contém uma lista de resoluções que estarão 
 disponíveis para uso no jogo.
 

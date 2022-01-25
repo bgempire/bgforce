@@ -3,7 +3,8 @@ title: Gui
 description: 
 ---
 
-# Gui
+# {{ page.title }}
+
 O arquivo `database/Gui.json` contém as definições de estilos e comportamento padrão dos 
 widgets de interface de usuário do framework. Os dados podem ser editados à vontade, 
 porém **nenhum deles pode ser removido**, uma vez que eles são parte do núcleo do funcionamento 

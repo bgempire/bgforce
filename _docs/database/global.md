@@ -3,7 +3,8 @@ title: Global
 description: 
 ---
 
-# Global
+# {{ page.title }}
+
 O arquivo `database/Global.json` contém configurações gerais que são aplicadas de 
 forma global ao jogo.
 

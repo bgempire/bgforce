@@ -3,7 +3,8 @@ title: State
 description: 
 ---
 
-# State
+# {{ page.title }}
+
 O arquivo `database/State.json` contém o estado inicial padrão do jogo.
 O objetivo de state é ser um substituto ao 
 [`bge.logic.globalDict`](https://docs.blender.org/api/2.79/bge.logic.html#bge.logic.globalDict), 

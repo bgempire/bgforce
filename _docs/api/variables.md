@@ -3,7 +3,25 @@ title: Variáveis
 description: 
 ---
 
-# Variáveis
+# {{ page.title }}
+
+O módulo `scripts/bgf` dá acesso à variáveis que podem ser utilizadas na programação de jogos no BGForce. 
+O uso de algumas dessas variáveis é essencial para uma boa lógica de jogo, em especial o seu uso dentro de widgets.
+
+Todas as variáveis estão disponíveis nos escopos dos widgets, portanto é possível utilizá-las em comandos de 
+widgets clicáveis e em referências de dados fonte / alvo de listas, inputs e checkboxes. Caso deseje importar 
+essas variáveis no seu próprio script (dado um script na raiz da pasta `scripts`, por exemplo: `scripts/meuscript.py`):
+
+```python
+from .bgf import config
+from .bgf import database
+from .bgf import lang
+from .bgf import sounds
+from .bgf import state
+```
+
+## Referência
+Abaixo estão listadas as variáveis disponíveis para uso no BGForce.
 
 ### `bgf.curPath`
 - Caminho da pasta raiz do projeto como um objeto 

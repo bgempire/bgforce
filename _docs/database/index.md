@@ -3,7 +3,8 @@ title: Database
 description: 
 ---
 
-# Database
+# {{ page.title }}
+
 A pasta `database` contém definições de estruturas de dados utilizadas pelo framework. O usuário está livre para 
 **adicionar** novos arquivos à esta pasta e editar os arquivos existentes **contanto que não remova nenhum dos arquivos padrão**.
 
@@ -49,9 +50,10 @@ como uma propriedade desta árvore de dados.
 Os arquivos de definições do framework possuem particularidades relacionadas às suas funcionalidades, e estas estão 
 descritas em suas respectivas páginas.
 
-- [Config.json]({{ site.baseurl }}/database/config)
-- [Contexts.json]({{ site.baseurl }}/database/contexts)
-- [Global.json]({{ site.baseurl }}/database/global)
-- [Gui.json]({{ site.baseurl }}/database/resolutions)
-- [State.json]({{ site.baseurl }}/database/state)
-- [Styles.json]({{ site.baseurl }}/database/styles)
+{%- for section in site.data.toc %}
+{%- if section.url == "database" %}
+{%- for link in section.links %}
+- [{{ link.title }}]({{ site.baseurl }}/{{ link.url }})
+{%- endfor %}
+{%- endif %}
+{%- endfor %}

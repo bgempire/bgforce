@@ -3,7 +3,8 @@ title: Variáveis Computadas
 description: 
 ---
 
-# Variáveis Computadas
+# {{ page.title }}
+
 Os widgets podem exibir ou verificar uma informação dinâmica através de uma expressão em Python, 
 porém uma única linha de Python pode não ser suficiente para processar essa informação em alguns casos. 
 O script `scripts/computed.py` possui definições de funções que retornam informações dinâmicas, 

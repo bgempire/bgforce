@@ -1,7 +1,8 @@
 ---
-title: Styles.json
+title: Styles
 description: 
 ---
 
-# Styles.json
+# {{ page.title }}
+
 TODO

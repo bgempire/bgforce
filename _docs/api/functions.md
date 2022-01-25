@@ -3,7 +3,24 @@ title: Funções
 description: 
 ---
 
-# Funções
+# {{ page.title }}
+
+O BGForce oferece diversas funções de abstração de tarefas comuns na programação, 
+desde obter listas de arquivos, salvamento e carregamento de dados, tradução, 
+reprodução de sons, entre outros. 
+Caso deseje importar essas variáveis no seu próprio script (dado um script na 
+raiz da pasta `scripts`, por exemplo: `scripts/meuscript.py`):
+
+```python
+from .bgf import _
+from .bgf import getFilePaths
+from .bgf import isKeyPressed
+from .bgf import playSound
+from .bgf import saveFile
+```
+
+## Referência
+Abaixo estão listadas as funções disponíveis para uso no BGForce.
 
 ### `bgf._(key)`
 - Retorna a tradução de `key` com base na linguagem atual definida em 

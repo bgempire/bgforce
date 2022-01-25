@@ -3,7 +3,8 @@ title: Config
 description: 
 ---
 
-# Config
+# {{ page.title }}
+
 O arquivo `database/Config.json` contém as definições de configurações padrão do jogo.
 O usuário pode adicionar novas configurações ao jogo (como teclas de controles, 
 dificuldade do jogo, etc), mas **não deve remover as configurações existentes** ainda que 
