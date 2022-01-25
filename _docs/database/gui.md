@@ -15,5 +15,5 @@ de forma **global** no projeto. Caso seu intuito seja estilizar e personalizar o
 sem alterá-los globalmente, crie estilos personalizados em [`database/Styles.json`]({{ site.baseurl }}/database/styles).
 
 ## Propriedades
-- Para referência de propriedades dos widgets, veja suas respectivas propriedades em [`Widgets`]({{ site.baseurl }}/widgets)
-- Para referência de propriedades do cursor do mouse, veja suas respectivas propriedades em [`ScnMouseCursor`]({{ site.baseurl }}/components/mousecursor)
+- Para referência de propriedades dos widgets, veja suas respectivas propriedades em [`Widgets`]({{ site.baseurl }}/widgets).
+- Para referência de propriedades do cursor do mouse, veja suas respectivas propriedades em [`ScnMouseCursor`]({{ site.baseurl }}/components/mousecursor).
