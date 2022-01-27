@@ -69,6 +69,17 @@ def getFilePaths(directory):
     return data
 
 
+def getUpmostParent(obj):
+    # type: (bge.types.KX_GameObject) -> bge.types.KX_GameObject
+    
+    if obj.parent:
+        
+        while obj.parent:
+            obj = obj.parent
+            
+        return obj
+
+
 def isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE):
     # type: (str | int, int) -> bool
     
