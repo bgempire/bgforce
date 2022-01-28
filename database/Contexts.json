@@ -19,21 +19,5 @@
                 "Pausable": false
             }
         ]
-    },
-    
-    // Game, in-game and pause menu GUI
-    "Game": {
-        "Bgm": "SomedayCoyoteHearing",
-        "Loading": "ScnLoading",
-        "Scenes": [
-            {
-                "Name": "ScnGameMap",
-                "Pausable": false
-            },
-            {
-                "Name": "ScnGame",
-                "Pausable": true
-            }
-        ]
     }
 }
