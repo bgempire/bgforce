@@ -25,7 +25,7 @@
     
     
     "Label" : {
-        "Transition" : "Arc",
+        "Transition" : "SlideL",
         "TransitionSpeed" : "$TransitionSpeed",
         "UpdateFrequency" : "$UpdateFrequency",
         
@@ -44,7 +44,7 @@
 
 
     "Button" : {
-        "Transition" : "SlideR",
+        "Transition" : "SlideL",
         "TransitionSpeed" : "$TransitionSpeed",
         "UpdateFrequency" : "$UpdateFrequency",
     
@@ -134,7 +134,7 @@
 
 
     "Checkbox" : {
-        "Transition" : "SlideR",
+        "Transition" : "SlideL",
         "TransitionSpeed" : "$TransitionSpeed",
         "UpdateFrequency" : "$UpdateFrequency",
     
