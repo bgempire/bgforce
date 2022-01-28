@@ -7,7 +7,7 @@ import shutil
 import glob
 
 PROJECT = "bgforce"
-VERSION = [0, 0, 4]
+VERSION = [0, 0, 5]
 
 curPath = Path(__file__).parent.resolve()
 releaseTarget = curPath / ("release/" + PROJECT + "-v" + ".".join([str(i) for i in VERSION]))
@@ -29,32 +29,26 @@ if releaseTarget.exists():
 releaseTarget.mkdir(parents=True)
 
 data = {
-    "OverwriteString": "$COMMENT\n{\n    \n}",
+    "OverwriteString": "$COMMENT\n{\n    \n}\n",
     "CreatePaths": [
         "./sounds/bgm/DELETE-ME",
         "./sounds/sfx/DELETE-ME",
     ],
     "CopyPaths": [
-        "./database/Config.json",
-        "./database/Global.json",
-        "./database/Gui.json",
-        "./database/Resolutions.json",
+        "./database",
+        "./lang",
         "./fonts",
         "./scripts",
+        "./textures",
         "./.gitignore",
-        "./textures/gui",
         "./LibBgf.blend",
+        "./Game.blend",
+        "./ScnMenu.blend",
     ],
-    "OverwritePaths": [
-        "./database/Contexts.json",
-        "./database/State.json",
-        "./database/Styles.json",
-        "./lang/English.json",
-    ],
+    "OverwritePaths": [],
     "Ignore": [
         "__pycache__",
         ".git",
-        ".gitignore",
     ]
 } # type: dict[str, list[str]]
 
