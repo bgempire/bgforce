@@ -2,21 +2,13 @@
 // Reference: https://bgempire.github.io/bgforce/widgets
 
 {
-    // Copyright label on splash screen scene
-    "SplashScreenLabel" : {
-        "Transition" : "None",
-        "Justify" : "Center",
-        "ShadowEnable" : false,
-        "LineSize" : 85,
-        "LabelSize" : 0.35
-    },
-    
     // Loading text label on loading scene
     "LoadingLabel" : {
         "Transition" : "None",
         "LabelSize" : 1.2
     },
     
+    // Header titles
     "Title" : {
         "LineSize" : 30,
         "LabelSize" : 1.0,
