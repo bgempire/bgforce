@@ -1,4 +1,4 @@
-""" Custom computed properties. Reference: https://bgempire.github.io/bgforce/variables/computed """
+""" Custom computed properties. Reference: https://bgempire.github.io/bgforce/computed """
 
 import bge
 from .bgf import config, database, state, _

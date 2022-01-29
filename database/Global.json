@@ -1,5 +1,5 @@
 // Global configuration
-// Reference: https://bgempire.github.io/bgforce/structure
+// Reference: https://bgempire.github.io/bgforce/database/global
 
 {
     "Debug" : false,
