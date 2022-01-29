@@ -31,7 +31,6 @@ releaseTarget.mkdir(parents=True)
 data = {
     "OverwriteString": "$COMMENT\n{\n    \n}\n",
     "CreatePaths": [
-        "./sounds/bgm/DELETE-ME",
         "./sounds/sfx/DELETE-ME",
     ],
     "CopyPaths": [
@@ -39,6 +38,7 @@ data = {
         "./lang",
         "./fonts",
         "./scripts",
+        "./sounds/bgm",
         "./textures",
         "./.gitignore",
         "./LibBgf.blend",
