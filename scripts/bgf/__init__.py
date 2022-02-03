@@ -14,11 +14,9 @@ curPath = __Path(__file__).parent.parent.resolve()
 
 
 # Global variables
-cache = {} # type: dict[str, object]
 config = {} # type: dict[str, object]
 database = {} # type: dict[str, dict | list]
 lang = {} # type: dict[str, dict[str, str]]
-requests = {} # type: dict[str, object]
 sounds = {} # type: dict[str, dict[str, str]]
 state = {} # type: dict[str, object]
 
@@ -338,7 +336,7 @@ def __loadFramework():
     """Main function called at start."""
     
     from ast import literal_eval
-    global DEBUG, config, database, lang, state, cache, sounds, requests, curPath
+    global DEBUG, config, database, lang, state, sounds, curPath
     
     if DEBUG: print("\n> Initializing framework")
     
@@ -347,7 +345,6 @@ def __loadFramework():
     database = bge.logic.__database = loadFiles(curPath / "database")
     lang = bge.logic.__lang = loadFiles(curPath / "lang")
     state = bge.logic.__state = literal_eval(str(database["State"]))
-    requests = bge.logic.__requests = {}
     sounds = bge.logic.__sounds = {
         "Sfx" : getFilePaths(curPath / "sounds/sfx"),
         "Bgm" : getFilePaths(curPath / "sounds/bgm")
