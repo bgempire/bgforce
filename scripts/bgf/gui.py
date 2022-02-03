@@ -386,6 +386,8 @@ def clickableProcess(cont):
     lmb = cont.sensors.get("LMB", None) # type: SCA_MouseSensor
     rmb = cont.sensors.get("RMB", None) # type: SCA_MouseSensor
     
+    own["Commands"] = _getCommandsFromGroup(cont)
+    
     # Used by mouse cursor
     if mouseOver.positive:
         bge.logic.__widgetHovered = own
