@@ -30,6 +30,16 @@ Oculta o cursor do mouse do componente `ScnMouseCursor`.
 **Exemplo:**
 - `bge.logic.sendMessage("HideMouseCursor")`
 
+### LoadState
+Carrega os dados salvos do [`state`][1] a partir de `save.dat` ou `save/*.dat`, onde `*` é o nome de arquivo passado como argumento.
+
+**Argumentos:**
+- `NomeDoArquivo`: Nome do arquivo de estado a se carregar (opcional)
+
+**Exemplos:**
+- `bge.logic.sendMessage("LoadState")` carregará `save.dat` para o estado
+- `bge.logic.sendMessage("LoadState", "slot1")` carregará `save/slot1.dat` para o estado
+
 ### PauseContext
 Pausa todas as cenas do contexto atual. Apenas cenas com a propriedade `"Pausable": true` em `database/Contexts.json` serão afetadas.
 
@@ -71,6 +81,16 @@ Salva as configurações de usuário atuais no arquivo `Config.json`.
 **Exemplo:**
 - `bge.logic.sendMessage("SaveConfig")`
 
+### SaveState
+Salva os dados do [`state`][1] no arquivo `save.dat` ou `save/*.dat`, onde `*` é o nome de arquivo passado como argumento.
+
+**Argumentos:**
+- `NomeDoArquivo`: Nome do arquivo a se salvar (opcional)
+
+**Exemplos:**
+- `bge.logic.sendMessage("SaveState")` salvará o estado em `save.dat`
+- `bge.logic.sendMessage("SaveState", "slot1")` salvará o estado em `save/slot1.dat`
+
 ### SetContext
 Altera o contexto do jogo, substituindo o grupo de cenas atual pelo grupo de cenas definido no contexto especificado, e a música (caso especificada 
 nas definições do contexto).
@@ -107,3 +127,6 @@ Múltiplos grupos de widgets podem ser passados ao separá-los por vírgula.
 - `bge.logic.sendMessage("UpdateGui", "MenuDePausa")` atualizará todos os widgets com a propriedade `Group` com o valor `MenuDePausa`.
 - `bge.logic.sendMessage("UpdateGui", "MenuDePausa,Hud,Outros")` atualizará todos os widgets com a propriedade `Group` com os valores `MenuDePausa`, `Hud` ou `Outros`.
 - `bge.logic.sendMessage("UpdateGui", "[50, 0]")` atualizará todos os widgets e moverá a câmera para a posição `x = 50` e `y = 0`.
+
+
+[1]: {{ site.baseurl }}/api/variables#bgfstate
