@@ -70,6 +70,30 @@ def hideMouseCursor(cont, arg=""):
     showMouseCursor(cont, "False")
 
 
+def loadState(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    from . import curPath, state, loadFile
+    
+    if arg:
+        targetFile = curPath / ("save/" + arg + ".dat")
+            
+        if targetFile.exists():
+            state.update(loadFile(targetFile))
+            print("> Loaded state from save/" + arg + ".dat")
+        else:
+            print("X Could not load save/" + arg + ".dat")
+        
+    else:
+        targetFile = curPath / "save.dat"
+        
+        if targetFile.exists():
+            state.update(loadFile(targetFile))
+            print("> Loaded state from save.dat")
+        else:
+            print("X Could not load save.dat")
+
+
 def pauseContext(cont, arg=""):
     # type: (SCA_PythonController, str) -> None
     
@@ -127,6 +151,28 @@ def saveConfig(cont, arg=""):
     
     from . import curPath, config, saveFile
     saveFile(curPath / "Config.json", config)
+
+
+def saveState(cont, arg=""):
+    # type: (SCA_PythonController, str) -> None
+    
+    from . import curPath, state, saveFile
+    
+    if arg:
+        saveDir = curPath / "save"
+        
+        if not saveDir.exists():
+            saveDir.mkdir()
+            
+        if saveDir.exists():
+            targetFile = saveDir / arg
+            saveFile(targetFile, state, ".dat")
+            print("> Saved state to save/" + arg + ".dat")
+        
+    else:
+        targetFile = curPath / "save.dat"
+        saveFile(targetFile, state, ".dat")
+        print("> Saved state to save.dat")
 
 
 def setContext(cont, arg=""):
