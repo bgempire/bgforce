@@ -5,6 +5,7 @@
     // Main menu GUI and background
     "MainMenu": {
         "Default": true,
+        "Bgm": "WriteYouJoeyPecoraro",
         "Scenes": [
             {
                 "Name": "ScnMouseCursor",
