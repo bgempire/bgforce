@@ -11,7 +11,7 @@ O script `scripts/computed.py` possui definições de funções que retornam inf
 e podem ser usadas nos widgets em qualquer propriedade que utilize uma expressão de Python através do 
 valor com prefixo `$`.
 
-## Exemplo
+### Exemplo
 
 Por exemplo, caso queiramos mostrar num widget [GuiLabel]({{ site.baseurl }}/widgets/label) a data de hoje 
 corretamente formatada, podemos utilizar uma propriedade computada. Desta forma, no script 
@@ -33,3 +33,33 @@ Isso resultará no valor de retorno da função sendo mostrado no texto da `GuiL
 
 As propriedades computadas não estão limitadas a apenas textos: qualquer expressão de Python que possa ser 
 inserida em um widget (como a propriedade `Enabled`) pode ser uma propriedade computada.
+
+## Parâmetro
+
+Opcionalmente, as variáveis computadas podem receber um parâmetro que pode ser passado 
+para sua função fonte. Para isso, utilize o caractere `:` para definir o argumento que 
+deverá ser passado para a função. Por exemplo: `$nomeDaFuncao:Parametro`.
+
+No exemplo mostrado anteriormente, poderíamos atualizar nossa função da seguinte forma:
+
+```python
+def dataDeHojeFormatada(formato=""):
+    from datetime import datetime
+    date = datetime.today()
+    
+    if formato == "Extenso":
+        return date.strftime('%A, %d de %B de %Y')
+    else:
+        return date.strftime('%d/%m/%Y')
+```
+
+Adicionando uma nova label, podemos adicionar a mesma propriedade computada, porém 
+passando um parâmetro adicional após o caractere `:`:
+
+![]({{ site.baseurl }}/assets/img/computed-2.png)
+
+Teremos então duas labels com a mesma propriedade computada, mas que se comportam 
+de formas diferentes devido ao parâmetro passado ou a ausência deste.
+
+![]({{ site.baseurl }}/assets/img/computed-3.png)
+
