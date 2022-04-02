@@ -856,7 +856,7 @@ def _getTextFromGroup(cont, description=False):
         if own["WidgetType"] == "Input" and own["Cursor"]:
             lineSize += 1
             
-        lineBreaks = not own["LineBreak"] if "LineBreak" in own else True
+        lineBreaks = not group["LineBreak"] if "LineBreak" in group else True
         label = wrap(str(label) + other, lineSize, replace_whitespace=lineBreaks)
         labelTemp = [i.split("\n") for i in label]
         label.clear()
