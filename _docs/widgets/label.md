@@ -81,6 +81,10 @@ Abaixo estão listadas as propriedades comuns entre os widgets com labels.
 - Fator de escala do texto, também afeta o tamanho da sombra. Exemplo: `0.65`.
 - **Tipo:** float
 
+### LineBreak
+- Flag que permite ou proíbe quebras de linhas de caracteres `\n` na label.
+- **Tipo:** bool
+
 ### LineSize
 - Especifica o número de caracteres que cada linha de texto terá antes de sua quebra. Também afeta o comportamento da propriedade `Justify`.
 - **Tipo:** int

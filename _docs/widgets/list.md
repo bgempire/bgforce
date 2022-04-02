@@ -44,8 +44,7 @@ não haja uma tradução, mostra o valor original. Vale notar que esta é apenas
 será traduzido, mas o valor guardado em `Target` continuará sendo o valor original obtido de `List`.
 - **Tipo:** bool
 
-### Value
-- Caso fornecido, o widget se comportará como um radio button, alterando o `Target` apenas para o valor de `Value` 
-ao invés de alternar entre verdadeiro e falso. Este valor pode ser de qualquer tipo, e será avaliado como tal, isto é, 
-um `Value` do tipo inteiro irá guardar em `Target` um inteiro.
-- **Tipo:** any
+### Wrap
+- Caso fornecido, a lista será circular, isto é: caso o usuário avançar ao chegar no último valor, a lista passará 
+para o primeiro valor, e vice-versa.
+- **Tipo:** bool
