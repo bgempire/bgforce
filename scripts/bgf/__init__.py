@@ -2,6 +2,7 @@ import bge
 import aud as __aud
 
 from pathlib import Path as __Path
+from typing import Callable as __Callable
 
 
 # Constants
@@ -36,11 +37,11 @@ def _(key):
 
 
 def dump(obj, file="dump.py"):
-    # type: (object, str) -> None
-    """ Dump to file the object content. """
+    # type: (object, str | __Path) -> None
+    """Dump to file the object content."""
     
     from pprint import pformat
-    file = curPath / file # type: __Path
+    file = __processPath(file)
     
     with open(file.as_posix(), "w") as _file:
         _file.write(pformat(obj))
@@ -51,6 +52,7 @@ def getFilePaths(directory):
     # type: (__Path) -> dict
     """Get all files from given directory and return dict with name : path relations."""
     
+    directory = __processPath(directory)
     relativePath = directory.as_posix().replace(curPath.as_posix(), "")[1:]
     if DEBUG: print("> Getting files from:", relativePath)
     data = {}
@@ -69,6 +71,7 @@ def getFilePaths(directory):
 
 def getUpmostParent(obj):
     # type: (bge.types.KX_GameObject) -> bge.types.KX_GameObject
+    """Get the upmost parent of a game object."""
     
     if obj.parent:
         
@@ -80,6 +83,7 @@ def getUpmostParent(obj):
 
 def isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE):
     # type: (str | int, int) -> bool
+    """Check if a key is pressed in a specific status."""
     
     def _checkInputStatus(key, status):
         # type: (bge.types.SCA_InputEvent, int) -> bool
@@ -135,13 +139,15 @@ def isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE):
 
 
 def loadFile(_file):
-    # type: (__Path) -> dict
+    # type: (__Path | str) -> dict
     """Load file from given path and return its content as a dict."""
     
     import json
     import zlib
     from ast import literal_eval
-                
+    
+    _file = __processPath(_file)
+    
     if not _file.exists() and _file.parent.exists():
         for f in _file.parent.iterdir():
             if f.stem == _file.stem:
@@ -152,7 +158,7 @@ def loadFile(_file):
     relativePath = _file.as_posix().replace(curPath.as_posix(), "")[1:]
     loaded = False
     isDict = True
-        
+    
     if _file.suffix in (".json", ".jsonc"):
         with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
             dataRaw = __getJsonNoComments(openedFile.read())
@@ -171,7 +177,7 @@ def loadFile(_file):
                     
         # Process variables
         if isDict: __replaceDictVariables(data)
-            
+        
     elif _file.suffix == ".dat":
         with open(_file.as_posix(), "rb") as openedFile:
             data = json.loads(__getJsonNoComments(zlib.decompress(openedFile.read()).decode(encoding="utf-8")))
@@ -179,16 +185,18 @@ def loadFile(_file):
             
     if loaded:
         if DEBUG: print("> File loaded:", relativePath)
-            
+        
     return data
 
 
 def loadFiles(directory, pattern=""):
-    # type: (__Path, str) -> dict
+    # type: (__Path | str, str) -> dict
     """Get all files from given directory recursively, 
     load their content and return data as dict."""
     
     from fnmatch import filter
+    
+    directory = __processPath(directory)
     if DEBUG: print("> Loading files from:", directory.as_posix().replace(curPath.as_posix(), "")[1:])
     data = {}
     
@@ -209,7 +217,7 @@ def loadFiles(directory, pattern=""):
 
 def playSound(sound, origin=None):
     # type: (str, bge.types.KX_GameObject) -> __aud.Handle
-    """Play specific sound."""
+    """Play specific sound effect from sfx directory."""
     
     if sound.startswith("./"):
         sound = curPath / sound if (curPath / sound).exists() else None
@@ -238,13 +246,28 @@ def playSound(sound, origin=None):
         return handle
 
 
+def runInThread(func):
+    # type: (__Callable) -> __Callable
+    """Decorator to run function in a thread."""
+    
+    def wrapper(*args, **kwargs):
+        from threading import Thread
+        thread = Thread(target=func, args=args, kwargs=kwargs, daemon=True)
+        thread.start()
+        
+    return wrapper
+
+
 def saveFile(_file, data, ext=None):
     # type: (__Path, object, str) -> None
+    """Save data to given file. An extension can be given to force
+    the file type (may be .json or .dat). Defaults to .json."""
     
     import json
     import zlib
     from pprint import pformat
     
+    _file = __processPath(_file)
     saved = False
     
     if ext is None:
@@ -433,6 +456,13 @@ def __replaceDictVariables(target, variables=None):
         # Do replacement recursively
         elif type(target[key]) == dict:
             __replaceDictVariables(target[key], variables)
+
+
+def __processPath(path):
+    # type: (str | __Path) -> __Path
+    """Process string path to __Path object if needed."""
+    
+    return path if type(path) == __Path else curPath / str(path)
 
 
 try:
