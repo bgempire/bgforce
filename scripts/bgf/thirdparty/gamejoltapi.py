@@ -1,11 +1,14 @@
+import ssl as _ssl
+
 from urllib.parse import urlencode as _urlencode, quote as _quote
 from urllib.request import urlopen as _urlopen
 from hashlib import md5 as _md5
-
 from ast import literal_eval as _literal_eval
 from collections import OrderedDict as _OrderedDict
 
 _DEBUG = False
+_ssl._create_default_https_context = _ssl._create_unverified_context
+
 
 class GameJoltDataRequired(Exception):
     """ Exception raised when not all required data is provided in the request call.
@@ -15,9 +18,12 @@ class GameJoltDataRequired(Exception):
     """
     
     def __init__(self, key):
+        # type: (object) -> None
+        
         self.key = key
         self.message = "Value is required, cannot be None: " + repr(key)
         super().__init__(self.message)
+
 
 class GameJoltDataCollision(Exception):
     """ Exception raised when a value cannot be provided along with another.
@@ -27,9 +33,12 @@ class GameJoltDataCollision(Exception):
     """
     
     def __init__(self, keys):
+        # type: (list) -> None
+        
         self.keys = keys
         self.message = "Values cannot be used together: " + ", ".join([repr(k) for k in self.keys])
         super().__init__(self.message)
+
 
 class GameJoltAPI:
     """ The main Game Jolt API class. Aside from the required arguments, most of the 
@@ -84,6 +93,8 @@ class GameJoltAPI:
         If submit the requests or just get the generated URLs from the method calls. Useful to generate URLs for batch requests. Optional, defaults to ``True``."""
     
     def __init__(self, gameId, privateKey, username=None, userToken=None, responseFormat="json", submitRequests=True):
+        # type: (int, str, str, str, str, bool) -> None
+        
         self.__API_URL = "https://api.gamejolt.com/api/game/v1_2"
         self.__RETURN_FORMATS = ["json", "keypair", "dump", "xml"]
         
@@ -118,6 +129,8 @@ class GameJoltAPI:
         }
         
     def _submit(self, operationUrl, data):
+        # type: (str, dict) -> dict
+        
         orderedData = _OrderedDict()
         isBatch = "batch" in operationUrl
         
@@ -150,12 +163,16 @@ class GameJoltAPI:
             return finalUrl
 
     def _validateRequiredData(self, data):
+        # type: (dict) -> bool
+        
         for key in data.keys():
             if data[key] is None:
                 raise GameJoltDataRequired(key)
         return True
         
     def _getValidData(self, data):
+        # type: (dict) -> dict
+        
         validatedData = {}
         if self.responseFormat != "json":
             validatedData["format"] = self.responseFormat
@@ -166,11 +183,15 @@ class GameJoltAPI:
         return validatedData
     
     def _processBoolean(self, value):
+        # type: (bool) -> str
+        
         if value is not None:
             return str(value).lower()
     
     # Users
     def usersFetch(self, username=None, userId=None):
+        # type: (str, str | int | list) -> dict
+        
         """Returns a user's data.
         
         :param username: The username of the user whose data you'd like to fetch.
@@ -205,6 +226,8 @@ class GameJoltAPI:
         return self._submit(self.operations["users/fetch"], data)
         
     def usersAuth(self):
+        # type: () -> dict
+        
         """Authenticates the user's information. This should be done before you make 
         any calls for the user, to make sure the user's credentials (username and 
         token) are valid."""
@@ -221,6 +244,8 @@ class GameJoltAPI:
     
     # Sessions
     def sessionsOpen(self):
+        # type: () -> dict
+        
         """Opens a game session for a particular user and allows you to tell Game Jolt 
         that a user is playing your game. You must ping the session to keep it active 
         and you must close it when you're done with it.
@@ -241,6 +266,8 @@ class GameJoltAPI:
         return self._submit(self.operations["sessions/open"], data)
         
     def sessionsPing(self, status=None):
+        # type: (str) -> dict
+        
         """Pings an open session to tell the system that it's still active. If the session 
         hasn't been pinged within 120 seconds, the system will close the session and you 
         will have to open another one. It's recommended that you ping about every 30 
@@ -276,6 +303,8 @@ class GameJoltAPI:
         return self._submit(self.operations["sessions/ping"], data)
     
     def sessionsCheck(self):
+        # type: () -> dict
+        
         """Checks to see if there is an open session for the user. Can be used to see 
         if a particular user account is active in the game.
         
@@ -296,6 +325,8 @@ class GameJoltAPI:
         return self._submit(self.operations["sessions/check"], data)
         
     def sessionsClose(self):
+        # type: () -> dict
+        
         """Closes the active session."""
         
         # Required data
@@ -310,6 +341,8 @@ class GameJoltAPI:
         
     # Scores
     def scoresFetch(self, limit=None, tableId=None, guest=None, betterThan=None, worseThan=None, thisUser=False):
+        # type: (int, int, str, int, int, bool) -> dict
+        
         """Returns a list of scores either for a user or globally for a game.
         
         :param limit: The number of scores you'd like to return.
@@ -361,6 +394,8 @@ class GameJoltAPI:
         return self._submit(self.operations["scores/fetch"], data)
         
     def scoresTables(self):
+        # type: () -> dict
+        
         """Returns a list of high score tables for a game."""
         
         # Required data
@@ -372,6 +407,8 @@ class GameJoltAPI:
         return self._submit(self.operations["scores/tables"], data)
         
     def scoresAdd(self, score, sort, tableId=None, guest=None, extraData=None):
+        # type: (str, int, int, str, str) -> dict
+        
         """Adds a score for a user or guest. 
         
         :param score: This is a string value associated with the score. Example: ``"500 Points"``
@@ -418,6 +455,8 @@ class GameJoltAPI:
         return self._submit(self.operations["scores/add"], data)
         
     def scoresGetRank(self, sort, tableId=None):
+        # type: (int, int) -> dict
+        
         """Returns the rank of a particular score on a score table.
         
         :param sort: This is a numerical sorting value that is represented by a rank on the score table.
@@ -449,6 +488,8 @@ class GameJoltAPI:
         
     # Trophies
     def trophiesFetch(self, achieved=None, trophyId=None):
+        # type: (bool, str | int | list) -> dict
+        
         """Returns one trophy or multiple trophies, depending on the parameters passed in.
         
         :param achieved: Pass in ``True`` to return only the achieved trophies for a user. Pass in ``False`` to return only trophies the user hasn't achieved. Leave blank to retrieve all trophies.
@@ -481,6 +522,8 @@ class GameJoltAPI:
         return self._submit(self.operations["trophies/fetch"], data)
         
     def trophiesAddAchieved(self, trophyId):
+        # type: (int) -> dict
+        
         """Sets a trophy as achieved for a particular user.
         
         :param trophyId: The ID of the trophy to add for the user.
@@ -500,6 +543,8 @@ class GameJoltAPI:
         return self._submit(self.operations["trophies/add-achieved"], data)
         
     def trophiesRemoveAchieved(self, trophyId):
+        # type: (int) -> dict
+        
         """Remove a previously achieved trophy for a particular user.
         
         :param trophyId: The ID of the trophy to remove from the user.
@@ -520,6 +565,8 @@ class GameJoltAPI:
     
     # Data Storage
     def dataStoreSet(self, key, data, globalData=False):
+        # type: (str, str, bool) -> dict
+        
         """Sets data in the data store.
         
         :param key: The key of the data item you'd like to set.
@@ -566,6 +613,8 @@ class GameJoltAPI:
         return self._submit(self.operations["data-store/set"], data)
         
     def dataStoreUpdate(self, key, operation, value, globalData=False):
+        # type: (str, str, str, bool) -> dict
+        
         """Updates data in the data store.
         
         :param key: The key of the data item you'd like to update.
@@ -627,6 +676,8 @@ class GameJoltAPI:
         return self._submit(self.operations["data-store/update"], data)
         
     def dataStoreRemove(self, key, globalData=False):
+        # type: (str, bool) -> dict
+        
         """Removes data from the data store.
         
         :param key: The key of the data item you'd like to remove.
@@ -665,6 +716,8 @@ class GameJoltAPI:
         return self._submit(self.operations["data-store/remove"], data)
         
     def dataStoreFetch(self, key, globalData=False):
+        # type: (str, bool) -> dict
+        
         """Returns data from the data store.
         
         :param key: The key of the data item you'd like to fetch.
@@ -703,6 +756,8 @@ class GameJoltAPI:
         return self._submit(self.operations["data-store/fetch"], data)
         
     def dataStoreGetKeys(self, pattern=None, globalData=False):
+        # type: (str, bool) -> dict
+        
         """Returns either all the keys in the game's global data store, or all the keys in a user's data store.
         
         :param pattern: The pattern to apply to the key names in the data store.
@@ -747,6 +802,8 @@ class GameJoltAPI:
         
     # Friends
     def friends(self):
+        # type: () -> dict
+        
         """Returns the list of a user's friends."""
         
         # Required data
@@ -762,6 +819,8 @@ class GameJoltAPI:
     
     # Time
     def time(self):
+        # type: () -> dict
+        
         """Returns the time of the Game Jolt server."""
         
         # Required data
@@ -774,6 +833,8 @@ class GameJoltAPI:
     
     # Batch Calls
     def batch(self, requests=[], parallel=None, breakOnError=None):
+        # type: (list[str], bool, bool) -> dict
+        
         """A batch request is a collection of sub-requests that enables developers to send multiple API calls with one HTTP request. 
         
         :param requests: An list of sub-request URLs. Each request will be executed and the responses of each one will be returned in the payload.
