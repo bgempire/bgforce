@@ -11,6 +11,9 @@ from .thirdparty.pyp3rclip import copy, paste
 
 
 __all__ = ["widget", "mouseCursor"]
+UPDATE_GUI_ACTIONS = {
+    "Input": ["ClearInputs"],
+}
 
 
 ALWAYS_SKIPPED_TICKS = 5
@@ -90,14 +93,18 @@ def widget(cont):
             bodies = [i.strip() for i in message.bodies if i.strip()]
             groups = [] # type: list[str]
             command = ""
+            isAction = False
             
             for body in bodies:
                 if body[0] in ("[", "("):
                     command = _processCommand(body)
+                elif body in UPDATE_GUI_ACTIONS.get(own["WidgetType"], []):
+                    isAction = True
+                    break
                 else:
                     groups += [g.strip() for g in body.split(",")]
                 
-            if not groups or "Group" in group and str(group["Group"]).strip() in groups:
+            if not isAction and (not groups or "Group" in group and str(group["Group"]).strip() in groups):
                 own["TransitionState"] = "Hiding"
                 
             if command:
@@ -687,6 +694,18 @@ def inputAction(cont, event):
         labelUpdateTextObj(cont)
         
     elif event == "Update":
+        message = cont.sensors["Message"] # type: KX_NetworkMessageSensor
+        
+        if message.positive:
+            bodies = [b.strip() for b in message.bodies] # type: list[str]
+            widgetGroup = str(group["Group"]) if "Group" in group else ""
+            
+            for body in bodies:
+                body = _getActionArgs(body)
+                
+                if body[0].startswith("ClearInput") and body[1] == widgetGroup:
+                    own["InputText"] = ""
+                    labelUpdateTextObj(cont)
         
         if not own["InputEnable"] and own["Cursor"]:
             own["Cursor"] = False
@@ -991,3 +1010,13 @@ def _getComputed(expression):
     expression = "computed." + expression[0][1:].strip() + "(" + args + ")"
     return eval(expression)
         
+
+def _getActionArgs(action):
+    # type: (str) -> list[str]
+    
+    args = [i.strip() for i in action.split(":", maxsplit=1) if i.strip()]
+    
+    if len(args) == 1:
+        args.append("")
+        
+    return args
