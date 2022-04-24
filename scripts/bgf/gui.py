@@ -703,7 +703,7 @@ def inputAction(cont, event):
             for body in bodies:
                 body = _getActionArgs(body)
                 
-                if body[0].startswith("ClearInput") and body[1] == widgetGroup:
+                if body and body[0].startswith("ClearInput") and body[1] == widgetGroup:
                     own["InputText"] = ""
                     labelUpdateTextObj(cont)
         
