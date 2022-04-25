@@ -7,6 +7,8 @@ from textwrap import wrap
 from math import radians
 
 from . import DEBUG, config, database, state, lang, curPath
+from . import operators as _operators_builtin
+from .. import operators as _operators_custom
 from .thirdparty.pyp3rclip import copy, paste
 
 
@@ -20,6 +22,7 @@ ALWAYS_SKIPPED_TICKS = 5
 COMMAND_SEPARATOR = " | "
 IMPORTANT_PREFIX = "!"
 EXEC_PREFIX = ">"
+OPERATOR_PREFIX = "@"
 LANG_PREFIX = "#"
 COMPUTED_PREFIX = "$"
 TRANSITION_ANIMS = {
@@ -974,9 +977,26 @@ def _processCommand(command):
     
     if command.startswith(EXEC_PREFIX):
         return command[1:].strip()
+        
     elif command.startswith("(") or command.startswith("["):
         return "own.scene.active_camera.worldPosition = list(" + command.strip() \
             + ") + [own.scene.active_camera.worldPosition.z]"
+            
+    elif command.startswith(OPERATOR_PREFIX):
+        commandParts = command[1:].strip().split(":", 1)
+        command = commandParts[0].strip()
+        args = commandParts[1].strip() if len(commandParts) > 1 else ""
+        
+        modules = {"_operators_builtin": _operators_builtin, "_operators_custom": _operators_custom}
+        operators = [command, command[0].upper() + command[1:]]
+        
+        for mod in modules.keys():
+            for op in operators:
+                if op in dir(modules[mod]):
+                    resultCommand = "{}.{}(cont, args={})".format(mod, op, repr(args))
+                    return resultCommand
+        return ""
+        
     else:
         command = [i.strip() for i in command.split(":")]
         resultCommand = "bge.logic.sendMessage('"
