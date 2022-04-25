@@ -820,6 +820,27 @@ def _getPropsFromDb(cont):
 def _getTextFromGroup(cont, description=False):
     # type: (SCA_PythonController, bool) -> str
     
+    def _wrapText(text, justify, lineSize):
+        # type: (str, str, int) -> str
+        
+        justify = justify.lower()
+        text = wrap(text, lineSize)
+        
+        if justify == "left":
+            return "\n".join(text)
+        
+        elif justify == "center":
+            return "\n".join([i.center(lineSize) for i in text])
+        
+        elif justify == "right":
+            return "\n".join([i.rjust(lineSize) for i in text])
+    
+    def _replaceNonSpacesWithChar(text, char):
+        # type: (str, str) -> str
+        
+        import re
+        return re.sub(r"\S", char, text)
+    
     own = cont.owner
     group = own.groupObject
     curLang = lang[config["Lang"]]
@@ -865,6 +886,9 @@ def _getTextFromGroup(cont, description=False):
             
         elif own["WidgetType"] == "Input":
             label = own["InputText"] if own["InputText"] else label
+            
+            if own["PasswordChar"] and own["InputText"]:
+                label = _replaceNonSpacesWithChar(label, own["PasswordChar"])
                 
             if own["Cursor"]:
                 other += str(own["CursorCharacter"])
@@ -906,22 +930,6 @@ def _getTextFromGroup(cont, description=False):
         label = "\n".join(label)
     
     return label
-
-
-def _wrapText(text, justify, lineSize):
-    # type: (str, str, int) -> str
-    
-    justify = justify.lower()
-    text = wrap(text, lineSize)
-    
-    if justify == "left":
-        return "\n".join(text)
-    
-    elif justify == "center":
-        return "\n".join([i.center(lineSize) for i in text])
-    
-    elif justify == "right":
-        return "\n".join([i.rjust(lineSize) for i in text])
 
 
 def _getCommandsFromGroup(cont):

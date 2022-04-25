@@ -230,6 +230,7 @@
         "CharsLimit" : 15,
         "CursorCharacter" : "|",
         "CursorSpeed" : 0.2,
+        "PasswordChar" : "",
         "LineBreak" : false
     },
 
