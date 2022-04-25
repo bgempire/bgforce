@@ -890,7 +890,7 @@ def _getTextFromGroup(cont, description=False):
         elif own["WidgetType"] == "Input":
             label = own["InputText"] if own["InputText"] else label
             
-            if own["PasswordChar"] and own["InputText"]:
+            if own.get("PasswordChar") and own["InputText"]:
                 label = _replaceNonSpacesWithChar(label, own["PasswordChar"])
                 
             if own["Cursor"]:
