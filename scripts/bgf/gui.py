@@ -988,12 +988,12 @@ def _processCommand(command):
         args = commandParts[1].strip() if len(commandParts) > 1 else ""
         
         modules = {"_operators_builtin": _operators_builtin, "_operators_custom": _operators_custom}
-        operators = [command, command[0].upper() + command[1:]]
+        operators = [command, command[0].lower() + command[1:], command[0].upper() + command[1:]]
         
         for mod in modules.keys():
             for op in operators:
                 if op in dir(modules[mod]):
-                    resultCommand = "{}.{}(cont, args={})".format(mod, op, repr(args))
+                    resultCommand = "{}.{}(cont, {})".format(mod, op, repr(args))
                     return resultCommand
         return ""
         
@@ -1024,8 +1024,8 @@ def _execCommands(cont, instant):
         try:
             exec(command)
             if DEBUG: print("  >", command)
-        except:
-            if DEBUG: print("  X", command)
+        except Exception as e:
+            if DEBUG: print("  X", command, e)
 
 
 def _getComputed(expression):
