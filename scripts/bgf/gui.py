@@ -1,10 +1,10 @@
 import bge
 from bge.types import *
-from .. import operators as _operators_builtin
-from ... import operators as _operators_custom
+from . import operators as _operators_builtin
+from .. import operators as _operators_custom
 
 # Public variables accessible from widgets
-from .. import DEBUG, config, database, state, lang, curPath
+from . import DEBUG, config, database, state, lang
 
 
 if not hasattr(bge.logic, "_widgetHovered"):
@@ -568,7 +568,7 @@ class GuiWidget(GuiBase):
     def _getComputed(expression):
         # type: (str) -> object
         
-        from ... import computed
+        from .. import computed
         
         expression = expression.lstrip().split(":", maxsplit=1)
         args = repr(expression[1]) if len(expression) == 2 else ""
@@ -1119,7 +1119,7 @@ class GuiInput(GuiClickable):
     def _input(self):
         # type: () -> None
         
-        from ..thirdparty.pyp3rclip import copy, paste
+        from .thirdparty.pyp3rclip import copy, paste
         
         cont = self.currentController
         group = self.groupObject
