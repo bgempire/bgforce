@@ -348,7 +348,8 @@ class GuiWidget(GuiBase):
             # Set visibility, color and offset of shadow
             self.labelShadowObject.visible = bool(self.props["ShadowEnable"])
             self.labelShadowObject.color = self.props["ShadowColor"] if self.enabled else self.props["ShadowColorDisabled"]
-            self.labelShadowObject.localPosition = list(self.labelObject.localPosition)[0:2] + [self.labelShadowObject.localPosition.z]
+            self.labelShadowObject.localPosition = list(self.labelObject.localPosition)[0:2] \
+                + [self.labelShadowObject.localPosition.z]
             self.labelShadowObject.localPosition.x += self.props["ShadowOffset"][0]
             self.labelShadowObject.localPosition.y += self.props["ShadowOffset"][1]
             self.labelShadowObject.localScale = [self.props["LabelSize"], self.props["LabelSize"], 1.0]
@@ -366,12 +367,18 @@ class GuiWidget(GuiBase):
 
             # Play hide animation
             if self.transitionState == "Hiding":
-                self.playAction("GuiTransitions", curAnim["Shown"], curAnim["Hidden"], speed=self.props["TransitionSpeed"])
+                self.playAction(
+                    "GuiTransitions", curAnim["Shown"],
+                    curAnim["Hidden"], speed=self.props["TransitionSpeed"]
+                )
                 self.transitionState = "Showing"
 
             # Play show animation
             elif self.transitionState == "Showing":
-                self.playAction("GuiTransitions", curAnim["Hidden"], curAnim["Shown"], speed=self.props["TransitionSpeed"])
+                self.playAction(
+                    "GuiTransitions", curAnim["Hidden"],
+                    curAnim["Shown"], speed=self.props["TransitionSpeed"]
+                )
                 self.transitionState = "Shown"
 
                 # Execute camera move command
@@ -789,10 +796,12 @@ class GuiIconButton(GuiButton):
 
         # Initialize icon transform and color
         self.iconObject.localScale = list(self.props["IconSize"]) + [1.0]
-        self.iconObject.localPosition = list(self.clickableObject.localPosition)[0:2] + [self.iconObject.localPosition.z]
+        self.iconObject.localPosition = list(self.clickableObject.localPosition)[0:2] \
+            + [self.iconObject.localPosition.z]
         self.iconObject.localPosition.x += self.props["IconOffset"][0]
         self.iconObject.localPosition.y += self.props["IconOffset"][1]
-        self.iconObject.localOrientation = list(self.iconObject.localOrientation.to_euler())[0:2] + [radians(self.props["IconRotation"])]
+        self.iconObject.localOrientation = list(self.iconObject.localOrientation.to_euler())[0:2] \
+            + [radians(self.props["IconRotation"])]
         self.iconObject.color = self.props["IconColor"]
 
         if "Icon" in group:
