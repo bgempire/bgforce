@@ -282,8 +282,9 @@ class GuiWidget(GuiBase):
             if self.isPlayingAction():
                 always.skippedTicks = self.ALWAYS_SKIPPED_TICKS
             
-            elif type(group.get("Update")) == int and group.get("Update") >= 0:
+            elif "Update" in group and group["Update"] >= 0:
                 always.skippedTicks = group["Update"]
+                self._updateLabelObjects()
                 
             else:
                 always.skippedTicks = self.props["UpdateFrequency"]
