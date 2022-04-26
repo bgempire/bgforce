@@ -1124,7 +1124,6 @@ class GuiInput(GuiClickable):
         cont = self.currentController
         group = self.groupObject
         keyboard = cont.sensors["Keyboard"] # type: SCA_KeyboardSensor
-        target = ""
         
         self._ensureTarget()
         self._processActions()
@@ -1170,14 +1169,14 @@ class GuiInput(GuiClickable):
             
             self._updateLabelObjects()
         
-        if target and keyboard.positive and self["InputEnable"]:
+        if self.inputTarget and keyboard.positive and self["InputEnable"]:
             
             try:
-                exec(target + " = " + repr(self["InputText"]))
-                if DEBUG and keyboard.positive: print("> Input", group, "set target to:", repr(eval(target)))
+                exec(self.inputTarget + " = " + repr(self["InputText"]))
+                if DEBUG and keyboard.positive: print("> Input", group, "set target to:", repr(eval(self.inputTarget)))
             
             except:
-                if DEBUG: print("X Input", group, "couldn't set to target:", target)
+                if DEBUG: print("X Input", group, "couldn't set to target:", self.inputTarget)
     
     
     def _processActions(self):
@@ -1203,6 +1202,7 @@ class GuiInput(GuiClickable):
         # type: () -> None
         
         group = self.groupObject
+        target = ""
         targetValue = ""
         ensureTarget = False
         
@@ -1211,8 +1211,8 @@ class GuiInput(GuiClickable):
             
             try:
                 if str(group["Target"]).startswith(self.IMPORTANT_PREFIX):
-                    ensureTarget = True
                     target = str(group["Target"])[1:]
+                    ensureTarget = True
                     
                 else:
                     target = group["Target"]
