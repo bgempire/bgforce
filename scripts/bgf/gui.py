@@ -1025,7 +1025,7 @@ class GuiList(GuiClickable):
                 elif hasattr(sourceList, "__iter__"):
                     tempList = list(sourceList)
 
-                    if "Sort" in group and group["Sort"]:
+                    if self.props["Sort"]:
                         tempList.sort()
 
                 else:

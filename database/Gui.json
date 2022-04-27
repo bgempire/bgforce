@@ -194,6 +194,7 @@
         // List element
         "ArrowColorClick" : [0.0, 0.0, 0.0, 0.3],
         "ArrowColorNormal" : [0.0, 0.0, 0.0, 0.1],
+        "Sort" : false,
         "Translate" : false,
         "Wrap" : false
     },
