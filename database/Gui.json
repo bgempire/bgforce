@@ -130,7 +130,10 @@
         "ColorNormal" : "$ColorNormal",
         "Offset" : [0.0, 0.0],
         "Size" : [1.0, 1.0],
-        "TransitionOnClick" : false
+        "TransitionOnClick" : false,
+
+        // Mesh element
+        "Mesh": ""
     },
 
     "Checkbox" : {

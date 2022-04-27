@@ -822,14 +822,13 @@ class GuiMeshButton(GuiButton):
 
         group = self.groupObject
 
-        self.mesh = str(group["Mesh"]) if "Mesh" in group else ""  # type: str
+        self.mesh = str(self.props["Mesh"])  # type: str
         """ Mesh: This widget's mesh to be set. """
-
-        self.clickableObject.replaceMesh(self.mesh, True, True)
 
     def _setVisual(self, state, button=""):
         # type: (str, str) -> None
 
+        self.clickableObject.replaceMesh(self.mesh, True, True)
         self.clickableObject.color = self.props["Color" + state]
 
 
