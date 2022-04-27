@@ -1,15 +1,15 @@
 ---
 title: Variáveis
-description: 
+description:
 ---
 
 # {{ page.title }}
 
-O módulo `scripts/bgf` dá acesso à variáveis que podem ser utilizadas na programação de jogos no BGForce. 
+O módulo `scripts/bgf` dá acesso à variáveis que podem ser utilizadas na programação de jogos no BGForce.
 O uso de algumas dessas variáveis é essencial para uma boa lógica de jogo, em especial o seu uso dentro de widgets.
 
-Todas as variáveis estão disponíveis nos escopos dos widgets, portanto é possível utilizá-las em comandos de 
-widgets clicáveis e em referências de dados fonte / alvo de listas, inputs e checkboxes. Caso deseje importar 
+Todas as variáveis estão disponíveis nos escopos dos widgets, portanto é possível utilizá-las em comandos de
+widgets clicáveis e em referências de dados fonte / alvo de listas, inputs e checkboxes. Caso deseje importar
 essas variáveis no seu próprio script (dado um script na raiz da pasta `scripts`, por exemplo: `scripts/meuscript.py`):
 
 ```python
@@ -24,13 +24,13 @@ from .bgf import state
 Abaixo estão listadas as variáveis disponíveis para uso no BGForce.
 
 ### `bgf.curPath`
-- Caminho da pasta raiz do projeto como um objeto 
-[`pathlib.Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path).
+- Caminho da pasta raiz do projeto como um objeto
+[`pathlib.Path`][1].
 
-- **Tipo:** [Path](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+- **Tipo:** [Path][1]
 
 ### `bgf.config`
-- Configurações atuais do jogo. Pode ter seus dados alterados para personalizar 
+- Configurações atuais do jogo. Pode ter seus dados alterados para personalizar
 as configurações do jogo.
 Veja sobre o arquivo de configuração padrão em [Config]({{ site.baseurl }}/database/config).
 
@@ -48,7 +48,7 @@ Veja sobre o arquivo de configuração padrão em [Config]({{ site.baseurl }}/da
 ```
 
 ### `bgf.database`
-- Base de dados do projeto. Contém o conteúdo de todos os arquivos na pasta 
+- Base de dados do projeto. Contém o conteúdo de todos os arquivos na pasta
 `database` carregados como dicionários.
 Veja sobre a pasta da base de dados em [Database]({{ site.baseurl }}/database).
 
@@ -62,7 +62,7 @@ Veja sobre a pasta da base de dados em [Database]({{ site.baseurl }}/database).
 ```
 
 ### `bgf.lang`
-- Textos de tradução do projeto. Contém o conteúdo de todos os arquivos na pasta 
+- Textos de tradução do projeto. Contém o conteúdo de todos os arquivos na pasta
 `lang` carregados como dicionários.
 Veja sobre a pasta de traduções em [Estrutura]({{ site.baseurl }}/structure#lang).
 
@@ -80,9 +80,9 @@ Veja sobre a pasta de traduções em [Estrutura]({{ site.baseurl }}/structure#la
 ```
 
 ### `bgf.sounds`
-- Caminhos de arquivo dos sons do jogo. Contém dois dicionários identificados 
-pelas palavras chave `"Bgm"` e `"Sfx"`, e esses dois dicionários contém de fato 
-os caminhos dos arquivos de som do jogo com seus respectivos nomes sem extensão. 
+- Caminhos de arquivo dos sons do jogo. Contém dois dicionários identificados
+pelas palavras chave `"Bgm"` e `"Sfx"`, e esses dois dicionários contém de fato
+os caminhos dos arquivos de som do jogo com seus respectivos nomes sem extensão.
 Veja sobre as pastas de sons em [Estrutura]({{ site.baseurl }}/structure#sounds).
 
 - **Tipo:** dict
@@ -101,8 +101,8 @@ Veja sobre as pastas de sons em [Estrutura]({{ site.baseurl }}/structure#sounds)
 ```
 
 ### `bgf.state`
-- Estado atual do jogo. Permite armazenar pontuações, inventário, vida ou qualquer 
-dado que seja relevante de se manter durante o jogo e possa ser salvo. Defina o 
+- Estado atual do jogo. Permite armazenar pontuações, inventário, vida ou qualquer
+dado que seja relevante de se manter durante o jogo e possa ser salvo. Defina o
 estado inicial em [State]({{ site.baseurl }}/database/state).
 
 - **Tipo:** dict
@@ -114,3 +114,5 @@ estado inicial em [State]({{ site.baseurl }}/database/state).
     "Scores": [512, 99, 477]
 }
 ```
+
+[1]: https://docs.python.org/3/library/pathlib.html#pathlib.Path
