@@ -231,7 +231,7 @@ class GuiWidget(GuiBase):
         self.targetLabel = ""  # type: str
         """ TargetLabel: This widget's temporary label text. Used if widget has label. """
 
-        self.translate = bool(group["Translate"]) if "Translate" in group else False  # type: bool
+        self.translate = bool(self.props["Translate"]) if "Translate" in self.props.keys() else False  # type: bool
         """ TargetLabel: This widget's temporary label text. Used if widget has label. """
 
         # Parent children of group to widget parent
