@@ -476,8 +476,7 @@ class GuiWidget(GuiBase):
             if self.type == "Input" and self.cursor:
                 lineSize += 1
 
-            lineBreaks = not group["LineBreak"] if "LineBreak" in group else True
-            label = wrap(str(label) + other, lineSize, replace_whitespace=lineBreaks)
+            label = wrap(str(label) + other, lineSize, replace_whitespace=not self.props["LineBreak"])
             labelTemp = [i.split("\n") for i in label]
             label.clear()
 
