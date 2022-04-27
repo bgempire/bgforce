@@ -98,6 +98,7 @@
         "TransitionOnClick" : false,
 
         // Icon element
+        "Icon" : 0,
         "IconColor" : [0.2, 0.2, 0.2, 1.0],
         "IconOffset" : [0.4, 0.5],
         "IconRotation" : 0,

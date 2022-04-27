@@ -803,8 +803,9 @@ class GuiIconButton(GuiButton):
             + [radians(self.props["IconRotation"])]
         self.iconObject.color = self.props["IconColor"]
 
-        if "Icon" in group:
-            meshName = "IconButtonIcon" + str(group["Icon"])
+        if self.props["Icon"] and 0 < self.props["Icon"] <= 25:
+            meshName = "IconButtonIcon" + str(self.props["Icon"])
+
             try:
                 self.iconObject.replaceMesh(meshName)
             except:
