@@ -96,6 +96,10 @@ As animações disponíveis são: `SlideL`, `SlideR`, `ScaleV`, `ScaleH` e `Arc`
     - Não tem efeito se adicionado em `database/Gui.json` ou `database/Styles.json`, apenas funciona caso adicionado como propriedade na instância do widget.
 - **Tipo:** int
 
+### Style
+- Nome do estilo em [database/Styles.json]({{ site.baseurl }}/database/styles) que será aplicado neste widget.
+- **Tipo:** str
+
 ### UpdateFrequency
 - Intervalo de atualização da lógica do widget em quadros. Quanto maior o valor, maior o tempo entre cada atualização. Por exemplo: um valor de `60` fará o widget atualizar sua lógica a cada 60 quadros (1 segundo).
 - **Tipo:** int
