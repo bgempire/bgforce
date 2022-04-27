@@ -1,14 +1,14 @@
 ---
 title: Funções
-description: 
+description:
 ---
 
 # {{ page.title }}
 
-O BGForce oferece diversas funções de abstração de tarefas comuns na programação, 
-desde obter listas de arquivos, salvamento e carregamento de dados, tradução, 
-reprodução de sons, entre outros. 
-Caso deseje importar essas variáveis no seu próprio script (dado um script na 
+O BGForce oferece diversas funções de abstração de tarefas comuns na programação,
+desde obter listas de arquivos, salvamento e carregamento de dados, tradução,
+reprodução de sons, entre outros.
+Caso deseje importar essas variáveis no seu próprio script (dado um script na
 raiz da pasta `scripts`, por exemplo: `scripts/meuscript.py`):
 
 ```python
@@ -23,7 +23,7 @@ from .bgf import saveFile
 Abaixo estão listadas as funções disponíveis para uso no BGForce.
 
 ### `bgf._(key)`
-- Retorna a tradução de `key` com base na linguagem atual definida em 
+- Retorna a tradução de `key` com base na linguagem atual definida em
 [`bgf.config["Lang"]`]({{ site.baseurl }}/api/variables#config).
 
 **Parâmetros:**
@@ -33,7 +33,7 @@ Abaixo estão listadas as funções disponíveis para uso no BGForce.
 
 
 ### `bgf.dump(obj, file="dump.py")`
-- Salva a representação em string de um objeto de Python em um arquivo. Útil 
+- Salva a representação em string de um objeto de Python em um arquivo. Útil
 para fins de depuração.
 
 **Parâmetros:**
@@ -42,13 +42,22 @@ para fins de depuração.
 
 
 ### `bgf.getFilePaths(directory)`
-- Retorna um dicionário contendo todos os caminhos de arquivo de uma pasta no padrão 
+- Retorna um dicionário contendo todos os caminhos de arquivo de uma pasta no padrão
 `{"Arquivo" : "Caminho/Para/Arquivo.txt"}`. As chaves não possuem extensão do nome do arquivo.
 
 **Parâmetros:**
 - `directory` (str) - Caminho da pasta
 
 **Retorna:** dict
+
+
+### `bgf.getUpmostParent(obj)`
+- Retorna o objeto pai mais acima na hierarquia do objeto passado como parâmetro.
+
+**Parâmetros:**
+- `obj` ([KX_GameObject][5]) - Objeto do jogo
+
+**Retorna:** [bge.types.KX_GameObject][5]
 
 
 ### `bgf.isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE)`
@@ -62,7 +71,7 @@ para fins de depuração.
 
 
 ### `bgf.loadFile(file)`
-- Carrega um arquivo `file` e retorna seu conteúdo como um dicionário. Suporta 
+- Carrega um arquivo `file` e retorna seu conteúdo como um dicionário. Suporta
 JSON, JSONC e JSON codificado com [zlib](https://docs.python.org/3/library/zlib.html).
 
 **Parâmetros:**
@@ -72,9 +81,9 @@ JSON, JSONC e JSON codificado com [zlib](https://docs.python.org/3/library/zlib.
 
 
 ### `bgf.loadFiles(directory, pattern="")`
-- Carrega todos os arquivos de `directory` e retorna seu conteúdo como um dicionário. 
+- Carrega todos os arquivos de `directory` e retorna seu conteúdo como um dicionário.
 Suporta JSON, JSONC e JSON codificado com [zlib][4].
-Caso `pattern` seja 
+Caso `pattern` seja
 
 **Parâmetros:**
 - `directory` ([Path][3]) - Caminho do diretório
@@ -84,24 +93,24 @@ Caso `pattern` seja
 
 
 ### `bgf.playSound(sound, origin=None)`
-- Executa um som de nome `sound` da pasta `sounds/sfx` (sem extensão). Caso um 
+- Executa um som de nome `sound` da pasta `sounds/sfx` (sem extensão). Caso um
 objeto `origin` seja fornecido, executará o som como 3D usando as coordenadas deste.
 
 **Parâmetros:**
 - `sound` (str) - Nome do som
-- `origin` ([KX_GameObject](https://docs.blender.org/api/2.79/bge.types.KX_GameObject.html)) - Objeto de referência para executar o som como 3D (opcional)
+- `origin` ([KX_GameObject][5]) - Objeto de referência para executar o som como 3D (opcional)
 
 **Retorna:** dict
 
 
 ### `bgf.saveFile(file, data, ext=None)`
-- Salva no caminho de `file` os dados de `data` como JSON. Caso `ext` seja fornecida, 
+- Salva no caminho de `file` os dados de `data` como JSON. Caso `ext` seja fornecida,
 usará esta como extensão de arquivo.
 
 **Parâmetros:**
 - `file` ([Path][3]) - Caminho do arquivo a ser salvo
 - `data` (dict) - Dado a ser salvo
-- `ext` (str) - Extensão a ser usada no arquivo, suporta `".json"`, `".jsonc"` e `".dat"` (JSON 
+- `ext` (str) - Extensão a ser usada no arquivo, suporta `".json"`, `".jsonc"` e `".dat"` (JSON
 codificado com [zlib][4])
 
 **Retorna:** dict
@@ -111,3 +120,4 @@ codificado com [zlib][4])
 [2]: https://docs.blender.org/api/2.79/bge.logic.html#id5
 [3]: https://docs.python.org/3/library/pathlib.html#pathlib.Path
 [4]: https://docs.python.org/3/library/zlib.html
+[5]: https://docs.blender.org/api/2.79/bge.types.KX_GameObject.html
