@@ -653,6 +653,12 @@ class GuiClickable(GuiWidget):
         else:
             self._setVisual("Normal")
 
+    def isHovered(self):
+        # type: () -> bool
+        """Returns if this widget is hovered."""
+
+        return bge.logic._widgetHovered and bge.logic._widgetHovered is self
+
     def _setVisual(self, state, button=""):
         # type: (str, str) -> None
 
@@ -768,6 +774,13 @@ class GuiClickable(GuiWidget):
 
             resultCommand += "')"
             return resultCommand
+
+    @staticmethod
+    def anyHovered():
+        # type: () -> bool
+        """Returns if any widget is hovered."""
+
+        return bool(bge.logic._widgetHovered)
 
 
 class GuiButton(GuiClickable):

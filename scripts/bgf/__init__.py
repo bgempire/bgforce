@@ -138,6 +138,14 @@ def isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE):
                 return _keyboard.events.get(key) == status
 
 
+def isWidgetHovered():
+    # type: () -> bool
+    """Check if any GUI widget is hovered."""
+
+    from .gui import GuiClickable
+    return GuiClickable.anyHovered()
+
+
 def loadFile(_file):
     # type: (__Path | str) -> dict
     """Load file from given path and return its content as a dict."""
