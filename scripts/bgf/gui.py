@@ -219,7 +219,7 @@ class GuiWidget(GuiBase):
         self.transitionState = "Shown"  # type: str
         """ TransitionState: This widget's transition animation state. """
 
-        self.enabled = self._isEnabled()
+        self.enabled = self.isEnabled()
         """ Enabled: If this widget is enabled for specific colors and behaviors. """
 
         self.labelObject = self.getChildByProp("LABEL")  # type: KX_FontObject
@@ -306,10 +306,10 @@ class GuiWidget(GuiBase):
                 if command:
                     self.scene["CommandCamera"] = command
 
-            self.enabled = self._isEnabled()
+            self.enabled = self.isEnabled()
             self._processTransition()
 
-    def _isEnabled(self):
+    def isEnabled(self):
         # type: () -> bool
 
         own = self.currentController.owner
