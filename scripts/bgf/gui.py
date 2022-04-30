@@ -507,51 +507,6 @@ class GuiWidget(GuiBase):
 
         return label
 
-    @classmethod
-    def _processCommand(cls, command):
-        # type: (str) -> str
-        """ Convert BGForce string command to Python code. """
-
-        command = command.strip()
-
-        if command.startswith(cls.EXEC_PREFIX):
-            return command[1:].strip()
-
-        elif command.startswith("(") or command.startswith("["):
-            return "own.scene.active_camera.worldPosition = list(" + command.strip() \
-                + ") + [own.scene.active_camera.worldPosition.z]"
-
-        elif command.startswith(cls.OPERATOR_PREFIX):
-            commandParts = command[1:].strip().split(":", 1)
-            command = commandParts[0].strip()
-            args = commandParts[1].strip() if len(commandParts) > 1 else ""
-
-            modules = {
-                "_operators_builtin": _operators_builtin,
-                "_operators_custom": _operators_custom
-            }
-            operators = [command, command[0].lower() + command[1:], command[0].upper() + command[1:]]
-
-            for mod in modules.keys():
-                for op in operators:
-                    if op in dir(modules[mod]):
-                        resultCommand = "{}.{}(cont, {})".format(mod, op, repr(args))
-                        return resultCommand
-            return ""
-
-        else:
-            command = [i.strip() for i in command.split(":")]
-            resultCommand = "bge.logic.sendMessage('"
-
-            if len(command):
-                resultCommand += command.pop(0)
-
-            if len(command):
-                resultCommand += "', '" + ":".join(command)
-
-            resultCommand += "')"
-            return resultCommand
-
     @staticmethod
     def _getActionArgs(action):
         # type: (str) -> list[str]
