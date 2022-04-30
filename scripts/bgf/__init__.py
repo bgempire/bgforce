@@ -27,9 +27,9 @@ state = {} # type: dict[str, object]
 def _(key):
     # type: (str) -> str
     """Get translation of provided key from current language set in config."""
-    
+
     curLang = lang[config["Lang"]] # type: dict[str, str]
-    
+
     if key in curLang.keys():
         return lang[config["Lang"]][key]
     else:
@@ -39,10 +39,10 @@ def _(key):
 def dump(obj, file="dump.py"):
     # type: (object, str | __Path) -> None
     """Dump to file the object content."""
-    
+
     from pprint import pformat
     file = __processPath(file)
-    
+
     with open(file.as_posix(), "w") as _file:
         _file.write(pformat(obj))
         print("> Dumped object to", file.as_posix())
@@ -51,7 +51,7 @@ def dump(obj, file="dump.py"):
 def getFilePaths(directory):
     # type: (__Path) -> dict
     """Get all files from given directory and return dict with name : path relations."""
-    
+
     directory = __processPath(directory)
     relativePath = directory.as_posix().replace(curPath.as_posix(), "")[1:]
     if DEBUG: print("> Getting files from:", relativePath)
@@ -62,76 +62,76 @@ def getFilePaths(directory):
             data[_file.stem] = _file.as_posix()
             if DEBUG:
                 print("> File get:", _file.as_posix().replace(curPath.as_posix(), "")[1:])
-                    
+
     else:
         directory.mkdir(parents=True)
-        
+
     return data
 
 
 def getUpmostParent(obj):
     # type: (bge.types.KX_GameObject) -> bge.types.KX_GameObject
     """Get the upmost parent of a game object."""
-    
+
     if obj.parent:
-        
+
         while obj.parent:
             obj = obj.parent
-            
+
         return obj
 
 
 def isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE):
     # type: (str | int, int) -> bool
     """Check if a key is pressed in a specific status."""
-    
+
     def _checkInputStatus(key, status):
         # type: (bge.types.SCA_InputEvent, int) -> bool
-            
+
         if status == bge.logic.KX_INPUT_NONE:
             return key.inactive
-            
+
         elif status == bge.logic.KX_INPUT_JUST_ACTIVATED:
             return key.activated
-        
+
         elif status == bge.logic.KX_INPUT_ACTIVE:
             return key.active
-            
+
         elif status == bge.logic.KX_INPUT_JUST_RELEASED:
             return key.released
-    
+
     _keyboard = bge.logic.keyboard # type: bge.types.SCA_PythonKeyboard
     _mouse = bge.logic.mouse # type: bge.types.SCA_PythonMouse
-    
+
     # Get key code
     if type(key) == str:
         if not key.endswith("KEY"):
             key += "KEY"
-            
+
         key = database["Keys"]["NameCode"].get(key) # type: int
-        
+
     elif type(key) != int:
         return
-    
+
     if key:
-        
+
         # Check UPBGE inputs
         if hasattr(bge.app, "upbge_version_string"):
             keyPressed = _mouse.inputs.get(key) # type: bge.types.SCA_InputEvent
-            
+
             if keyPressed != None:
                 return _checkInputStatus(keyPressed, status=status)
-                
+
             else:
                 keyPressed = _keyboard.inputs.get(key) # type: bge.types.SCA_InputEvent
-                
+
                 if keyPressed != None:
                     return _checkInputStatus(keyPressed, status=status)
-            
+
         # Check BGE events
         else:
             keyPressed = _mouse.events.get(key)
-            
+
             if keyPressed != None:
                 return keyPressed == status
             else:
@@ -141,29 +141,29 @@ def isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE):
 def loadFile(_file):
     # type: (__Path | str) -> dict
     """Load file from given path and return its content as a dict."""
-    
+
     import json
     import zlib
     from ast import literal_eval
-    
+
     _file = __processPath(_file)
-    
+
     if not _file.exists() and _file.parent.exists():
         for f in _file.parent.iterdir():
             if f.stem == _file.stem:
                 _file = f
                 break
-    
+
     data = {}
     relativePath = _file.as_posix().replace(curPath.as_posix(), "")[1:]
     loaded = False
     isDict = True
-    
+
     if _file.suffix in (".json", ".jsonc"):
         with open(_file.as_posix(), "r", encoding="utf-8") as openedFile:
             dataRaw = __getJsonNoComments(openedFile.read())
             isDict = dataRaw.startswith("{")
-            
+
             try:
                 data = json.loads(dataRaw)
                 loaded = True
@@ -174,87 +174,87 @@ def loadFile(_file):
                     loaded = True
                 except:
                     if DEBUG: print("X Could not load file:", relativePath)
-                    
+
         # Process variables
         if isDict: __replaceDictVariables(data)
-        
+
     elif _file.suffix == ".dat":
         with open(_file.as_posix(), "rb") as openedFile:
             data = json.loads(__getJsonNoComments(zlib.decompress(openedFile.read()).decode(encoding="utf-8")))
             loaded = True
-            
+
     if loaded:
         if DEBUG: print("> File loaded:", relativePath)
-        
+
     return data
 
 
 def loadFiles(directory, pattern=""):
     # type: (__Path | str, str) -> dict
-    """Get all files from given directory recursively, 
+    """Get all files from given directory recursively,
     load their content and return data as dict."""
-    
+
     from fnmatch import filter
-    
+
     directory = __processPath(directory)
     if DEBUG: print("> Loading files from:", directory.as_posix().replace(curPath.as_posix(), "")[1:])
     data = {}
-    
+
     for _file in directory.iterdir():
-        
+
         if _file.is_dir():
             subdirData = loadFiles(_file, pattern=pattern)
-            
+
             if subdirData:
                 data[_file.name] = subdirData
-            
+
         elif _file.suffix in (".json", ".jsonc", ".dat"):
             if not pattern or filter([_file.name], pattern):
                 data[_file.stem] = loadFile(_file)
-            
+
     return data
 
 
 def playSound(sound, origin=None):
     # type: (str, bge.types.KX_GameObject) -> __aud.Handle
     """Play specific sound effect from sfx directory."""
-    
+
     if sound.startswith("./"):
         sound = curPath / sound if (curPath / sound).exists() else None
     else:
         sound = sounds["Sfx"].get(sound) # type: str
         sound = __Path(sound) if sound else None # type: __Path
-        
+
     if sound:
         device = __aud.device() # type: __aud.Device
         factory = __aud.Factory.file(sound.as_posix())
         handle = device.play(factory) # type: __aud.Handle
         handle.volume = config["SfxVol"]
-        
+
         if origin:
             device.distance_model = __aud.AUD_DISTANCE_MODEL_LINEAR
             device.listener_location = origin.scene.active_camera.worldPosition
             device.listener_orientation = origin.scene.active_camera.worldOrientation.to_quaternion()
             device.listener_velocity = origin.scene.active_camera.getLinearVelocity()
-            
+
             handle.relative = False
             handle.location = origin.worldPosition
             handle.velocity = origin.getLinearVelocity()
             handle.distance_maximum = 50
             handle.distance_reference = 1
-        
+
         return handle
 
 
 def runInThread(func):
     # type: (__Callable) -> __Callable
     """Decorator to run function in a thread."""
-    
+
     def wrapper(*args, **kwargs):
         from threading import Thread
         thread = Thread(target=func, args=args, kwargs=kwargs, daemon=True)
         thread.start()
-        
+
     return wrapper
 
 
@@ -262,19 +262,19 @@ def saveFile(_file, data, ext=None):
     # type: (__Path, object, str) -> None
     """Save data to given file. An extension can be given to force
     the file type (may be .json or .dat). Defaults to .json."""
-    
+
     import json
     import zlib
     from pprint import pformat
-    
+
     _file = __processPath(_file)
     saved = False
-    
+
     if ext is None:
         ext = _file.suffix
     else:
         _file = _file.with_suffix(ext)
-    
+
     if ext in (".json", ".jsonc"):
         with open(_file.as_posix(), "w", encoding="utf-8") as openedFile:
             try:
@@ -284,12 +284,12 @@ def saveFile(_file, data, ext=None):
                 openedFile.write(pformat(data, indent=4))
             finally:
                 saved = True
-    
+
     elif ext == ".dat":
         with open(_file.as_posix(), "wb") as openedFile:
             openedFile.write(zlib.compress(json.dumps(data).encode(encoding="utf-8")))
             saved = True
-            
+
     if saved:
         if DEBUG:
             relativePath = _file.as_posix().replace(curPath.as_posix(), "")[1:]
@@ -300,69 +300,69 @@ def saveFile(_file, data, ext=None):
 
 def __getGameKeys():
     # type: () -> dict[str, dict]
-    
+
     keys = {
         "NameCode" : {},
         "CodeName" : {},
     }
-    
+
     for alias in dir(bge.events):
         if alias.isupper():
             code = eval("bge.events." + alias)
             keys["NameCode"][alias] = code
             keys["CodeName"][code] = alias
-            
+
     return keys
 
 
 def __getJsonNoComments(fileContent):
     # type: (str) -> str
-    
+
     fileData = []
-    
+
     for i in fileContent.splitlines():
         i = i.strip()
         if i and not i.startswith(("//", "#")):
             fileData.append(i.strip())
-            
+
     return "".join(fileData)
 
 
 def __getResolutions():
     # type: () -> dict[str, list]
-    
+
     resolutions = {}
     displayDimensions = list(bge.render.getDisplayDimensions())
-    
+
     for resolution in database["Resolutions"]:
         resolution = str(resolution)
-        
+
         if resolution:
             if not resolution[0].isnumeric():
                 resolutions[resolution] = displayDimensions
-                
+
             else:
                 resolutionList = resolution.lower().split("x")
                 resolutionList = [int(r) for r in resolutionList]
-                
+
                 if resolutionList[0] <= displayDimensions[0] \
                 and resolutionList[1] <= displayDimensions[1]:
                     resolutions[resolution] = resolutionList
                 else:
                     resolutions[resolution] = displayDimensions
-            
+
     return resolutions
 
 
 def __loadFramework():
     # type: () -> None
     """Main function called at start."""
-    
+
     from ast import literal_eval
     global DEBUG, config, database, lang, state, sounds, curPath
-    
+
     if DEBUG: print("\n> Initializing framework")
-    
+
     curPath = __Path(bge.logic.expandPath("//")).resolve()
     config = bge.logic.__config = loadFile(curPath / "Config")
     database = bge.logic.__database = loadFiles(curPath / "database")
@@ -372,24 +372,24 @@ def __loadFramework():
         "Sfx" : getFilePaths(curPath / "sounds/sfx"),
         "Bgm" : getFilePaths(curPath / "sounds/bgm")
     }
-    
+
     # Get numeric definitions of resolutions
     bge.logic.__resolutions = __getResolutions()
-    
+
     # Remove outdated keys from config
     configKeys = tuple(config.keys())
-    
+
     for key in configKeys:
         if not key in database["Config"].keys():
             del config[key]
-    
+
     # Add to config new keys from database
     for key in database["Config"].keys():
         if not key in config.keys():
             config[key] = database["Config"][key]
-    
+
     database["Keys"] = __getGameKeys()
-    
+
     bge.render.showMouse(database["Global"]["MouseNative"])
     __processExitKey(database["Global"]["ExitKey"])
     if DEBUG: print("> Framework initializated\n")
@@ -398,19 +398,19 @@ def __loadFramework():
 
 def __processExitKey(key):
     # type: (str | int) -> None
-    
+
     keyCode = bge.events.ESCKEY
-    
+
     # Get int constant from str key
     if type(key) == str:
         key = key.upper()
-        
+
         if hasattr(bge.events, key):
             keyCode = eval("bge.events." + key)
-            
+
         elif hasattr(bge.events, key + "KEY"):
             keyCode = eval("bge.events." + key + "KEY")
-            
+
     # Validate int key
     elif type(key) == int:
         for k in dir(bge.events):
@@ -419,40 +419,40 @@ def __processExitKey(key):
                 if key == curKeyCode:
                     keyCode = key
                     break
-    
+
     bge.logic.setExitKey(keyCode)
 
 
 def __replaceDictVariables(target, variables=None):
     # type: (dict, dict) -> None
     """Replaces all variable values from dict recursively."""
-    
+
     from ast import literal_eval
-        
+
     # Move all variables from top level to its own dict
     if variables is None:
         variables = {}
-        
+
         for key in target.keys():
             if key.startswith(__VARIABLE_PREFIX):
                 variables[key] = str(target[key])
-                
+
         for key in variables.keys():
             del target[key]
-    
+
     for key in target.keys():
-        
+
         # Replace variables with respective values
         if type(target[key]) == str and target[key] in variables.keys():
             value = variables[target[key]]
-            
+
             try:
                 value = literal_eval(value)
             except:
                 pass
-            
+
             target[key] = value
-            
+
         # Do replacement recursively
         elif type(target[key]) == dict:
             __replaceDictVariables(target[key], variables)
@@ -461,7 +461,7 @@ def __replaceDictVariables(target, variables=None):
 def __processPath(path):
     # type: (str | __Path) -> __Path
     """Process string path to __Path object if needed."""
-    
+
     return path if type(path) == __Path else curPath / str(path)
 
 
