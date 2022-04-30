@@ -756,12 +756,10 @@ class GuiIconButton(GuiButton):
 
         super().__init__(obj, cont)
 
-        group = self.groupObject
-
         self.iconObject = self.getChildByProp("ICON")  # type: KX_GameObject
         """ IconObj: This widget's icon object. """
 
-        # Initialize icon transform and color
+        # Initialize icon transform
         self.iconObject.localScale = list(self.props["IconSize"]) + [1.0]
         self.iconObject.localPosition = list(self.clickableObject.localPosition)[0:2] \
             + [self.iconObject.localPosition.z]
@@ -769,6 +767,11 @@ class GuiIconButton(GuiButton):
         self.iconObject.localPosition.y += self.props["IconOffset"][1]
         self.iconObject.localOrientation = list(self.iconObject.localOrientation.to_euler())[0:2] \
             + [radians(self.props["IconRotation"])]
+
+    def _setVisual(self, state, button="") -> None:
+        # type: (str, str) -> None
+        super()._setVisual(state, button)
+
         self.iconObject.color = self.props["IconColor"]
 
         if self.props["Icon"] and 0 < self.props["Icon"] <= 25:
@@ -778,7 +781,7 @@ class GuiIconButton(GuiButton):
                 self.iconObject.replaceMesh(meshName)
             except:
                 if DEBUG:
-                    print("X Icon mesh of", group, "not found:", meshName)
+                    print("X Icon mesh of", self.groupObject, "not found:", meshName)
 
 
 class GuiMeshButton(GuiButton):
@@ -787,8 +790,6 @@ class GuiMeshButton(GuiButton):
     def __init__(self, obj, cont):
         # type: (KX_GameObject, SCA_PythonController) -> None
         super().__init__(obj, cont)
-
-        group = self.groupObject
 
         self.mesh = str(self.props["Mesh"])  # type: str
         """ Mesh: This widget's mesh to be set. """
