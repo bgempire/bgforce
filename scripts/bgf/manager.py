@@ -194,8 +194,9 @@ class Manager(KX_GameObject):
 
         curContext = database["Contexts"].get(self.context) # type: dict
         bgmDb = sounds["Bgm"] # type: dict
+        bgmVol = float(config.get("BgmVol", 1.0))
         handle = self.bgmHandle # type: aud.Handle
-        bgmFadeFactor = self.BGM_FADE_SPEED * config["BgmVol"] \
+        bgmFadeFactor = self.BGM_FADE_SPEED * bgmVol \
             * database["Bgf"]["Global"]["BgmFadeSpeed"] # type: float
         curBgm = ""
 
@@ -233,7 +234,7 @@ class Manager(KX_GameObject):
 
                     if handle:
 
-                        if round(handle.volume, 1) < config["BgmVol"]:
+                        if round(handle.volume, 1) < bgmVol:
                             handle.volume += bgmFadeFactor
 
                         else:
@@ -246,7 +247,7 @@ class Manager(KX_GameObject):
                         self.bgmTransition = False
 
             elif not self.bgmTransition and handle:
-                handle.volume = config["BgmVol"]
+                handle.volume = bgmVol
 
     def _replaceContextScenes(self, context):
         # type: (dict) -> None

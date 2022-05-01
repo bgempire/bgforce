@@ -162,10 +162,10 @@ def playSfx(cont, arg=""):
     import aud
     from . import config, sounds
 
-    if config["SfxEnable"] and arg in sounds["Sfx"].keys():
+    if config.get("SfxEnable", True) and arg in sounds["Sfx"].keys():
         factory = aud.Factory.file(sounds["Sfx"][arg])
         handle = aud.device().play(factory) # type: aud.Handle
-        handle.volume = config["SfxVol"]
+        handle.volume = float(config.get("SfxVol", 1.0))
 
 
 def resumeContext(cont, arg=""):

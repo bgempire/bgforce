@@ -236,7 +236,7 @@ def playSound(sound, origin=None):
         device = __aud.device() # type: __aud.Device
         factory = __aud.Factory.file(sound.as_posix())
         handle = device.play(factory) # type: __aud.Handle
-        handle.volume = config["SfxVol"]
+        handle.volume = float(config.get("SfxVol", 1.0))
 
         if origin:
             device.distance_model = __aud.AUD_DISTANCE_MODEL_LINEAR
