@@ -41,8 +41,8 @@ def manager(cont):
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
             managerInit(cont)
 
-            if database["Global"].get("StartupOperators"):
-                for operator in database["Global"]["StartupOperators"]:
+            if database["Bgf"]["Global"].get("StartupOperators"):
+                for operator in database["Bgf"]["Global"]["StartupOperators"]:
                     bge.logic.sendMessage(operator)
 
         messageManager(cont)
@@ -128,7 +128,7 @@ def contextManager(cont):
     own = cont.owner
     curContext = database["Contexts"].get(own["Context"]) # type: dict
     fadeObj = own["FadeObj"] # type: KX_GameObject
-    fadeSpeedFactor = database["Global"]["ContextFadeSpeed"]
+    fadeSpeedFactor = database["Bgf"]["Global"]["ContextFadeSpeed"]
 
     if own["ContextTransition"] and curContext:
         alpha = round(fadeObj.color[3], 2)
@@ -198,7 +198,7 @@ def bgmManager(cont):
     curContext = database["Contexts"].get(own["Context"]) # type: dict
     bgmDb = sounds["Bgm"] # type: dict
     handle = own["BgmHandle"] # type: aud.Handle
-    bgmFadeFactor = BGM_FADE_SPEED * config["BgmVol"] * database["Global"]["BgmFadeSpeed"]
+    bgmFadeFactor = BGM_FADE_SPEED * config["BgmVol"] * database["Bgf"]["Global"]["BgmFadeSpeed"]
     curBgm = ""
 
     if curContext:

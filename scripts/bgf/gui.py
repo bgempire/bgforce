@@ -80,7 +80,7 @@ class GuiBase(KX_GameObject):
 
         from ast import literal_eval
 
-        WIDGET_DB = database["Gui"][self.type]  # type: dict[str, object]
+        WIDGET_DB = database["Bgf"]["Gui"][self.type]  # type: dict[str, object]
         STYLES_DB = database["Styles"]  # type: dict[str, dict[str, object]]
 
         group = self.groupObject

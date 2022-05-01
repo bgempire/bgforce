@@ -1,0 +1,269 @@
+// BGForce global configuration and definitions
+// Reference: https://bgempire.github.io/bgforce/database/bgf
+
+{
+    // Variables
+    "$ColorClick" : [1.0, 0.6, 0.6, 1.0],
+    "$ColorDisabled" : [0.5, 0.5, 0.5, 1.0],
+    "$ColorHover" : [0.6, 1.0, 0.6, 1.0],
+    "$ColorNormal" : [0.6, 0.6, 1.0, 1.0],
+    "$LabelColor" : [1.0, 1.0, 1.0, 1.0],
+    "$LabelColorDisabled" : [0.5, 0.5, 0.5, 1.0],
+    "$LabelSize" : 0.5,
+    "$RectWidgetLabelOffset" : [0.0, 0.4],
+    "$RectWidgetLineSize" : 18,
+    "$RectWidgetSize" : [1.4, 0.9],
+    "$ShadowColor" : [0.0, 0.0, 0.0, 1.0],
+    "$ShadowColorDisabled" : [0.0, 0.0, 0.0, 0.5],
+    "$ShadowEnable" : true,
+    "$ShadowOffset" : [0.035, -0.035],
+    "$SquareWidgetLabelOffset" : [1.1, 0.25],
+    "$SquareWidgetSize" : [0.9, 0.9],
+    "$TransitionSpeed" : 1.5,
+    "$UpdateFrequency" : 20,
+
+    // Global configuration
+    // Reference: https://bgempire.github.io/bgforce/database/bgf#global
+    "Global" : {
+        "Debug" : false,
+        "Cache" : false,
+        "MouseNative" : false,
+        "ContextFadeSpeed" : 1.0,
+        "BgmFadeSpeed" : 1.0,
+        "ExitKey" : "F12",
+        "StartupOperators" : [
+            "ApplyConfig"
+        ]
+    },
+
+    // Default styles and config of GUI widgets
+    // IMPORTANT: Must contain ALL properties, do not remove any!
+    // Reference: https://bgempire.github.io/bgforce/database/bgf#gui
+    "Gui" : {
+
+        "Label" : {
+            "Transition" : "SlideL",
+            "TransitionSpeed" : "$TransitionSpeed",
+            "UpdateFrequency" : "$UpdateFrequency",
+
+            // Label and shadow,
+            "Justify" : "Left",
+            "LabelColor" : "$LabelColor",
+            "LabelColorDisabled" : "$LabelColorDisabled",
+            "LabelOffset" : [0.0, 0.0],
+            "LabelSize" : "$LabelSize",
+            "LineBreak" : false,
+            "LineSize" : 58,
+            "ShadowColor" : "$ShadowColor",
+            "ShadowColorDisabled" : "$ShadowColorDisabled",
+            "ShadowEnable" : "$ShadowEnable",
+            "ShadowOffset" : "$ShadowOffset"
+        },
+
+        "Button" : {
+            "Transition" : "SlideL",
+            "TransitionSpeed" : "$TransitionSpeed",
+            "UpdateFrequency" : "$UpdateFrequency",
+
+            // Label and shadow
+            "Justify" : "Center",
+            "LabelColor" : "$LabelColor",
+            "LabelColorDisabled" : "$LabelColorDisabled",
+            "LabelOffset" : "$RectWidgetLabelOffset",
+            "LabelSize" : "$LabelSize",
+            "LineBreak" : false,
+            "LineSize" : "$RectWidgetLineSize",
+            "ShadowColor" : "$ShadowColor",
+            "ShadowColorDisabled" : "$ShadowColorDisabled",
+            "ShadowEnable" : "$ShadowEnable",
+            "ShadowOffset" : "$ShadowOffset",
+
+            // Clickable element
+            "ColorClick" : "$ColorClick",
+            "ColorDisabled" : "$ColorDisabled",
+            "ColorHover" : "$ColorHover",
+            "ColorNormal" : "$ColorNormal",
+            "Offset" : [0.0, 0.0],
+            "Size" : "$RectWidgetSize",
+            "TransitionOnClick" : false
+        },
+
+        "IconButton" : {
+            "Transition" : "SlideL",
+            "TransitionSpeed" : "$TransitionSpeed",
+            "UpdateFrequency" : "$UpdateFrequency",
+
+            // Label and shadow
+            "Justify" : "Left",
+            "LabelColor" : "$LabelColor",
+            "LabelColorDisabled" : "$LabelColorDisabled",
+            "LabelOffset" : "$SquareWidgetLabelOffset",
+            "LabelSize" : "$LabelSize",
+            "LineBreak" : false,
+            "LineSize" : 12,
+            "ShadowColor" : "$ShadowColor",
+            "ShadowColorDisabled" : "$ShadowColorDisabled",
+            "ShadowEnable" : "$ShadowEnable",
+            "ShadowOffset" : "$ShadowOffset",
+
+            // Clickable element
+            "ColorClick" : "$ColorClick",
+            "ColorDisabled" : "$ColorDisabled",
+            "ColorHover" : "$ColorHover",
+            "ColorNormal" : "$ColorNormal",
+            "Offset" : [0.0, 0.0],
+            "Size" : "$SquareWidgetSize",
+            "TransitionOnClick" : false,
+
+            // Icon element
+            "Icon" : 0,
+            "IconColor" : [0.2, 0.2, 0.2, 1.0],
+            "IconOffset" : [0.4, 0.5],
+            "IconRotation" : 0,
+            "IconSize" : [0.8, 0.8]
+        },
+
+        "MeshButton" : {
+            "Transition" : "SlideL",
+            "TransitionSpeed" : "$TransitionSpeed",
+            "UpdateFrequency" : "$UpdateFrequency",
+
+            // Label and shadow
+            "Justify" : "Left",
+            "LabelColor" : "$LabelColor",
+            "LabelColorDisabled" : "$LabelColorDisabled",
+            "LabelOffset" : "$SquareWidgetLabelOffset",
+            "LabelSize" : "$LabelSize",
+            "LineBreak" : false,
+            "LineSize" : 12,
+            "ShadowColor" : "$ShadowColor",
+            "ShadowColorDisabled" : "$ShadowColorDisabled",
+            "ShadowEnable" : "$ShadowEnable",
+            "ShadowOffset" : "$ShadowOffset",
+
+            // Clickable element
+            "ColorClick" : "$ColorClick",
+            "ColorDisabled" : "$ColorDisabled",
+            "ColorHover" : "$ColorHover",
+            "ColorNormal" : "$ColorNormal",
+            "Offset" : [0.0, 0.0],
+            "Size" : [1.0, 1.0],
+            "TransitionOnClick" : false,
+
+            // Mesh element
+            "Mesh": ""
+        },
+
+        "Checkbox" : {
+            "Transition" : "SlideL",
+            "TransitionSpeed" : "$TransitionSpeed",
+            "UpdateFrequency" : "$UpdateFrequency",
+
+            // Label and shadow
+            "Justify" : "Left",
+            "LabelColor" : "$LabelColor",
+            "LabelColorDisabled" : "$LabelColorDisabled",
+            "LabelOffset" : "$SquareWidgetLabelOffset",
+            "LabelSize" : "$LabelSize",
+            "LineBreak" : false,
+            "LineSize" : 40,
+            "ShadowColor" : "$ShadowColor",
+            "ShadowColorDisabled" : "$ShadowColorDisabled",
+            "ShadowEnable" : "$ShadowEnable",
+            "ShadowOffset" : "$ShadowOffset",
+
+            // Clickable element
+            "ColorClick" : "$ColorClick",
+            "ColorDisabled" : "$ColorDisabled",
+            "ColorHover" : "$ColorHover",
+            "ColorNormal" : "$ColorNormal",
+            "Offset" : [0.0, 0.0],
+            "Size" : "$SquareWidgetSize",
+            "TransitionOnClick" : false
+        },
+
+        "List" : {
+            "Transition" : "SlideL",
+            "TransitionSpeed" : "$TransitionSpeed",
+            "UpdateFrequency" : "$UpdateFrequency",
+
+            // Label and shadow
+            "Justify" : "Center",
+            "LabelColor" : "$LabelColor",
+            "LabelColorDisabled" : "$LabelColorDisabled",
+            "LabelOffset" : "$RectWidgetLabelOffset",
+            "LabelSize" : 0.4,
+            "LineBreak" : false,
+            "LineSize" : 24,
+            "ShadowColor" : "$ShadowColor",
+            "ShadowColorDisabled" : "$ShadowColorDisabled",
+            "ShadowEnable" : "$ShadowEnable",
+            "ShadowOffset" : "$ShadowOffset",
+
+            // Clickable element
+            "ColorClick" : "$ColorClick",
+            "ColorDisabled" : "$ColorDisabled",
+            "ColorHover" : "$ColorHover",
+            "ColorNormal" : "$ColorNormal",
+            "Offset" : [0.0, 0.0],
+            "Size" : "$RectWidgetSize",
+            "TransitionOnClick" : false,
+
+            // List element
+            "ArrowColorClick" : [0.0, 0.0, 0.0, 0.3],
+            "ArrowColorNormal" : [0.0, 0.0, 0.0, 0.1],
+            "Sort" : false,
+            "Translate" : false,
+            "Wrap" : false
+        },
+
+        "Input" : {
+            "Transition" : "SlideL",
+            "TransitionSpeed" : "$TransitionSpeed",
+            "UpdateFrequency" : "$UpdateFrequency",
+
+            // Label and shadow
+            "Justify" : "Center",
+            "LabelColor" : "$LabelColor",
+            "LabelColorDisabled" : "$LabelColorDisabled",
+            "LabelOffset" : "$RectWidgetLabelOffset",
+            "LabelSize" : "$LabelSize",
+            "LineBreak" : false,
+            "LineSize" : "$RectWidgetLineSize",
+            "ShadowColor" : "$ShadowColor",
+            "ShadowColorDisabled" : "$ShadowColorDisabled",
+            "ShadowEnable" : "$ShadowEnable",
+            "ShadowOffset" : "$ShadowOffset",
+
+            // Clickable element
+            "ColorClick" : "$ColorHover",
+            "ColorDisabled" : "$ColorDisabled",
+            "ColorHover" : "$ColorHover",
+            "ColorNormal" : "$ColorNormal",
+            "Offset" : [0.0, 0.0],
+            "Size" : "$RectWidgetSize",
+            "TransitionOnClick" : false,
+
+            // Input element
+            "CharsAllowed" : "AlphaNumeric",
+            "CharsLimit" : 15,
+            "CursorCharacter" : "|",
+            "CursorSpeed" : 0.2,
+            "PasswordChar" : "",
+            "PlaceholderColor" : [0.5, 0.5, 0.5, 1.0],
+            "PlaceholderColorDisabled" : [0.3, 0.3, 0.3, 1.0],
+            "PlaceholderShadowColor" : [0.3, 0.3, 0.3, 1.0],
+            "PlaceholderShadowColorDisabled" : [0.3, 0.3, 0.3, 0.5]
+        },
+
+        "MouseCursor" : {
+            "CanvasSize" : [100, 100],
+            "ColorClick" : "$ColorClick",
+            "ColorDisabled" : "$ColorDisabled",
+            "ColorHover" : "$ColorHover",
+            "ColorNormal" : "$ColorNormal",
+            "Offset" : [0.0, 0.0],
+            "Size" : [0.8, 0.8]
+        }
+    }
+}

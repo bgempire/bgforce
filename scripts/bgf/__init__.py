@@ -398,10 +398,10 @@ def __loadFramework():
 
     database["Keys"] = __getGameKeys()
 
-    bge.render.showMouse(database["Global"]["MouseNative"])
-    __processExitKey(database["Global"]["ExitKey"])
+    bge.render.showMouse(database["Bgf"]["Global"]["MouseNative"])
+    __processExitKey(database["Bgf"]["Global"]["ExitKey"])
     if DEBUG: print("> Framework initializated\n")
-    DEBUG = database["Global"]["Debug"]
+    DEBUG = database["Bgf"]["Global"]["Debug"]
 
 
 def __processExitKey(key):
