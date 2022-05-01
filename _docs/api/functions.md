@@ -1,13 +1,14 @@
 ---
 title: Funções
-description:
+description: "O BGForce oferece diversas funções de abstração de tarefas
+comuns na programação, desde obter listas de arquivos, salvamento e
+carregamento de dados, tradução, reprodução de sons, entre outros."
 ---
 
 # {{ page.title }}
 
-O BGForce oferece diversas funções de abstração de tarefas comuns na programação,
-desde obter listas de arquivos, salvamento e carregamento de dados, tradução,
-reprodução de sons, entre outros.
+{{ page.description }}
+
 Caso deseje importar essas variáveis no seu próprio script (dado um script na
 raiz da pasta `scripts`, por exemplo: `scripts/meuscript.py`):
 

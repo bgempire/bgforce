@@ -1,12 +1,14 @@
 ---
 title: Variáveis
-description:
+description: "O módulo `scripts/bgf` dá acesso à variáveis que podem ser
+utilizadas na programação de jogos no BGForce.
+O uso de algumas dessas variáveis é essencial para uma boa lógica de jogo,
+em especial o seu uso dentro de widgets."
 ---
 
 # {{ page.title }}
 
-O módulo `scripts/bgf` dá acesso à variáveis que podem ser utilizadas na programação de jogos no BGForce.
-O uso de algumas dessas variáveis é essencial para uma boa lógica de jogo, em especial o seu uso dentro de widgets.
+{{ page.description }}
 
 Todas as variáveis estão disponíveis nos escopos dos widgets, portanto é possível utilizá-las em comandos de
 widgets clicáveis e em referências de dados fonte / alvo de listas, inputs e checkboxes. Caso deseje importar

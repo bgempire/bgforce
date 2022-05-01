@@ -1,13 +1,13 @@
 ---
 title: API
-description: 
+description: "A seguir está apresentada a referência da API pública do BGForce.
+Ela contém variáveis e funções úteis nos mais diversos casos, desde salvamento
+e carregamento de arquivos, detecção de controles até reprodução de sons."
 ---
 
 # {{ page.title }}
 
-A seguir está apresentada a referência da API pública do BGForce. Ela contém variáveis 
-e funções úteis nos mais diversos casos, desde salvamento e carregamento de arquivos, 
-detecção de controles até reprodução de sons.
+{{ page.description }}
 
 {%- for section in site.data.toc %}
 {%- if section.url == "api" %}
