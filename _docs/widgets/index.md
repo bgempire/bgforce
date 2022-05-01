@@ -2,12 +2,14 @@
 layout: page
 title: Widgets
 permalink: /widgets
+description: "O BGForce provê um poderoso sistema de interfaces de usuário
+altamente customizável. Esta seção visa detalhar o uso dessas funcionalidades."
 ---
 
 # Widgets
 ![]({{ site.baseurl }}/assets/img/wiki-gui-00.jpg)
 
-O BGForce provê um poderoso sistema de interfaces de usuário altamente customizável. Esta seção visa detalhar o uso dessas funcionalidades.
+{{ page.description }}
 
 ## Conceito
 Os widgets de interface de usuário do BGForce são baseados no uso de bibliotecas do Blender (linked libraries).

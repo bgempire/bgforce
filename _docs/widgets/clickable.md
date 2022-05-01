@@ -1,11 +1,13 @@
 ---
 layout: page
 title: Widgets Clicáveis
+description: "Um **widget clicável** é um controle que permite a execução de
+comandos ao ser clicado."
 ---
 
 # Widgets Clicáveis
-Um **widget clicável** é um controle que permite a execução de comandos ao ser clicado.
-Todos os widgets, com exceção da [GuiLabel]({{ site.baseurl }}/widgets/label), 
+{{ page.description }}
+Todos os widgets, com exceção da [GuiLabel]({{ site.baseurl }}/widgets/label),
 são clicáveis, e isso inclui:
 
 - [GuiButton]({{ site.baseurl }}/widgets/button)
@@ -17,14 +19,14 @@ são clicáveis, e isso inclui:
 
 ## Comandos
 
-Widgets clicáveis podem conter propriedades iniciando com o nome `Command` (por exemplo: `Command`, `Command1`, `Command2`, etc). 
-Essas propriedades contém comandos que serão executados ao clicar no widget em questão. As propriedades serão colocadas em ordem 
+Widgets clicáveis podem conter propriedades iniciando com o nome `Command` (por exemplo: `Command`, `Command1`, `Command2`, etc).
+Essas propriedades contém comandos que serão executados ao clicar no widget em questão. As propriedades serão colocadas em ordem
 alfabética e serão executadas uma após a outra (a menos que um modificador `!` seja usado).
 
 ### Modificador Instantâneo: `!`
 
-O comando será executado no período intermediário entre o fim da transição de saída e o início da transição de 
-entrada do widget, portanto ele não é executado imediatamente. Para executar o comando imediatamente ao clicar 
+O comando será executado no período intermediário entre o fim da transição de saída e o início da transição de
+entrada do widget, portanto ele não é executado imediatamente. Para executar o comando imediatamente ao clicar
 no widget, utilize o prefixo `!` no valor do comando. Por exemplo:
 
 ![]({{ site.baseurl }}/assets/img/wiki-referencia-instant.png)
@@ -33,21 +35,21 @@ no widget, utilize o prefixo `!` no valor do comando. Por exemplo:
 Existem três tipos de comandos, que serão explicados a seguir.
 
 #### Comando de Mensagem
-Um comando com um valor qualquer de texto será interpretado como uma mensagem. Usando um `:` no meio da expressão 
-resultará no envio de uma mensagem com assunto e corpo divididos. Por exemplo: o commando com o valor 
+Um comando com um valor qualquer de texto será interpretado como uma mensagem. Usando um `:` no meio da expressão
+resultará no envio de uma mensagem com assunto e corpo divididos. Por exemplo: o commando com o valor
 `Assunto:Corpo` é o equivalente a enviar uma mensagem com `bge.logic.sendMessage("Assunto", "Corpo")`.
 
 ![]({{ site.baseurl }}/assets/img/wiki-referencia-command-message.png)
 
 #### Comando Python: `>`
-Um comando com um valor iniciado com o caractere `>` será interpretado como uma expressão em Python. Qualquer 
+Um comando com um valor iniciado com o caractere `>` será interpretado como uma expressão em Python. Qualquer
 código Python é válido nesta expressão.
 
 ![]({{ site.baseurl }}/assets/img/wiki-referencia-command-python.png)
 
 #### Comando de Posição de Câmera: `[x, y]`
-Uma rotina comum em interfaces de usuário é mudar a posição da câmera para mostrar layouts de widgets diferentes. 
-Um comando com um valor iniciado com `[` ou `(` será interpretado como uma coordenada, e transportará a câmera da 
+Uma rotina comum em interfaces de usuário é mudar a posição da câmera para mostrar layouts de widgets diferentes.
+Um comando com um valor iniciado com `[` ou `(` será interpretado como uma coordenada, e transportará a câmera da
 cena do widget em questão para a posição `[x, y]` definida.
 
 ![]({{ site.baseurl }}/assets/img/wiki-referencia-command-camera.png)
