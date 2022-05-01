@@ -12,13 +12,12 @@ VERSION = [0, 0, 7]
 curPath = Path(__file__).parent.resolve()
 releaseTarget = curPath / ("release/" + PROJECT + "-v" + ".".join([str(i) for i in VERSION]))
 
-         
 def deletePath(_path):
     # type: (Path) -> None
-    
+
     if _path.is_file():
         _path.unlink()
-    
+
     elif _path.is_dir():
         shutil.rmtree(_path)
 
@@ -62,7 +61,7 @@ for pathStr in data["CreatePaths"]:
 
 for pathStr in data["CopyPaths"]:
     source = Path(pathStr)
-    
+
     if source.exists():
         if source.is_file():
             os.makedirs((releaseTarget / source).parent, exist_ok=True)
@@ -78,34 +77,30 @@ for path in data["OverwritePaths"]:
     source = Path(path)
     target = releaseTarget / source
     target.unlink(missing_ok=True)
-    
+
     if source.exists() and source.is_file():
         os.makedirs((releaseTarget / source).parent, exist_ok=True)
         targetFileContent = data["OverwriteString"] # type: str
-        
+
         with open(source.as_posix(), "r", encoding="utf-8") as openedFile:
             comment = ""
             sourceFileContent = openedFile.read().splitlines(keepends=True)
-            
+
             for line in sourceFileContent:
                 if line.strip().startswith("//"):
                     comment += line
                 else:
                     break
-                
+
             targetFileContent = targetFileContent.replace("$COMMENT", comment)
-            
-        
+
         with open(target.as_posix(), "w", encoding="utf-8") as openedFile:
             openedFile.write(targetFileContent)
-            
-            
+
 for pattern in data["Ignore"]:
     ignoredPath = releaseTarget / ("**/" + pattern)
     ignoredPaths = glob.glob(ignoredPath.as_posix(), recursive=True)
-    
+
     for ignored in ignoredPaths:
         deletePath(Path(ignored))
         print("X Removed ignored:", ignored)
-        
-    
