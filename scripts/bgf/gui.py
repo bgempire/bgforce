@@ -873,8 +873,6 @@ class GuiCheckbox(GuiClickable):
         if DEBUG and not visualOnly:
             print("> Checkbox", group, "set to:", result)
 
-        self._setVisual("Hover")
-
     def _setVisual(self, state, button=""):
         # type: (str, str) -> None
 
