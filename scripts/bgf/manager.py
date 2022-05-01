@@ -1,287 +1,283 @@
 import bge
 import aud
-import sys
-
 from bge.types import *
-
 from . import DEBUG, config, database, sounds
 
 
-__all__ = ["manager"]
-
-
-CONTEXT_FADE_SPEED = 0.02
-BGM_FADE_SPEED = 0.01
-DEFAULT_PROPS_MANAGER = {
-    "ContextTransition" : True,
-    "Context" : ([ctx for ctx in database["Contexts"].keys() if database["Contexts"][ctx].get("Default")] + [""])[0],
-    "ContextState" : "Done",
-}
-DEFAULT_PROPS_FADE = {
-    "State" : "FadeOut",
-}
-DEFAULT_PROPS_BGM = {
-    "BgmTransition" : True,
-    "Bgm" : "",
-    "BgmState" : "FadeOut",
-    "BgmHandle" : None,
-}
-
-# Controller endpoint
-def manager(cont):
+def main(cont):
     # type: (SCA_PythonController) -> None
 
     own = cont.owner
-
-    # Sensors
     always = cont.sensors["Always"] # type: SCA_AlwaysSensor
 
     if always.positive:
 
         if always.status == bge.logic.KX_SENSOR_JUST_ACTIVATED:
-            managerInit(cont)
+            own = Manager(own, cont)
 
-            if database["Bgf"]["Global"].get("StartupOperators"):
-                for operator in database["Bgf"]["Global"]["StartupOperators"]:
-                    bge.logic.sendMessage(operator)
-
-        messageManager(cont)
-        contextManager(cont)
-        bgmManager(cont)
+        own.update()
 
 
-# Abstraction functions
-def managerInit(cont):
-    # type: (SCA_PythonController) -> None
+class Manager(KX_GameObject):
+    CONTEXT_FADE_SPEED = 0.02
+    BGM_FADE_SPEED = 0.01
+    DEFAULT_PROPS_FADE = {
+        "State" : "FadeOut",
+    }
 
-    own = cont.owner
-    own["FadeObj"] = fadeInOut = own.scene.objects.get("FadeInOut", own)
+    def __init__(self, obj, cont):
+        # type: (KX_GameObject, SCA_PythonController) -> None
 
-    # Init manager props
-    for prop in DEFAULT_PROPS_MANAGER.keys():
-        own[prop] = DEFAULT_PROPS_MANAGER[prop]
-        if DEBUG: own.addDebugProperty(prop)
+        import sys
 
-    # Get context from command line arguments
-    if sys.argv[-1] in database["Contexts"].keys():
-        own["Context"] = sys.argv[-1]
+        self.currentController = cont # type: SCA_PythonController
+        """ Controller triggering manager logic. """
 
-    # Init fade props
-    for prop in DEFAULT_PROPS_FADE.keys():
-        fadeInOut[prop] = DEFAULT_PROPS_FADE[prop]
-        if DEBUG: fadeInOut.addDebugProperty(prop)
+        self.fadeObj = self.scene.objects["FadeInOut"] # type: KX_GameObject
+        """ FadeObj: Fade in and out object. """
 
-    # Init BGM props
-    for prop in DEFAULT_PROPS_BGM.keys():
-        own[prop] = DEFAULT_PROPS_BGM[prop]
-        if DEBUG: own.addDebugProperty(prop)
+        self.context = ([ctx for ctx in database["Contexts"].keys() \
+            if database["Contexts"][ctx].get("Default")] + [""])[0] # type: str
+        """ Context: Current game context. """
 
+        self.contextTransition = True
+        """ ContextTransition: True if context transition is active. """
 
-def messageManager(cont):
-    # type: (SCA_PythonController) -> None
+        self.contextState = "Done" # type: str
+        """ ContextState: Current context state. """
 
-    from . import operators as operatorsDefault
-    from .. import operators as operatorsCustom
+        self.bgm = "" # type: str
+        """ Bgm: Current background music. """
 
-    own = cont.owner
-    message = cont.sensors["Message"] # type: KX_NetworkMessageSensor
+        self.bgmTransition = True # type: bool
+        """ BgmTransition: True if background music transition is active. """
 
-    if message.positive:
-        subjects = list(message.subjects) # type: list[str]
-        bodies = list(message.bodies) # type: list[str]
+        self.bgmState = "FadeOut" # type: str
+        """ BgmState: Current background music transition state. """
 
-        # Get one-line operators
-        for i in range(len(subjects)):
-            subject = [s.strip() for s in subjects[i].split(":", 1) if s.strip()]
+        self.bgmHandle = None # type: aud.Handle
+        """ BgmHandle: Current background music handle. """
 
-            if len(subject) == 2:
-                subjects[i] = subject[0]
-                bodies[i] = subject[1]
+        # Get context from command line arguments
+        if sys.argv[-1] in database["Contexts"].keys():
+            self.context = sys.argv[-1]
 
-        # Run operators
-        for i in range(len(subjects)):
-            subject = subjects[i][0].lower() + subjects[i][1:]
-            body = bodies[i]
+        # Init fade props
+        for prop in self.DEFAULT_PROPS_FADE.keys():
+            self.fadeObj[prop] = self.DEFAULT_PROPS_FADE[prop]
 
-            # Run custom operator
-            if hasattr(operatorsDefault, subject) or hasattr(operatorsCustom, subject):
-                operatorFunction = None # type: function
+        # Send startup operator messages
+        if database["Bgf"]["Global"].get("StartupOperators"):
+            for operator in database["Bgf"]["Global"]["StartupOperators"]:
+                bge.logic.sendMessage(operator)
 
-                try:
-                    operatorFunction = eval("operatorsDefault." + subject)
-                except:
+    def update(self):
+        # type: () -> None
+
+        self.messageManager()
+        self.contextManager()
+        self.bgmManager()
+
+    def messageManager(self):
+        # type: () -> None
+
+        from . import operators as operatorsDefault
+        from .. import operators as operatorsCustom
+
+        cont = self.currentController # type: SCA_PythonController
+        message = cont.sensors["Message"] # type: KX_NetworkMessageSensor
+
+        if message.positive:
+            subjects = list(message.subjects) # type: list[str]
+            bodies = list(message.bodies) # type: list[str]
+
+            # Get one-line operators
+            for i in range(len(subjects)):
+                subject = [s.strip() for s in subjects[i].split(":", 1) if s.strip()]
+
+                if len(subject) == 2:
+                    subjects[i] = subject[0]
+                    bodies[i] = subject[1]
+
+            # Run operators
+            for i in range(len(subjects)):
+                subject = subjects[i][0].lower() + subjects[i][1:]
+                body = bodies[i]
+
+                # Run custom operator
+                if hasattr(operatorsDefault, subject) or hasattr(operatorsCustom, subject):
+                    operatorFunction = None # type: function
+
                     try:
-                        operatorFunction = eval("operatorsCustom." + subject)
+                        operatorFunction = eval("operatorsDefault." + subject)
                     except:
-                        pass
+                        try:
+                            operatorFunction = eval("operatorsCustom." + subject)
+                        except:
+                            pass
 
-                if operatorFunction is not None:
-                    if body:
-                        operatorFunction(cont, body)
+                    if operatorFunction is not None:
+                        if body:
+                            operatorFunction(cont, body)
+                        else:
+                            operatorFunction(cont)
+
+    def contextManager(self):
+        # type: () -> None
+
+        cont = self.currentController # type: SCA_PythonController
+        curContext = database["Contexts"].get(self.context) # type: dict
+        fadeSpeedFactor = database["Bgf"]["Global"]["ContextFadeSpeed"]
+
+        if self.contextTransition and curContext:
+            alpha = round(self.fadeObj.color[3], 2)
+
+            # Perform fade out
+            if self.fadeObj["State"] == "FadeOut":
+
+                # Increase fade alpha while transparent
+                if alpha < 1:
+                    self.fadeObj.color[3] += self.CONTEXT_FADE_SPEED * fadeSpeedFactor
+
+                # Exit game when requested
+                elif self.contextState == "ExitGame":
+                    bge.logic.endGame()
+
+                # Remove scenes when fade is opaque
+                elif self.contextState == "Done":
+                    self.contextState = "RemoveScenes"
+                    self._replaceContextScenes(curContext)
+
+                # Add scenes after last scenes removed
+                elif self.contextState == "RemoveScenes":
+
+                    # Add loading scene if specified in context
+                    if curContext.get("Loading"):
+                        self.contextState = "AddLoading"
+                        self._replaceContextScenes(curContext)
+                        self.fadeObj["State"] = "FadeIn"
+
+                    # Add context scenes of context
                     else:
-                        operatorFunction(cont)
+                        self.contextState = "AddScenes"
+                        self._replaceContextScenes(curContext)
+                        self.contextState = "Done"
+                        self.fadeObj["State"] = "FadeIn"
 
+                # Remove loading scene and go to fade in
+                elif self.contextState == "AddScenesAfterLoading":
+                    self.contextState = "RemoveLoading"
+                    self._replaceContextScenes(curContext)
+                    self.fadeObj["State"] = "FadeIn"
+                    self.contextState = "Done"
 
-def contextManager(cont):
-    # type: (SCA_PythonController) -> None
+            # Perform fade in
+            elif self.fadeObj["State"] == "FadeIn":
 
-    own = cont.owner
-    curContext = database["Contexts"].get(own["Context"]) # type: dict
-    fadeObj = own["FadeObj"] # type: KX_GameObject
-    fadeSpeedFactor = database["Bgf"]["Global"]["ContextFadeSpeed"]
+                # Decrease fade alpha while opaque
+                if alpha > 0:
+                    self.fadeObj.color[3] -= self.CONTEXT_FADE_SPEED * fadeSpeedFactor
 
-    if own["ContextTransition"] and curContext:
-        alpha = round(fadeObj.color[3], 2)
+                # Add scenes on loading screen and start fade out after
+                elif self.contextState == "AddLoading":
+                    self.contextState = "AddScenesAfterLoading"
+                    self._replaceContextScenes(curContext)
+                    self.fadeObj["State"] = "FadeOut"
 
-        # Perform fade out
-        if fadeObj["State"] == "FadeOut":
-
-            # Increase fade alpha while transparent
-            if alpha < 1:
-                fadeObj.color[3] += CONTEXT_FADE_SPEED * fadeSpeedFactor
-
-            # Exit game when requested
-            elif own["ContextState"] == "ExitGame":
-                bge.logic.endGame()
-
-            # Remove scenes when fade is opaque
-            elif own["ContextState"] == "Done":
-                own["ContextState"] = "RemoveScenes"
-                _replaceContextScenes(cont, curContext)
-
-            # Add scenes after last scenes removed
-            elif own["ContextState"] == "RemoveScenes":
-
-                # Add loading scene if specified in context
-                if curContext.get("Loading"):
-                    own["ContextState"] = "AddLoading"
-                    _replaceContextScenes(cont, curContext)
-                    fadeObj["State"] = "FadeIn"
-
-                # Add context scenes of context
+                # End context transition
                 else:
-                    own["ContextState"] = "AddScenes"
-                    _replaceContextScenes(cont, curContext)
-                    own["ContextState"] = "Done"
-                    fadeObj["State"] = "FadeIn"
+                    self.fadeObj["State"] = "FadeOut"
+                    self.contextTransition = False
 
-            # Remove loading scene and go to fade in
-            elif own["ContextState"] == "AddScenesAfterLoading":
-                own["ContextState"] = "RemoveLoading"
-                _replaceContextScenes(cont, curContext)
-                fadeObj["State"] = "FadeIn"
-                own["ContextState"] = "Done"
+    def bgmManager(self):
+        # type: () -> None
 
-        # Perform fade in
-        elif fadeObj["State"] == "FadeIn":
+        curContext = database["Contexts"].get(self.context) # type: dict
+        bgmDb = sounds["Bgm"] # type: dict
+        handle = self.bgmHandle # type: aud.Handle
+        bgmFadeFactor = self.BGM_FADE_SPEED * config["BgmVol"] \
+            * database["Bgf"]["Global"]["BgmFadeSpeed"] # type: float
+        curBgm = ""
 
-            # Decrease fade alpha while opaque
-            if alpha > 0:
-                fadeObj.color[3] -= CONTEXT_FADE_SPEED * fadeSpeedFactor
+        if curContext:
+            curBgm = curContext.get("Bgm", self.bgm)
 
-            # Add scenes on loading screen and start fade out after
-            elif own["ContextState"] == "AddLoading":
-                own["ContextState"] = "AddScenesAfterLoading"
-                _replaceContextScenes(cont, curContext)
-                fadeObj["State"] = "FadeOut"
+            if curBgm and curBgm != self.bgm:
+                self.bgm = curBgm
+                self.bgmTransition = True
 
-            # End context transition
-            else:
-                fadeObj["State"] = "FadeOut"
-                own["ContextTransition"] = False
+            if self.bgmTransition:
 
+                if self.bgmState == "FadeOut":
 
-def bgmManager(cont):
-    # type: (SCA_PythonController) -> None
+                    if handle:
 
-    own = cont.owner
-    curContext = database["Contexts"].get(own["Context"]) # type: dict
-    bgmDb = sounds["Bgm"] # type: dict
-    handle = own["BgmHandle"] # type: aud.Handle
-    bgmFadeFactor = BGM_FADE_SPEED * config["BgmVol"] * database["Bgf"]["Global"]["BgmFadeSpeed"]
-    curBgm = ""
+                        if round(handle.volume, 1) > 0:
+                            handle.volume -= bgmFadeFactor
 
-    if curContext:
-        curBgm = curContext.get("Bgm", own["Bgm"])
+                        else:
+                            handle.stop()
+                            self.bgmHandle = handle = None
 
-        if curBgm and curBgm != own["Bgm"]:
-            own["Bgm"] = curBgm
-            own["BgmTransition"] = True
-
-        if own["BgmTransition"]:
-
-            if own["BgmState"] == "FadeOut":
-
-                if handle:
-
-                    if round(handle.volume, 1) > 0:
-                        handle.volume -= bgmFadeFactor
-
-                    else:
-                        handle.stop()
-                        own["BgmHandle"] = handle = None
-
-                elif curBgm in bgmDb.keys():
-                    factory = aud.Factory.file(bgmDb[curBgm])
-                    own["BgmHandle"] = handle = aud.device().play(factory, keep=True)
-                    handle.volume = 0
-                    handle.loop_count = -1
-                    own["BgmState"] = "FadeIn"
-
-                else:
-                    own["BgmTransition"] = False
-
-            elif own["BgmState"] == "FadeIn":
-
-                if handle:
-
-                    if round(handle.volume, 1) < config["BgmVol"]:
-                        handle.volume += bgmFadeFactor
+                    elif curBgm in bgmDb.keys():
+                        factory = aud.Factory.file(bgmDb[curBgm])
+                        self.bgmHandle = handle = aud.device().play(factory, keep=True)
+                        handle.volume = 0
+                        handle.loop_count = -1
+                        self.bgmState = "FadeIn"
 
                     else:
-                        handle.volume = round(handle.volume, 2)
-                        own["BgmState"] = "FadeOut"
-                        own["BgmTransition"] = False
+                        self.bgmTransition = False
 
-                else:
-                    own["BgmState"] = "FadeOut"
-                    own["BgmTransition"] = False
+                elif self.bgmState == "FadeIn":
 
-        elif not own["BgmTransition"] and handle:
-            handle.volume = config["BgmVol"]
+                    if handle:
 
+                        if round(handle.volume, 1) < config["BgmVol"]:
+                            handle.volume += bgmFadeFactor
 
-# Helper functions
-def _replaceContextScenes(cont, context):
-    # type: (SCA_PythonController, dict) -> None
+                        else:
+                            handle.volume = round(handle.volume, 2)
+                            self.bgmState = "FadeOut"
+                            self.bgmTransition = False
 
-    own = cont.owner
-    scenes = bge.logic.getSceneList()
+                    else:
+                        self.bgmState = "FadeOut"
+                        self.bgmTransition = False
 
-    # Remove scenes from last context
-    if own["ContextState"] == "RemoveScenes":
-        if DEBUG: print("> Remove scenes from context:")
-        for scn in scenes:
-            if scn.name != own.scene.name and not scn.name in context.keys():
-                if DEBUG: print("  > Removed scene:", scn.name)
-                scn.end()
+            elif not self.bgmTransition and handle:
+                handle.volume = config["BgmVol"]
 
-    # Add scenes of current context
-    elif own["ContextState"] in ("AddScenes", "AddScenesAfterLoading"):
-        if DEBUG: print("> Add scenes of context:")
-        for scn in context["Scenes"]:
-            bge.logic.addScene(scn["Name"], 0)
-            if DEBUG: print("  > Added scene:", scn["Name"])
+    def _replaceContextScenes(self, context):
+        # type: (dict) -> None
 
-    # Add loading scene
-    elif own["ContextState"] == "AddLoading":
-        if DEBUG: print("> Add loading scene:", context["Loading"])
-        bge.logic.addScene(context["Loading"], 0)
+        cont = self.currentController # type: SCA_PythonController
+        scenes = bge.logic.getSceneList()
 
-    # Remove loading scene
-    elif own["ContextState"] == "RemoveLoading":
-        if DEBUG: print("> Remove loading scene:", context["Loading"])
-        for scn in scenes:
-            if scn.name == context["Loading"]:
-                scn.end()
-                break
+        # Remove scenes from last context
+        if self.contextState == "RemoveScenes":
+            if DEBUG: print("> Remove scenes from context:")
+            for scn in scenes:
+                if scn.name != self.scene.name and not scn.name in context.keys():
+                    if DEBUG: print("  > Removed scene:", scn.name)
+                    scn.end()
+
+        # Add scenes of current context
+        elif self.contextState in ("AddScenes", "AddScenesAfterLoading"):
+            if DEBUG: print("> Add scenes of context:")
+            for scn in context["Scenes"]:
+                bge.logic.addScene(scn["Name"], 0)
+                if DEBUG: print("  > Added scene:", scn["Name"])
+
+        # Add loading scene
+        elif self.contextState == "AddLoading":
+            if DEBUG: print("> Add loading scene:", context["Loading"])
+            bge.logic.addScene(context["Loading"], 0)
+
+        # Remove loading scene
+        elif self.contextState == "RemoveLoading":
+            if DEBUG: print("> Remove loading scene:", context["Loading"])
+            for scn in scenes:
+                if scn.name == context["Loading"]:
+                    scn.end()
+                    break
