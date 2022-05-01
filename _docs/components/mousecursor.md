@@ -1,14 +1,13 @@
 ---
 title: "Cursor do Mouse: ScnMouseCursor"
-description:
+description: "A cena `ScnMouseCursor` é um componente opcional de cursor do mouse customizável."
 ---
 
 # {{ page.title }}
 
 ![]({{ site.baseurl }}/assets/img/wiki-components-01.png)
 
-A cena `ScnMouseCursor` é um componente opcional de cursor do mouse customizável.
-O cursor do mouse pode ser personalizado de algumas formas:
+{{ page.description }} O cursor do mouse pode ser personalizado de algumas formas:
 
 - Editando sua textura em `textures/gui/MouseCursor.png`
 - Adicionando um item `"MouseCursor"` em `database/Styles.json` e adicionando as propriedades desejadas.

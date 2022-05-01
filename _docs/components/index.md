@@ -1,13 +1,13 @@
 ---
 title: Componentes
-description: 
+description: "BGForce contém alguns componentes que podem ser adicionados ao jogo.
+Estes componentes estão no formato de cenas dentro do arquivo **`LibBgf.blend`**,
+e podem ser linkadas (`File` > `Link`) no arquivo blend principal do jogo para uso."
 ---
 
 # {{ page.title }}
 
-BGForce contém alguns componentes que podem ser adicionados ao jogo. Estes componentes estão no formato 
-de cenas dentro do arquivo **`LibBgf.blend`**, e podem ser linkadas (`File` > `Link`) no arquivo blend 
-principal do jogo para uso.
+{{ page.description }}
 
 ## Índice
 Abaixo estão listados os componentes disponíveis para uso no BGForce.
