@@ -28,12 +28,11 @@ def _(key):
     # type: (str) -> str
     """Get translation of provided key from current language set in config."""
 
-    curLang = lang[config["Lang"]] # type: dict[str, str]
+    if config.get("Lang") is not None:
+        curLang = lang.get(config["Lang"], {}) # type: dict[str, str]
+        return curLang.get(key, "")
 
-    if key in curLang.keys():
-        return lang[config["Lang"]][key]
-    else:
-        return ""
+    return ""
 
 
 def dump(obj, file="dump.py"):
@@ -237,7 +236,7 @@ def playSound(sound, origin=None):
         device = __aud.device() # type: __aud.Device
         factory = __aud.Factory.file(sound.as_posix())
         handle = device.play(factory) # type: __aud.Handle
-        handle.volume = config["SfxVol"]
+        handle.volume = float(config.get("SfxVol", 1.0))
 
         if origin:
             device.distance_model = __aud.AUD_DISTANCE_MODEL_LINEAR
@@ -398,10 +397,10 @@ def __loadFramework():
 
     database["Keys"] = __getGameKeys()
 
-    bge.render.showMouse(database["Global"]["MouseNative"])
-    __processExitKey(database["Global"]["ExitKey"])
+    bge.render.showMouse(database["Bgf"]["Global"]["MouseNative"])
+    __processExitKey(database["Bgf"]["Global"]["ExitKey"])
     if DEBUG: print("> Framework initializated\n")
-    DEBUG = database["Global"]["Debug"]
+    DEBUG = database["Bgf"]["Global"]["Debug"]
 
 
 def __processExitKey(key):

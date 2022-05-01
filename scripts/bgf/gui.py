@@ -2,8 +2,6 @@ import bge
 from bge.types import *
 from . import operators as _operators_builtin
 from .. import operators as _operators_custom
-
-# Public variables accessible from widgets
 from . import DEBUG, config, database, state, lang
 
 
@@ -80,7 +78,7 @@ class GuiBase(KX_GameObject):
 
         from ast import literal_eval
 
-        WIDGET_DB = database["Gui"][self.type]  # type: dict[str, object]
+        WIDGET_DB = database["Bgf"]["Gui"][self.type]  # type: dict[str, object]
         STYLES_DB = database["Styles"]  # type: dict[str, dict[str, object]]
 
         group = self.groupObject
@@ -420,7 +418,7 @@ class GuiWidget(GuiBase):
             return re.sub(r"\S", char, text)
 
         group = self.groupObject
-        curLang = lang[config["Lang"]]
+        curLang = lang.get(config.get("Lang", ""), {})
 
         label = str(group["Label"]).strip() if "Label" in group else ""
 
@@ -673,6 +671,7 @@ class GuiClickable(GuiWidget):
     def _execCommands(self, commands):
         # type: (list[str]) -> None
 
+        cont = self.currentController
         group = self.groupObject
 
         if DEBUG and len(commands) > 0:
@@ -697,8 +696,8 @@ class GuiClickable(GuiWidget):
             return command[1:].strip()
 
         elif command.startswith("(") or command.startswith("["):
-            return "own.scene.active_camera.worldPosition = list(" + command.strip() \
-                + ") + [own.scene.active_camera.worldPosition.z]"
+            return "self.scene.active_camera.worldPosition = list(" + command.strip() \
+                + ") + [self.scene.active_camera.worldPosition.z]"
 
         elif command.startswith(cls.OPERATOR_PREFIX):
             commandParts = command[1:].strip().split(":", 1)
@@ -873,8 +872,6 @@ class GuiCheckbox(GuiClickable):
 
         if DEBUG and not visualOnly:
             print("> Checkbox", group, "set to:", result)
-
-        self._setVisual("Hover")
 
     def _setVisual(self, state, button=""):
         # type: (str, str) -> None
