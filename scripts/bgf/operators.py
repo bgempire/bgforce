@@ -9,52 +9,60 @@ def applyConfig(cont, arg=""):
 
     from . import config
 
+    resolutions = bge.logic.__resolutions.keys() # type: dict[str, list[int, int]]
+
     # Resolution
-    if config["Resolution"] in bge.logic.__resolutions.keys():
+    if config.get("Resolution") is not None and config["Resolution"] in resolutions:
         resolution = bge.logic.__resolutions[config["Resolution"]]
         bge.render.setWindowSize(resolution[0], resolution[1])
 
     # Fullscreen
-    bge.render.setFullScreen(bool(config["Fullscreen"]))
+    if config.get("Fullscreen") is not None:
+        bge.render.setFullScreen(bool(config["Fullscreen"]))
 
     # Anisotropic filtering
-    if config["AnisotropicFiltering"] in (1, 2, 4, 8, 16):
+    if config.get("AnisotropicFiltering") is not None and config["AnisotropicFiltering"] in (1, 2, 4, 8, 16):
         bge.render.setAnisotropicFiltering(config["AnisotropicFiltering"])
 
     # Mipmapping
-    mipmapLevels = {
-        "None" : 0,
-        "Nearest" : 1,
-        "Linear" : 2,
-    }
+    if config.get("Mipmapping") is not None:
 
-    if config["Mipmaps"] in mipmapLevels.keys():
-        bge.render.setMipmapping(mipmapLevels[config["Mipmaps"]])
+        mipmapLevels = {
+            "None" : 0,
+            "Nearest" : 1,
+            "Linear" : 2,
+        }
+
+        if config["Mipmaps"] in mipmapLevels.keys():
+            bge.render.setMipmapping(mipmapLevels[config["Mipmaps"]])
 
     # Motion blur
-    motionBlur = round(config["MotionBlur"], 1)
+    if config.get("MotionBlur") is not None:
+        motionBlur = round(float(config["MotionBlur"]), 1) # type: float
 
-    if motionBlur == 0:
-        bge.render.disableMotionBlur()
+        if motionBlur == 0:
+            bge.render.disableMotionBlur()
 
-    elif 0 < motionBlur <= 1:
-        bge.render.enableMotionBlur(motionBlur)
+        elif 0 < motionBlur <= 1:
+            bge.render.enableMotionBlur(motionBlur)
 
     # Vsync
-    bge.render.setVsync(bool(config["Vsync"]))
+    if config.get("Vsync") is not None:
+        bge.render.setVsync(bool(config["Vsync"]))
 
     # GLSL material settings
     glslSettings = {
-        "lights" : config["Lights"],
-        "shaders" : config["Shaders"],
-        "shadows" : config["Shadows"],
-        "ramps" : config["Ramps"],
-        "nodes" : config["Nodes"],
-        "extra_textures" : config["ExtraTextures"],
+        "lights" : config.get("Lights"),
+        "shaders" : config.get("Shaders"),
+        "shadows" : config.get("Shadows"),
+        "ramps" : config.get("Ramps"),
+        "nodes" : config.get("Nodes"),
+        "extra_textures" : config.get("ExtraTextures"),
     }
 
     for option in glslSettings.keys():
-        bge.render.setGLSLMaterialSetting(option, bool(glslSettings[option]))
+        if glslSettings[option] is not None:
+            bge.render.setGLSLMaterialSetting(option, bool(glslSettings[option]))
 
 
 def exitGame(cont, arg=""):
