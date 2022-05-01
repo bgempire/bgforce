@@ -8,15 +8,18 @@ description:
 ![]({{ site.baseurl }}/assets/img/wiki-components-01.png)
 
 A cena `ScnMouseCursor` é um componente opcional de cursor do mouse customizável.
-O cursor do mouse pode ser personalizado de duas formas:
+O cursor do mouse pode ser personalizado de algumas formas:
 
 - Editando sua textura em `textures/gui/MouseCursor.png`
-- Editando as propriedades de `"MouseCursor"` em `database/Gui.json`
+- Adicionando um item `"MouseCursor"` em `database/Styles.json` e adicionando as propriedades desejadas.
+
+**Nota:** Também é possível editar as propriedades de `"MouseCursor"` em `database/Bgf.json`
+na seção `"Gui"`, mas adicionar um estilo personalizado é preferível para evitar
+editar os dados padrão do BGForce.
 
 ## Propriedades
-As propriedades de `"MouseCursor"` em [`database/Gui.json`]({{ site.baseurl }}/database/gui) podem ser editadas para
-alterarem o visual do cursor, desde sua cor de acordo com o seu estado até o seu
-tamanho e posição.
+As propriedades de `"MouseCursor"` abaixo podem ser editadas para alterarem o
+visual do cursor, desde sua cor de acordo com o seu estado até o seu tamanho e posição.
 
 ### `CanvasSize`
 - Tamanho do objeto de canvas do fundo do cursor.

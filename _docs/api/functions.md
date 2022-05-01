@@ -70,6 +70,12 @@ para fins de depuração.
 **Retorna:** bool
 
 
+### `bgf.isWidgetHovered()`
+- Retorna se o mouse está por cima de algum [widget clicável]({{ site.baseurl }}/widgets/clickable) de interface de usuário.
+
+**Retorna:** true
+
+
 ### `bgf.loadFile(file)`
 - Carrega um arquivo `file` e retorna seu conteúdo como um dicionário. Suporta
 JSON, JSONC e JSON codificado com [zlib](https://docs.python.org/3/library/zlib.html).
