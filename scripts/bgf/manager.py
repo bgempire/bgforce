@@ -193,14 +193,10 @@ class Manager(KX_GameObject):
         # type: () -> None
 
         curContext = database["Contexts"].get(self.context) # type: dict
-        bgmDb = sounds["Bgm"] # type: dict
-        bgmVol = float(config.get("BgmVol", 1.0))
-        handle = self.bgmHandle # type: aud.Handle
-        bgmFadeFactor = self.BGM_FADE_SPEED * bgmVol \
-            * database["Bgf"]["Global"]["BgmFadeSpeed"] # type: float
-        curBgm = ""
 
         if curContext:
+            bgmEnable = bool(config.get("BgmEnable", True))
+            bgmVol = float(config.get("BgmVol", 1.0)) if bgmEnable else 0.0
             curBgm = curContext.get("Bgm", self.bgm)
 
             if curBgm and curBgm != self.bgm:
@@ -208,23 +204,26 @@ class Manager(KX_GameObject):
                 self.bgmTransition = True
 
             if self.bgmTransition:
+                bgmFadeFactor = self.BGM_FADE_SPEED * bgmVol \
+                    * database["Bgf"]["Global"]["BgmFadeSpeed"] # type: float
 
                 if self.bgmState == "FadeOut":
+                    bgmDb = sounds["Bgm"] # type: dict
 
-                    if handle:
+                    if self.bgmHandle:
 
-                        if round(handle.volume, 1) > 0:
-                            handle.volume -= bgmFadeFactor
+                        if round(self.bgmHandle.volume, 1) > 0:
+                            self.bgmHandle.volume -= bgmFadeFactor
 
                         else:
-                            handle.stop()
-                            self.bgmHandle = handle = None
+                            self.bgmHandle.stop()
+                            self.bgmHandle = None
 
                     elif curBgm in bgmDb.keys():
                         factory = aud.Factory.file(bgmDb[curBgm])
-                        self.bgmHandle = handle = aud.device().play(factory, keep=True)
-                        handle.volume = 0
-                        handle.loop_count = -1
+                        self.bgmHandle = aud.device().play(factory, keep=True)
+                        self.bgmHandle.volume = 0
+                        self.bgmHandle.loop_count = -1
                         self.bgmState = "FadeIn"
 
                     else:
@@ -232,13 +231,13 @@ class Manager(KX_GameObject):
 
                 elif self.bgmState == "FadeIn":
 
-                    if handle:
+                    if self.bgmHandle:
 
-                        if round(handle.volume, 1) < bgmVol:
-                            handle.volume += bgmFadeFactor
+                        if round(self.bgmHandle.volume, 1) < bgmVol:
+                            self.bgmHandle.volume += bgmFadeFactor
 
                         else:
-                            handle.volume = round(handle.volume, 2)
+                            self.bgmHandle.volume = round(self.bgmHandle.volume, 2)
                             self.bgmState = "FadeOut"
                             self.bgmTransition = False
 
@@ -246,8 +245,8 @@ class Manager(KX_GameObject):
                         self.bgmState = "FadeOut"
                         self.bgmTransition = False
 
-            elif not self.bgmTransition and handle:
-                handle.volume = bgmVol
+            elif not self.bgmTransition and self.bgmHandle:
+                self.bgmHandle.volume = bgmVol
 
     def _replaceContextScenes(self, context):
         # type: (dict) -> None
