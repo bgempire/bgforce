@@ -673,6 +673,7 @@ class GuiClickable(GuiWidget):
     def _execCommands(self, commands):
         # type: (list[str]) -> None
 
+        cont = self.currentController
         group = self.groupObject
 
         if DEBUG and len(commands) > 0:
@@ -697,8 +698,8 @@ class GuiClickable(GuiWidget):
             return command[1:].strip()
 
         elif command.startswith("(") or command.startswith("["):
-            return "own.scene.active_camera.worldPosition = list(" + command.strip() \
-                + ") + [own.scene.active_camera.worldPosition.z]"
+            return "self.scene.active_camera.worldPosition = list(" + command.strip() \
+                + ") + [self.scene.active_camera.worldPosition.z]"
 
         elif command.startswith(cls.OPERATOR_PREFIX):
             commandParts = command[1:].strip().split(":", 1)
