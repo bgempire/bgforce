@@ -2,8 +2,6 @@ import bge
 from bge.types import *
 from . import operators as _operators_builtin
 from .. import operators as _operators_custom
-
-# Public variables accessible from widgets
 from . import DEBUG, config, database, state, lang
 
 
