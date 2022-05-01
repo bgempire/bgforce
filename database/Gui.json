@@ -231,7 +231,7 @@
         "CharsLimit" : 15,
         "CursorCharacter" : "|",
         "CursorSpeed" : 0.2,
-        "PasswordCharacter" : "",
+        "PasswordChar" : "",
         "PlaceholderColor" : [0.5, 0.5, 0.5, 1.0],
         "PlaceholderColorDisabled" : [0.3, 0.3, 0.3, 1.0],
         "PlaceholderShadowColor" : [0.3, 0.3, 0.3, 1.0],

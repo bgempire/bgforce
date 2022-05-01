@@ -464,8 +464,8 @@ class GuiWidget(GuiBase):
             elif self.type == "Input":
                 label = self["InputText"] if self["InputText"] else label
 
-                if self.props.get("PasswordCharacter") and self["InputText"]:
-                    label = _replaceNonSpacesWithChar(label, self.props["PasswordCharacter"])
+                if self.props.get("PasswordChar") and self["InputText"]:
+                    label = _replaceNonSpacesWithChar(label, self.props["PasswordChar"])
 
                 if self.cursor:
                     other += str(self.props["CursorCharacter"])
