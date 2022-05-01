@@ -1,17 +1,18 @@
 ---
 title: Operadores
-description: 
+description: "Operadores são mensagens específicas que podem ser enviadas e
+recebidas por widgets ou pelo gerenciador do BGForce, e a partir disso podem
+executar uma função pré-determinada. O BGForce provê alguns operadores padrão
+e dá ao usuário a possibilidade de criar operadores customizados."
 ---
 
 # {{ page.title }}
 
-Operadores são mensagens específicas que podem ser enviadas e recebidas por widgets ou pelo gerenciador do 
-BGForce, e a partir disso podem executar uma função pré-determinada. O BGForce provê alguns operadores 
-padrão e dá ao usuário a possibilidade de criar operadores customizados.
+{{ page.description }}
 
 ## Conceito
-Operadores são disparados através de mensagens a partir de qualquer objeto, seja por blocos de lógica, Python 
-ou a partir de commandos de [widgets clicáveis]({{ site.baseurl }}/widgets/clickable). 
+Operadores são disparados através de mensagens a partir de qualquer objeto, seja por blocos de lógica, Python
+ou a partir de commandos de [widgets clicáveis]({{ site.baseurl }}/widgets/clickable).
 Com isso, o padrão de mensagens para disparar operadores é:
 
 - Mensagens sem corpo
@@ -20,7 +21,7 @@ Com isso, o padrão de mensagens para disparar operadores é:
 - Mensagens com corpo
     - `NomeDoOperador` como assunto e `Argumentos` como corpo (caso o operador aceite argumentos)
 
-**Exemplos:**  
+**Exemplos:**
 
 ```python
 # Operador sem argumentos
@@ -33,8 +34,8 @@ bge.logic.sendMessage("UpdateGui:Formulario")
 bge.logic.sendMessage("UpdateGui", "Formulario")
 ```
 
-O operador `UpdateGui` é recebido apenas por widgets de interface de usuário, já todos os outros operadores 
-(sejam eles padrão ou customizados) **precisam da cena de gerenciador [`ScnManager`]({{ site.baseurl }}/components) 
+O operador `UpdateGui` é recebido apenas por widgets de interface de usuário, já todos os outros operadores
+(sejam eles padrão ou customizados) **precisam da cena de gerenciador [`ScnManager`]({{ site.baseurl }}/components)
 para funcionarem**.
 
 ## Índice

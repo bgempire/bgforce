@@ -1,13 +1,13 @@
 ---
 title: Operadores Padrão
-description: 
+description: "Os operadores padrão são aqueles que já estão disponíveis para uso no BGForce. "
 ---
 
 # {{ page.title }}
 
-Os operadores padrão são aqueles que já estão disponíveis para uso no BGForce. 
+{{ page.description }}
 
-**Importante:** Com exceção do operador `UpdateGui`, todos os outros operadores necessitam do componente 
+**Importante:** Com exceção do operador `UpdateGui`, todos os outros operadores necessitam do componente
 [`ScnManager`]({{ site.baseurl }}/components) ativo no jogo para serem executados.
 
 ## Referência
@@ -47,7 +47,7 @@ Pausa todas as cenas do contexto atual. Apenas cenas com a propriedade `"Pausabl
 - `bge.logic.sendMessage("PauseContext")`
 
 ### PlayBgm
-Toca uma música específica da pasta `sounds/bgm`, também tocando a respectiva transição. 
+Toca uma música específica da pasta `sounds/bgm`, também tocando a respectiva transição.
 O argumento passado não deve conter a extensão do arquivo de som.
 
 **Argumentos:**
@@ -92,7 +92,7 @@ Salva os dados do [`state`][1] no arquivo `save.dat` ou `save/*.dat`, onde `*` �
 - `bge.logic.sendMessage("SaveState", "slot1")` salvará o estado em `save/slot1.dat`
 
 ### SetContext
-Altera o contexto do jogo, substituindo o grupo de cenas atual pelo grupo de cenas definido no contexto especificado, e a música (caso especificada 
+Altera o contexto do jogo, substituindo o grupo de cenas atual pelo grupo de cenas definido no contexto especificado, e a música (caso especificada
 nas definições do contexto).
 
 **Argumentos:**
@@ -118,7 +118,7 @@ Solicita atualização dos widgets da interface de usuário, disparando as respe
 
 **Argumentos:**
 - Nenhum argumento: Atualiza todos os widgets
-- `NomeDoGrupo`: Atualiza apenas os widgets que tenham a propriedade `Group` com os valores definidos neste argumento. 
+- `NomeDoGrupo`: Atualiza apenas os widgets que tenham a propriedade `Group` com os valores definidos neste argumento.
 Múltiplos grupos de widgets podem ser passados ao separá-los por vírgula.
 - `PosicaoDaCamera`: Toca a transição dos widgets e move a câmera para a posição especificada.
 
