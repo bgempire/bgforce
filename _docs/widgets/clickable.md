@@ -41,6 +41,14 @@ resultará no envio de uma mensagem com assunto e corpo divididos. Por exemplo: 
 
 ![]({{ site.baseurl }}/assets/img/wiki-referencia-command-message.png)
 
+#### Comando Direto: `@`
+Um comando com um valor iniciado com o caractere `@` disparará um
+[operador]({{ site.baseurl }}/operators) diretamente sem a necessidade de um
+[`ScnManager`]({{ site.baseurl }}/components/manager) para receber a
+mensagem de operador.
+
+![]({{ site.baseurl }}/assets/img/wiki-referencia-command-direct.png)
+
 #### Comando Python: `>`
 Um comando com um valor iniciado com o caractere `>` será interpretado como uma expressão em Python. Qualquer
 código Python é válido nesta expressão.

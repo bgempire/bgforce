@@ -1,7 +1,7 @@
 ---
 title: Operadores
-description: "Operadores são mensagens específicas que podem ser enviadas e
-recebidas por widgets ou pelo gerenciador do BGForce, e a partir disso podem
+description: "Operadores são eventos específicos que podem ser enviados e
+recebidos por widgets ou pelo gerenciador do BGForce, e a partir disso podem
 executar uma função pré-determinada. O BGForce provê alguns operadores padrão
 e dá ao usuário a possibilidade de criar operadores customizados."
 ---
@@ -11,8 +11,9 @@ e dá ao usuário a possibilidade de criar operadores customizados."
 {{ page.description }}
 
 ## Conceito
-Operadores são disparados através de mensagens a partir de qualquer objeto, seja por blocos de lógica, Python
-ou a partir de commandos de [widgets clicáveis]({{ site.baseurl }}/widgets/clickable).
+Operadores são disparados através de mensagens a partir de qualquer objeto,
+seja por blocos de lógica, Python ou a partir de commandos de
+[widgets clicáveis]({{ site.baseurl }}/widgets/clickable).
 Com isso, o padrão de mensagens para disparar operadores é:
 
 - Mensagens sem corpo
@@ -34,9 +35,16 @@ bge.logic.sendMessage("UpdateGui:Formulario")
 bge.logic.sendMessage("UpdateGui", "Formulario")
 ```
 
-O operador `UpdateGui` é recebido apenas por widgets de interface de usuário, já todos os outros operadores
-(sejam eles padrão ou customizados) **precisam da cena de gerenciador [`ScnManager`]({{ site.baseurl }}/components)
-para funcionarem**.
+O operador `UpdateGui` é recebido apenas por widgets de interface de usuário,
+já todos os outros operadores (sejam eles padrão ou customizados) **precisam
+da cena de gerenciador [`ScnManager`]({{ site.baseurl }}/components)
+para funcionarem** quando emitidos através de mensagens.
+
+Os [Widgets clicáveis]({{ site.baseurl }}/widgets/clickable#comando-direto-)
+porém são capazes de disparar operadores sem a necessidade de um
+[`ScnManager`]({{ site.baseurl }}/components/manager) para receber a
+mensagem do operador. Essa funcionalidade se dá através do operador de
+execução direta `@`.
 
 ## Índice
 
