@@ -1,10 +1,16 @@
+# Python
 __pycache__
+
+# Blender
 *.blend~
 *.blend1
-.vscode
-.cache
+
+# BGForce
 /Config.json
 /release
-/save
 /save.dat
+/save
+
+# IDE
+/.vscode
 /.idea
