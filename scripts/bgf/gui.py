@@ -418,7 +418,7 @@ class GuiWidget(GuiBase):
             return re.sub(r"\S", char, text)
 
         group = self.groupObject
-        curLang = lang[config["Lang"]]
+        curLang = lang.get(config.get("Lang", ""), {})
 
         label = str(group["Label"]).strip() if "Label" in group else ""
 

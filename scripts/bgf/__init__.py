@@ -28,12 +28,11 @@ def _(key):
     # type: (str) -> str
     """Get translation of provided key from current language set in config."""
 
-    curLang = lang[config["Lang"]] # type: dict[str, str]
+    if config.get("Lang") is not None:
+        curLang = lang.get(config["Lang"], {}) # type: dict[str, str]
+        return curLang.get(key, "")
 
-    if key in curLang.keys():
-        return lang[config["Lang"]][key]
-    else:
-        return ""
+    return ""
 
 
 def dump(obj, file="dump.py"):
