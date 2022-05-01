@@ -1,12 +1,14 @@
 ---
 title: Database
-description:
+description: "A pasta `database` contém definições de estruturas de dados utilizadas pelo
+framework. O usuário está livre para **adicionar** novos arquivos à esta
+pasta e editar os arquivos existentes contanto que **não remova** nenhum
+dos arquivos padrão."
 ---
 
 # {{ page.title }}
 
-A pasta `database` contém definições de estruturas de dados utilizadas pelo framework. O usuário está livre para
-**adicionar** novos arquivos à esta pasta e editar os arquivos existentes **contanto que não remova nenhum dos arquivos padrão**.
+{{ page.description }}
 
 Os dados podem ser acessados como dicionários ao importar a variável `database` do módulo `scripts/bgf`.
 

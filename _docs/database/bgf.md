@@ -1,12 +1,12 @@
 ---
 title: Bgf
-description:
+description: "O arquivo `database/Bgf.json` contém configurações globais do framework,
+desde configurações gerais até definições de propriedades de interface usuário."
 ---
 
 # {{ page.title }}
 
-O arquivo `database/Bgf.json` contém configurações globais do framework, desde
-configurações gerais até definições de propriedades de interface usuário.
+{{ page.description }}
 
 
 ## Global

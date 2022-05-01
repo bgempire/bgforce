@@ -1,18 +1,18 @@
 ---
 title: Resolutions
-description: 
+description: "O arquivo `database/Resolutions.json` contém uma lista de
+resoluções que estarão disponíveis para uso no jogo."
 ---
 
 # {{ page.title }}
 
-O arquivo `database/Resolutions.json` contém uma lista de resoluções que estarão 
-disponíveis para uso no jogo.
+{{ page.description }}
 
-- A propriedade `"Resolution"` de [`Config.json`]({{ site.baseurl }}/structure#configjson) 
-deve ser um dos valores contidos nesta lista, e esta resolução será aplicada ao disparar 
+- A propriedade `"Resolution"` de [`Config.json`]({{ site.baseurl }}/structure#configjson)
+deve ser um dos valores contidos nesta lista, e esta resolução será aplicada ao disparar
 o operador [`ApplyConfig`]({{ site.baseurl }}/operators/default#applyconfig).
 
-- Os valores devem manter o padrão `"HxV"`, por exemplo `"1280x720"`, com exceção do 
+- Os valores devem manter o padrão `"HxV"`, por exemplo `"1280x720"`, com exceção do
 valor `"Native"`, que representa a resolução nativa.
 
 ## Exemplo
