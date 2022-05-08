@@ -247,7 +247,7 @@
             // Input element
             "CharsAllowed" : "AlphaNumeric",
             "CharsLimit" : 15,
-            "CursorCharacter" : "|",
+            "CursorChar" : "|",
             "CursorSpeed" : 0.2,
             "PasswordChar" : "",
             "PlaceholderColor" : [0.5, 0.5, 0.5, 1.0],
