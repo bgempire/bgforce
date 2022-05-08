@@ -385,7 +385,7 @@ class GuiWidget(GuiBase):
                     try:
                         exec(self.scene["CommandCamera"])
                     except Exception as e:
-                        if DEBUG:
+                        if DEBUG or self.debug:
                             print(e)
                     finally:
                         del self.scene["CommandCamera"]
@@ -717,16 +717,16 @@ class GuiClickable(GuiWidget):
         cont = self.currentController
         group = self.groupObject
 
-        if DEBUG and len(commands) > 0:
+        if (DEBUG or self.debug) and len(commands) > 0:
             print("> Exec commands of", group)
 
         for command in commands:
             try:
                 exec(command)
-                if DEBUG:
+                if DEBUG or self.debug:
                     print("  >", command)
             except Exception as e:
-                if DEBUG:
+                if DEBUG or self.debug:
                     print("  X", command, e)
 
     @staticmethod
@@ -779,7 +779,7 @@ class GuiIconButton(GuiButton):
             try:
                 self.iconObject.replaceMesh(meshName)
             except:
-                if DEBUG:
+                if DEBUG or self.debug:
                     print("X Icon mesh of", self.groupObject, "not found:", meshName)
 
 
@@ -851,7 +851,7 @@ class GuiCheckbox(GuiClickable):
                     self.checked = result = eval(target) == value
 
                 except:
-                    if DEBUG:
+                    if DEBUG or self.debug:
                         print("X Could not set value to target:", repr(command))
 
             else:
@@ -864,13 +864,13 @@ class GuiCheckbox(GuiClickable):
                     self.checked = result = eval(group["Target"])
 
                 except:
-                    if DEBUG:
+                    if DEBUG or self.debug:
                         print("X Could not invert target:", repr(command))
 
         elif not visualOnly:
             self.checked = result = not self.checked
 
-        if DEBUG and not visualOnly:
+        if (DEBUG or self.debug) and not visualOnly:
             print("> Checkbox", group, "set to:", result)
 
     def _setVisual(self, state, button=""):
@@ -968,7 +968,7 @@ class GuiList(GuiClickable):
             if event in ("Increase", "Decrease") and self.target:
                 exec(command + repr(self.list[self.index]))
 
-            if DEBUG:
+            if DEBUG or self.debug:
                 print("> List", group, "set to", self.list[self.index])
             self._updateLabelObjects()
 
@@ -995,13 +995,13 @@ class GuiList(GuiClickable):
                         tempList.sort()
 
                 else:
-                    if DEBUG:
+                    if DEBUG or self.debug:
                         print("X List", group, "source must be iterable:", group["List"])
 
                 tempIndex = 0 if len(tempList) > 0 else -1
 
             except:
-                if DEBUG:
+                if DEBUG or self.debug:
                     print("X List", group, "invalid source:", group["List"])
 
         if "Target" in group:
@@ -1015,7 +1015,7 @@ class GuiList(GuiClickable):
                     tempIndex = tempList.index(tempTarget) if tempTarget in tempList else tempIndex
 
                 except:
-                    if DEBUG:
+                    if DEBUG or self.debug:
                         print("X List", group, "invalid target:", group["Target"])
 
             else:
@@ -1028,16 +1028,16 @@ class GuiList(GuiClickable):
                         self.target = tempTarget
 
                     except:
-                        if DEBUG:
+                        if DEBUG or self.debug:
                             print("X List", group, "invalid target:", group["Target"])
 
                 else:
-                    if DEBUG:
+                    if DEBUG or self.debug:
                         print("X List", group, "no source List for Target:", group["Target"])
 
         self.list = tempList
         self.index = tempIndex
-        if DEBUG:
+        if DEBUG or self.debug:
             print("> List", group, "updated:", self.list)
 
 
@@ -1118,12 +1118,12 @@ class GuiInput(GuiClickable):
 
                     if kbEvents[bge.events.BACKSPACEKEY] == 1:
                         self["InputText"] = ""
-                        if DEBUG:
+                        if DEBUG or self.debug:
                             print("> Input", group, "cleared")
 
                     elif kbEvents[bge.events.CKEY] == 1:
                         copy(str(self["InputText"]))
-                        if DEBUG:
+                        if DEBUG or self.debug:
                             print("> Input", group, "copied to clipboard:", repr(self["InputText"]))
 
                     elif kbEvents[bge.events.VKEY] == 1:
@@ -1132,11 +1132,11 @@ class GuiInput(GuiClickable):
                         if value:
                             self["InputText"] = value
                             self._validateInputText()
-                            if DEBUG:
+                            if DEBUG or self.debug:
                                 print("> Input", group, "pasted from clipboard:", value)
 
                         else:
-                            if DEBUG:
+                            if DEBUG or self.debug:
                                 print("X Input", group, ", no value in clipboard")
 
             self._updateLabelObjects()
@@ -1145,11 +1145,11 @@ class GuiInput(GuiClickable):
 
             try:
                 exec(self.inputTarget + " = " + repr(self["InputText"]))
-                if DEBUG and keyboard.positive:
+                if (DEBUG or self.debug) and keyboard.positive:
                     print("> Input", group, "set target to:", repr(eval(self.inputTarget)))
 
             except:
-                if DEBUG:
+                if DEBUG or self.debug:
                     print("X Input", group, "couldn't set to target:", self.inputTarget)
 
     def _processActions(self):
@@ -1191,7 +1191,7 @@ class GuiInput(GuiClickable):
                     targetValue = eval(target)
 
             except:
-                if DEBUG:
+                if DEBUG or self.debug:
                     print("> Input", group, "invalid target:", group["Target"])
 
         # Create target at startup if requested
