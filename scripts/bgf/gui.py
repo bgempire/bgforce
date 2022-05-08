@@ -1064,6 +1064,9 @@ class GuiInput(GuiClickable):
         self.cursor = False  # type: bool
         """ Cursor: Cursor blink flag. """
 
+        self.__initInput = False
+        """ If input was initialized. """
+
         super().__init__(obj, cont)
 
     def update(self):
@@ -1194,21 +1197,21 @@ class GuiInput(GuiClickable):
                 if DEBUG or self.debug:
                     print("> Input", group, "invalid target:", group["Target"])
 
-        # Create target at startup if requested
-        if not self.inputTarget and ensureTarget and target:
+        if not self.__initInput and not self.inputTarget and target:
 
-            try:
-                exec(target + " = ''")
-                if DEBUG:
-                    print("> Input", group, "target was created:", target)
+            # Create target at startup if requested
+            if ensureTarget:
+                try:
+                    exec(target + " = ''")
+                    if DEBUG or self.debug: print("> Input", group, "target was created:", target)
 
-            except:
-                if DEBUG:
-                    print("X Input", group, "target couldn't be created:", target)
+                except:
+                    if DEBUG or self.debug: print("X Input", group, "target couldn't be created:", target)
 
             self["InputText"] = str(targetValue)
             self.inputTarget = target
             self._updateLabelObjects()
+            self.__initInput = True
 
     def _validateInputText(self):
         # type: (GuiWidget) -> None
