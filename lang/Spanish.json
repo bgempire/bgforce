@@ -1,0 +1,82 @@
+// Translation strings
+// Reference: https://bgempire.github.io/bgforce/structure#lang
+
+{
+    // General
+    "Yes": "Si",
+    "No": "No",
+    "Enable" : "Habilitar",
+    "Disable" : "Deshabilitar",
+    "Previous": "Anterior",
+    "Back": "Volver",
+    "Next": "Siguiente",
+    "Confirm" : "Confirmar",
+    "Cancel" : "Cancelar",
+    "Loading" : "Cargando...",
+    "Native" : "Nativo",
+    
+    // Main menu
+    "MainMenuStart" : "Inicio",
+    "MainMenuStartDesc" : "Iniciar juego.",
+    "MainMenuOptions" : "Opciones",
+    "MainMenuOptionsDesc" : "Cambiar opciones del juego.",
+    "MainMenuAbout" : "Acerca",
+    "MainMenuAboutDesc" : "Créditos del juego e información general.",
+    "MainMenuQuit" : "Salir",
+    "MainMenuQuitDesc" : "Salir del juego.",
+    
+    // Quit menu
+    "QuitConfirmation" : "¿Estás seguro que deseás salir?",
+    
+    // Options menu
+    "OptionsTitle": "Opciones",
+    "OptionsGeneral" : "General",
+    "OptionsGeneralDesc" : "Opciones generales.",
+    "OptionsVideo" : "Video",
+    "OptionsVideoDesc" : "Opciones gráficas.",
+    "OptionsSound" : "Sonido",
+    "OptionsSoundDesc" : "Opciones del sonido y música.",
+    "OptionsControls" : "Controles",
+    "OptionsControlsDesc" : "Opciones de los controles.",
+    
+    "OptionsLang": "Idioma:",
+    "OptionsLangDesc": "Establecer el idioma del juego.",
+    
+    "OptionsResolution" : "Resolución:",
+    "OptionsResolutionDesc" : "Resolución de pantalla del juego.",
+    "OptionsFullscreen" : "Pantalla completa",
+    "OptionsFullscreenDesc" : "Habilitar modo a pantalla completa.",
+    "OptionsLights": "Luces",
+    "OptionsLightsDesc": "Habilitar luces.",
+    "OptionsShaders": "Sombreados",
+    "OptionsShadersDesc": "Habilitar sombreados",
+    "OptionsShadows": "Sombras",
+    "OptionsShadowsDesc": "Habilitar sombras.",
+    "OptionsRamps": "Rampas",
+    "OptionsRampsDesc": "Habilitar color del material de las rampas.",
+    "OptionsNodes": "Nodos",
+    "OptionsNodesDesc": "Habilitar material de los nodos.",
+    "OptionsExtraTextures": "Texturas extras",
+    "OptionsExtraTexturesDesc": "Habilitar el mapeado de texturas (normal, espejado, etc).",
+    "OptionsAnisotropicFiltering": "Filtración:",
+    "OptionsAnisotropicFilteringDesc": "Nivel de filtrado anisotrópico.",
+    "OptionsMipmaps": "Mapa MIP:",
+    "OptionsMipmapsDesc": "Tipo de mapa MIP.",
+    "OptionsVsync": "Vsync:",
+    "OptionsVsyncDesc": "Habilitar sincronización vertical.",
+    "OptionsMotionBlur": "Desenfoque de movimiento:",
+    "OptionsMotionBlurDesc": "Nivel de desenfoque de movimiento. 0 para deshabilitar.",
+    
+    "OptionsSfxVol": "Efectos:",
+    "OptionsSfxVolDesc": "Volumen de efectos de sonido.",
+    "OptionsSfxEnable": "Habilitar efectos",
+    "OptionsSfxEnableDesc": "Habilitar efectos sonoros.",
+    "OptionsBgmVol": "Música:",
+    "OptionsBgmVolDesc": "Volumen de la música.",
+    "OptionsBgmEnable": "Habilitar música",
+    "OptionsBgmEnableDesc": "Habilitar música del juego.",
+    
+    // About menu
+    "AboutTitle" : "Acerca",
+    "AboutText" : "BGForce es una estructura para Blender Game Engine y UPBGE creado por Joel Gomes (BGEmpire). Eres libre de usarlo como quieras."
+}
