@@ -12,5 +12,3 @@ lots of abstraction for common tasks and pre-made GUI widgets with customizable 
 - Operators system based on messages, allowing the execution of functions in a simple manner
 - Data manager, allowing loading and manipulation of complex data trees
 - Context manager, allowing for smooth change of scene groups, background music and more
-
-See [Projects](https://github.com/bgempire/bgforce/projects) to track the development progress of this project.
