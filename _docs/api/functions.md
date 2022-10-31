@@ -107,7 +107,7 @@ objeto `origin` seja fornecido, executará o som como 3D usando as coordenadas d
 - `sound` (str) - Nome do som
 - `origin` ([KX_GameObject][5]) - Objeto de referência para executar o som como 3D (opcional)
 
-**Retorna:** (Handle)[6]
+**Retorna:** [Handle][6]
 
 
 ### `bgf.saveFile(file, data, ext=None)`
