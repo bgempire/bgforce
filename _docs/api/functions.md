@@ -58,7 +58,7 @@ para fins de depuração.
 **Parâmetros:**
 - `obj` ([KX_GameObject][5]) - Objeto do jogo
 
-**Retorna:** [bge.types.KX_GameObject][5]
+**Retorna:** [KX_GameObject][5]
 
 
 ### `bgf.isKeyPressed(key, status=bge.logic.KX_INPUT_ACTIVE)`
@@ -90,7 +90,7 @@ JSON, JSONC e JSON codificado com [zlib](https://docs.python.org/3/library/zlib.
 ### `bgf.loadFiles(directory, pattern="")`
 - Carrega todos os arquivos de `directory` e retorna seu conteúdo como um dicionário.
 Suporta JSON, JSONC e JSON codificado com [zlib][4].
-Caso `pattern` seja
+Caso `pattern` seja passado, será usado como filtro de arquivos.
 
 **Parâmetros:**
 - `directory` ([Path][3]) - Caminho do diretório
@@ -107,7 +107,7 @@ objeto `origin` seja fornecido, executará o som como 3D usando as coordenadas d
 - `sound` (str) - Nome do som
 - `origin` ([KX_GameObject][5]) - Objeto de referência para executar o som como 3D (opcional)
 
-**Retorna:** dict
+**Retorna:** (Handle)[6]
 
 
 ### `bgf.saveFile(file, data, ext=None)`
@@ -128,3 +128,4 @@ codificado com [zlib][4])
 [3]: https://docs.python.org/3/library/pathlib.html#pathlib.Path
 [4]: https://docs.python.org/3/library/zlib.html
 [5]: https://docs.blender.org/api/2.79/bge.types.KX_GameObject.html
+[6]: https://docs.blender.org/api/2.79/aud.html#aud.Handle
